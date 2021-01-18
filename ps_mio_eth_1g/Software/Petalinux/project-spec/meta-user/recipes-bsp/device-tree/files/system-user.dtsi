@@ -1,0 +1,25 @@
+/include/ "system-conf.dtsi"
+/ {
+	chosen {
+		stdout-path = "serial0:115200";
+	};
+};
+&gem0 {
+     phy@1 {
+            reg = <0x1>;
+            ti,rx-internal-delay = <0xb>;
+            ti,tx-internal-delay = <0xa>;
+            ti,fifo-depth = <0x1>;
+            ti,dp83867-rxctrl-strap-quirk;
+            phandle = <0x9>;
+         };
+
+         phy@2 {
+            reg = <0x2>;
+            ti,rx-internal-delay = <0xb>;
+            ti,tx-internal-delay = <0xa>;
+            ti,fifo-depth = <0x1>;
+            ti,dp83867-rxctrl-strap-quirk;
+            phandle = <0xa>;
+         };
+};
