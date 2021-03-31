@@ -4,6 +4,7 @@ This repository contains VCK190 design files for PS and PL based Ethernet.
 Currently, there are 1 available design:
 
 - **ps_mio_eth_1g** - PS 10/100/1000BASE-T design utilizing the GEM over MIO to the TI PHY onboard on the VCK190.
+- **pl_eth_1g** - PL AXI 1G/2.5G Ethernet Subsystem over SGMII SFP plugged onto the VCK190 SFP cage.
 ---
 ## **What to Expect**
 Each design directory contains the following general structure:
