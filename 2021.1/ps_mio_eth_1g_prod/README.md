@@ -43,23 +43,24 @@ Once packaged, the `BOOT.BIN`, `boot.scr` and `image.ub` files (in the `/images/
 
 Alternatively, you can use XSA file to build linux images from scratch by following the steps:
 
-`petalinux-create -t project --template versal -n ps_mio_1g_prod`
-`cd ps_mio_1g_prod`
-`petalinux-config --get-hw-description=<path to XSA file>` (Image Packaging Configuration => change "INITRAMFS/INITRD Image name" to "petalinux-image-minimal". Please see Known Issues (1))
-`petalinux-build`
-`cd ./images/linux`
-`petalinux-package --boot --plm --psmfw --uboot --dtb --force`
+- `petalinux-create -t project --template versal -n ps_mio_1g_prod`
+- `cd ps_mio_1g_prod`
+- `petalinux-config --get-hw-description=<path to XSA file>` 
+   - (Image Packaging Configuration => change "INITRAMFS/INITRD Image name" to "petalinux-image-minimal". Please see **Known Issues (1)**)
+- `petalinux-build`
+- `cd ./images/linux`
+- `petalinux-package --boot --plm --psmfw --uboot --dtb --force`
 
 
 ### **Vitis:**
 
 To build the Baremetal Example Applications for this project, create a new Vitis workspace in the Software/Vitis directory. Once created, build a new platform project targeting the xsa file from `Software/Vitis` folder.
 
-Please note, there is an known issue with using Vitis 2021.1. A patch will be needed. Please see Known Issues (2) below. 
+Please note, there is an known issue with using Vitis 2021.1. A patch will be needed. Please see **Known Issues (2)** below. 
 
 Once patch is applied, you can create a new application project. Select File > New > New Application Project
 
-Vitis offers several Ethernet-based example application projects which leverage the LwIP Library. These can be selected on the second page of the New Application Project dialogue.
+Vitis offers several Ethernet-based example application projects which leverage the LwIP Library. These can be selected on the second page of the New Application Project dialogue. Here LwIP echo example is used. 
 
 ---
 
@@ -151,16 +152,16 @@ In this section, list any known issues with the design, or any warning messages 
 2. https://support.xilinx.com/s/article/76668?language=en_US
 
 ---
-# Copyright 2020 Xilinx Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+Copyright 2020 Xilinx Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
