@@ -1,0 +1,6 @@
+PETALINUX_VER=2021.1
+VALIDATE_HW_CHKSUM=1
+HARDWARE_PATH=/group/xircss/nanz/Emb_Networking/DESIGNS_upgrade/VCK190_PS_2021_v2/ps_mio_1g_prod/recreate/ps_mio_eth_1g_prod/Hardware/ps_mio_1g_prod_hw/ps_mio_1g_prod_wrapper.xsa
+HARDWARE_CHECKSUM=4f3fe3c50bf8b3f6d5284496bffbe5c6
+YOCTO_SDK=b4cf886365639d226f0cd8f175d6238a
+RFSCONFIG_CHKSUM=7d1b1934515f5adcc3f55ab38d3d9945
