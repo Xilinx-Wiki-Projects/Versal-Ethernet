@@ -9,6 +9,9 @@ Currently, there are 2 available design versions:
 
 **2021.1**
 - **ps_mio_eth_1g_prod** - PS 10/100/1000BASE-T design utilizing the GEM over MIO to the TI PHY onboard on the VCK190 Production Board.
+
+**2022.1**
+- **ps_emio_basex_1g** - PS EMIO 1000BASEX design utilizing the GEM over EMIO to connect to PCS/PMA or SGMII IP in 1000BASEX mode on the VCK190 Production Board using SFP0. 
 ---
 ## **What to Expect**
 Each design directory contains the following general structure:
@@ -46,7 +49,8 @@ If you find you are having difficulty bringing up one of the designs, or need so
 Be sure to [search](https://forums.xilinx.com/t5/forums/searchpage/tab/message?advanced=false&allow_punctuation=false&inactive=false) the forums first before posting, as someone may already have the solution!
 
 ---
-Copyright 2020 Xilinx Inc.
+### Copyright 2020 Xilinx Inc.
+### Copyright (C) 2022, Advanced Micro Devices, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
