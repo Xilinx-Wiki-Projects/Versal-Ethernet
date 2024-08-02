@@ -32,7 +32,7 @@ set proj_dir ../pl_axi1G_vck190/${project_name}_hw
 
 create_project -name ${project_name} -force -dir ${proj_dir} -part ${device}
 
-set_property board_part xilinx.com:vck190_es:part0:1.0 [current_project]
+set_property board_part xilinx.com:vck190:part0:2.0 [current_project]
 
 # Source the BD file, BD naming convention is <PROJECT_NAME>_bd.tcl
 source ${project_name}_bd.tcl
