@@ -1,0 +1,29 @@
+From f7086e1114f66b67d7f2b738db48696b72ecb0ca Mon Sep 17 00:00:00 2001
+From: linnj <linnj@xilinx.com>
+Date: Tue, 2 Jan 2024 14:04:29 -0700
+Subject: [PATCH] net: axienet: Fix phylink_create error for 2.5
+
+The MAC must also support 2.5 to prevent an error when
+the phylink is created.
+
+Signed-off-by: John Linn <john.linn@amd.com>
+---
+ drivers/net/ethernet/xilinx/xilinx_axienet_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/xilinx/xilinx_axienet_main.c b/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
+index 1ee583888b8d..ffe98be915bb 100644
+--- a/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
++++ b/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
+@@ -3857,7 +3857,7 @@ static int axienet_probe(struct platform_device *pdev)
+ 	lp->phylink_config.dev = &ndev->dev;
+ 	lp->phylink_config.type = PHYLINK_NETDEV;
+ 	lp->phylink_config.mac_capabilities = MAC_SYM_PAUSE | MAC_ASYM_PAUSE |
+-		MAC_10FD | MAC_100FD | MAC_1000FD;
++		MAC_10FD | MAC_100FD | MAC_1000FD | MAC_2500FD;
+ 
+ 	__set_bit(lp->phy_mode, lp->phylink_config.supported_interfaces);
+ 	if (lp->switch_x_sgmii) {
+-- 
+2.17.1
+

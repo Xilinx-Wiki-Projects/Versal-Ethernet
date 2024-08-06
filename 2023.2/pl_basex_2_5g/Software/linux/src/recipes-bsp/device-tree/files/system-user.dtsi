@@ -1,0 +1,14 @@
+/include/ "system-conf.dtsi"
+/ {
+};
+
+&amba {
+        zyxclmm_drm {
+                compatible = "xlnx,zocl-versal";
+        };
+};
+
+&axi_ethernet_t {
+        phy-mode = "2500base-x";
+};
+
