@@ -1,6 +1,6 @@
 
 ################################################################
-# This is a generated script based on design: axi_ethernet_t_exdes_support
+# This is a generated script based on design: pl_basex_2_5g
 #
 # Though there are limitations about the generated script,
 # the main purpose of this utility is to make learning
@@ -41,16 +41,21 @@ if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
 ################################################################
 
 # To test this script, run the following commands from Vivado Tcl console:
-# source axi_ethernet_t_exdes_support_script.tcl
+# source pl_basex_2_5g_script.tcl
 
 
 # The design that will be created by this Tcl script contains the following 
 # module references:
-# rxcommaalignen_out_shifter
+# rxcommaalignen_out_shifter, pma_reset_handler
 import_files -norecurse ../Hardware/commaalign/rxcommaalignen_out_shifter.v
-
+import_files -norecurse ../Hardware/pma_reset_handler.v
 
 # Please add the sources of those modules before sourcing this Tcl script.
+file mkdir ../Hardware/pl_basex_2_5g_hw/pl_basex_2_5g.ipdefs/ 
+file copy -force ../Hardware/axi_ethernet/axi_ethernet_buffer_v2_0 ../Hardware/pl_basex_2_5g_hw/pl_basex_2_5g.ipdefs/ 
+file copy -force ../Hardware/axi_ethernet/axi_ethernet_v7_2 ../Hardware/pl_basex_2_5g_hw/pl_basex_2_5g.ipdefs/ 
+
+set_property  ip_repo_paths ../Hardware/pl_basex_2_5g_hw/pl_basex_2_5g.ipdefs/ [current_project]
 
 # If there is no project opened, this script will create a
 # project, but make sure you do not have an existing project
@@ -62,6 +67,7 @@ if { $list_projs eq "" } {
    set_property BOARD_PART xilinx.com:vck190:part0:3.2 [current_project]
 }
 
+update_ip_catalog
 
 # CHANGE DESIGN NAME HERE
 variable design_name
@@ -132,9 +138,7 @@ if { $nRet != 0 } {
    return $nRet
 }
 
-file mkdir ../Hardware/pl_basex_2_5g_hw/pl_basex_2_5g.ipdefs/ 
-file copy -force ../Hardware/axi_ethernet/axi_ethernet_buffer_v2_0 ../Hardware/pl_basex_2_5g_hw/pl_basex_2_5g.ipdefs/ 
-file copy -force ../Hardware/axi_ethernet/axi_ethernet_v7_2 ../Hardware/pl_basex_2_5g_hw/pl_basex_2_5g.ipdefs/ 
+
 
 set bCheckIPsPassed 1
 ##################################################################
@@ -184,6 +188,7 @@ set bCheckModules 1
 if { $bCheckModules == 1 } {
    set list_check_mods "\ 
 rxcommaalignen_out_shifter\
+pma_reset_handler\
 "
 
    set list_mods_missing ""
@@ -276,13 +281,16 @@ proc create_hier_cell_axi_ethernet_t_gt_wrapper { parentCell nameHier } {
   create_bd_pin -dir I -type rst apb3presetn
   create_bd_pin -dir O ch2_txprogdivresetdone
   create_bd_pin -dir O ch0_rxprogdivresetdone_ext
+  create_bd_pin -dir I reset_rx_datapath_in
+  create_bd_pin -dir O rx_resetdone_out
 
   # Create instance: gt_quad_base_0, and set properties
   set gt_quad_base_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:gt_quad_base:1.1 gt_quad_base_0 ]
   set_property -dict [list \
+    CONFIG.APB3_CLK_FREQUENCY {100.0} \
     CONFIG.BYPASS_DRC_58G {false} \
-    CONFIG.CHANNEL_ORDERING {/axi_ethernet_t_gt_wrapper/gt_quad_base_0/TX2_GT_IP_Interface axi_ethernet_t_exdes_support_gt_bridge_ip_0_0./axi_ethernet_t_gt_wrapper/gt_bridge_ip_0/GT_TX0.0 /axi_ethernet_t_gt_wrapper/gt_quad_base_0/RX2_GT_IP_Interface\
-axi_ethernet_t_exdes_support_gt_bridge_ip_0_0./axi_ethernet_t_gt_wrapper/gt_bridge_ip_0/GT_RX0.0} \
+    CONFIG.CHANNEL_ORDERING {/axi_ethernet_t_gt_wrapper/gt_quad_base_0/TX2_GT_IP_Interface pl_basex_2_5g_gt_bridge_ip_0_0./axi_ethernet_t_gt_wrapper/gt_bridge_ip_0/GT_TX0.0 /axi_ethernet_t_gt_wrapper/gt_quad_base_0/RX2_GT_IP_Interface\
+pl_basex_2_5g_gt_bridge_ip_0_0./axi_ethernet_t_gt_wrapper/gt_bridge_ip_0/GT_RX0.0} \
     CONFIG.GT_TYPE {GTY} \
     CONFIG.PORTS_INFO_DICT {LANE_SEL_DICT {unconnected {RX0 RX1 RX3 TX0 TX1 TX3} PROT0 {RX2 TX2}} GT_TYPE GTY REG_CONF_INTF APB3_INTF BOARD_PARAMETER { }} \
     CONFIG.PROT0_ENABLE {true} \
@@ -326,9 +334,9 @@ ENABLE RESET_SEQUENCE_INTERVAL 0 RX_COMMA_PRESET K28.5 RX_COMMA_VALID_ONLY 0 GT_
     CONFIG.PROT0_RX_MASTERCLK_SRC {RX2} \
     CONFIG.PROT0_TX_MASTERCLK_SRC {TX2} \
     CONFIG.PROT_OUTCLK_VALUES {CH0_RXOUTCLK 390.625 CH0_TXOUTCLK 390.625 CH1_RXOUTCLK 390.625 CH1_TXOUTCLK 390.625 CH2_RXOUTCLK 156.25 CH2_TXOUTCLK 312.5 CH3_RXOUTCLK 390.625 CH3_TXOUTCLK 390.625} \
-    CONFIG.QUAD_USAGE {TX_QUAD_CH {TXQuad_0_/axi_ethernet_t_gt_wrapper/gt_quad_base_0 {/axi_ethernet_t_gt_wrapper/gt_quad_base_0 undef,undef,axi_ethernet_t_exdes_support_gt_bridge_ip_0_0.IP_CH0,undef MSTRCLK\
-0,0,1,0 IS_CURRENT_QUAD 1}} RX_QUAD_CH {RXQuad_0_/axi_ethernet_t_gt_wrapper/gt_quad_base_0 {/axi_ethernet_t_gt_wrapper/gt_quad_base_0 undef,undef,axi_ethernet_t_exdes_support_gt_bridge_ip_0_0.IP_CH0,undef\
-MSTRCLK 0,0,1,0 IS_CURRENT_QUAD 1}}} \
+    CONFIG.QUAD_USAGE {TX_QUAD_CH {TXQuad_0_/axi_ethernet_t_gt_wrapper/gt_quad_base_0 {/axi_ethernet_t_gt_wrapper/gt_quad_base_0 undef,undef,pl_basex_2_5g_gt_bridge_ip_0_0.IP_CH0,undef MSTRCLK 0,0,1,0\
+IS_CURRENT_QUAD 1}} RX_QUAD_CH {RXQuad_0_/axi_ethernet_t_gt_wrapper/gt_quad_base_0 {/axi_ethernet_t_gt_wrapper/gt_quad_base_0 undef,undef,pl_basex_2_5g_gt_bridge_ip_0_0.IP_CH0,undef MSTRCLK 0,0,1,0 IS_CURRENT_QUAD\
+1}}} \
     CONFIG.REFCLK_LIST {{/CLK_IN_D_0_clk_p[0]} /gtrefclk_p_0} \
     CONFIG.REFCLK_STRING {HSCLK1_LCPLLGTREFCLK0 refclk_PROT0_R0_156.25_MHz_unique1} \
     CONFIG.REG_CONF_INTF {APB3_INTF} \
@@ -343,6 +351,7 @@ MSTRCLK 0,0,1,0 IS_CURRENT_QUAD 1}}} \
   ] $gt_quad_base_0
 
   set_property -dict [list \
+    CONFIG.APB3_CLK_FREQUENCY.VALUE_MODE {auto} \
     CONFIG.CHANNEL_ORDERING.VALUE_MODE {auto} \
     CONFIG.GT_TYPE.VALUE_MODE {auto} \
     CONFIG.PROT0_ENABLE.VALUE_MODE {auto} \
@@ -470,6 +479,7 @@ RX_BUFFER_RESET_ON_RATE_CHANGE ENABLE TX_BUFFER_RESET_ON_RATE_CHANGE ENABLE RESE
   connect_bd_net -net gt_bridge_ip_0_ch0_txprogdivresetdone_ext [get_bd_pins gt_bridge_ip_0/ch0_txprogdivresetdone_ext] [get_bd_pins ch0_txprogdivresetdone_0]
   connect_bd_net -net gt_bridge_ip_0_gt_ilo_reset [get_bd_pins gt_bridge_ip_0/gt_ilo_reset] [get_bd_pins gt_quad_base_0/ch2_iloreset]
   connect_bd_net -net gt_bridge_ip_0_gt_pll_reset [get_bd_pins gt_bridge_ip_0/gt_pll_reset] [get_bd_pins gt_quad_base_0/hsclk0_lcpllreset]
+  connect_bd_net -net gt_bridge_ip_0_rx_resetdone_out [get_bd_pins gt_bridge_ip_0/rx_resetdone_out] [get_bd_pins rx_resetdone_out]
   connect_bd_net -net gt_quad_base_0_ch0_rxoutclk [get_bd_pins gt_quad_base_0/ch2_rxoutclk] [get_bd_pins bufg_gt_2/outclk] [get_bd_pins bufg_gt_3/outclk]
   connect_bd_net -net gt_quad_base_0_ch0_txoutclk [get_bd_pins gt_quad_base_0/ch2_txoutclk] [get_bd_pins bufg_gt_0/outclk] [get_bd_pins bufg_gt_1/outclk]
   connect_bd_net -net gt_quad_base_0_gtpowergood [get_bd_pins gt_quad_base_0/gtpowergood] [get_bd_pins gtpowergood] [get_bd_pins gt_bridge_ip_0/gtpowergood]
@@ -481,6 +491,7 @@ RX_BUFFER_RESET_ON_RATE_CHANGE ENABLE TX_BUFFER_RESET_ON_RATE_CHANGE ENABLE RESE
   connect_bd_net -net gtrefclk_n_0_1 [get_bd_pins gtrefclk_n_0] [get_bd_pins util_ds_buf_0/IBUF_DS_N]
   connect_bd_net -net gtrefclk_p_0_1 [get_bd_pins gtrefclk_p_0] [get_bd_pins util_ds_buf_0/IBUF_DS_P]
   connect_bd_net -net pma_reset_1 [get_bd_pins pma_reset] [get_bd_pins gt_bridge_ip_0/gtreset_in]
+  connect_bd_net -net reset_rx_datapath_in_1 [get_bd_pins reset_rx_datapath_in] [get_bd_pins gt_bridge_ip_0/reset_rx_datapath_in]
   connect_bd_net -net util_ds_buf_0_IBUF_OUT [get_bd_pins util_ds_buf_0/IBUF_OUT] [get_bd_pins gt_quad_base_0/GT_REFCLK0]
   connect_bd_net -net xlconstant_0_dout [get_bd_pins xlconstant_0/dout] [get_bd_pins bufg_gt_0/gt_bufgtclr] [get_bd_pins bufg_gt_1/gt_bufgtclr] [get_bd_pins bufg_gt_2/gt_bufgtclr] [get_bd_pins bufg_gt_3/gt_bufgtclr] [get_bd_pins gt_quad_base_0/ch1_txusrclk] [get_bd_pins gt_quad_base_0/ch3_txusrclk] [get_bd_pins gt_quad_base_0/ch1_rxusrclk] [get_bd_pins gt_quad_base_0/ch3_rxusrclk] [get_bd_pins gt_quad_base_0/altclk]
   connect_bd_net -net xlconstant_1_dout [get_bd_pins xlconstant_1/dout] [get_bd_pins bufg_gt_0/gt_bufgtdiv]
@@ -1965,6 +1976,17 @@ proc create_root_design { parentCell } {
   ] $axis_ila_1
 
 
+  # Create instance: pma_reset_handler_0, and set properties
+  set block_name pma_reset_handler
+  set block_cell_name pma_reset_handler_0
+  if { [catch {set pma_reset_handler_0 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $pma_reset_handler_0 eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
   # Create interface connections
   connect_bd_intf_net -intf_net CLK_IN_D_0_1 [get_bd_intf_ports CLK_IN_D_0] [get_bd_intf_pins axi_ethernet_t_gt_wrapper/CLK_IN_D_0]
   connect_bd_intf_net -intf_net axi_dma_0_M_AXIS_CNTRL [get_bd_intf_pins axi_dma_0/M_AXIS_CNTRL] [get_bd_intf_pins axi_ethernet_t/s_axis_txc]
@@ -2004,6 +2026,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net axi_dma_0_s2mm_sts_reset_out_n [get_bd_pins axi_dma_0/s2mm_sts_reset_out_n] [get_bd_pins axi_ethernet_t/axi_rxs_arstn]
   connect_bd_net -net axi_ethernet_t_gt_wrapper_ch0_rxprogdivresetdone_ext [get_bd_pins axi_ethernet_t_gt_wrapper/ch0_rxprogdivresetdone_ext] [get_bd_pins axis_ila_1/probe0] [get_bd_pins axi_ethernet_t/gtwiz_reset_rx_done_in]
   set_property HDL_ATTRIBUTE.DEBUG {true} [get_bd_nets axi_ethernet_t_gt_wrapper_ch0_rxprogdivresetdone_ext]
+  connect_bd_net -net axi_ethernet_t_gt_wrapper_rx_resetdone_out [get_bd_pins axi_ethernet_t_gt_wrapper/rx_resetdone_out] [get_bd_pins pma_reset_handler_0/reset_done]
   connect_bd_net -net axi_ethernet_t_gt_wrapper_rxuserclk [get_bd_pins axi_ethernet_t_gt_wrapper/rxuserclk] [get_bd_pins axis_ila_1/probe1] [get_bd_pins axi_ethernet_t/rxuserclk]
   set_property HDL_ATTRIBUTE.DEBUG {true} [get_bd_nets axi_ethernet_t_gt_wrapper_rxuserclk]
   connect_bd_net -net axi_ethernet_t_gt_wrapper_userclk2 [get_bd_pins axi_ethernet_t_gt_wrapper/userclk2] [get_bd_pins axis_ila_1/probe2] [get_bd_pins axi_ethernet_t/userclk2]
@@ -2021,7 +2044,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net cips_0_fpd_cci_noc_axi2_clk [get_bd_pins cips_0/fpd_cci_noc_axi2_clk] [get_bd_pins axi_noc_0/aclk3]
   connect_bd_net -net cips_0_fpd_cci_noc_axi3_clk [get_bd_pins cips_0/fpd_cci_noc_axi3_clk] [get_bd_pins axi_noc_0/aclk4]
   connect_bd_net -net cips_0_lpd_axi_noc_clk [get_bd_pins cips_0/lpd_axi_noc_clk] [get_bd_pins axi_noc_0/aclk7]
-  connect_bd_net -net cips_0_pl0_ref_clk [get_bd_pins cips_0/pl0_ref_clk] [get_bd_pins proc_sys_reset_0/slowest_sync_clk] [get_bd_pins cips_0/m_axi_fpd_aclk] [get_bd_pins smartconnect_0/aclk] [get_bd_pins axi_dma_0/m_axi_sg_aclk] [get_bd_pins axi_dma_0/m_axi_mm2s_aclk] [get_bd_pins axi_dma_0/s_axi_lite_aclk] [get_bd_pins axi_dma_0/m_axi_s2mm_aclk] [get_bd_pins clk_wiz/clk_in1] [get_bd_pins axi_noc_0/aclk8] [get_bd_pins axi_ethernet_t_gt_wrapper/apb3clk_0] [get_bd_pins axis_ila_1/clk] [get_bd_pins axi_ethernet_t/s_axi_lite_clk] [get_bd_pins axi_ethernet_t/axis_clk]
+  connect_bd_net -net cips_0_pl0_ref_clk [get_bd_pins cips_0/pl0_ref_clk] [get_bd_pins proc_sys_reset_0/slowest_sync_clk] [get_bd_pins cips_0/m_axi_fpd_aclk] [get_bd_pins smartconnect_0/aclk] [get_bd_pins axi_dma_0/m_axi_sg_aclk] [get_bd_pins axi_dma_0/m_axi_mm2s_aclk] [get_bd_pins axi_dma_0/s_axi_lite_aclk] [get_bd_pins axi_dma_0/m_axi_s2mm_aclk] [get_bd_pins clk_wiz/clk_in1] [get_bd_pins axi_noc_0/aclk8] [get_bd_pins axi_ethernet_t_gt_wrapper/apb3clk_0] [get_bd_pins axis_ila_1/clk] [get_bd_pins axi_ethernet_t/s_axi_lite_clk] [get_bd_pins axi_ethernet_t/axis_clk] [get_bd_pins pma_reset_handler_0/clk]
   connect_bd_net -net cips_0_pl0_resetn [get_bd_pins cips_0/pl0_resetn] [get_bd_pins proc_sys_reset_0/ext_reset_in]
   connect_bd_net -net cips_0_pmc_axi_noc_axi0_clk [get_bd_pins cips_0/pmc_axi_noc_axi0_clk] [get_bd_pins axi_noc_0/aclk0]
   connect_bd_net -net clk_wiz_clk_out1 [get_bd_pins clk_wiz/clk_out1] [get_bd_pins axis_ila_0/clk] [get_bd_pins axi_ethernet_t/ref_clk]
@@ -2036,12 +2059,13 @@ proc create_root_design { parentCell } {
   connect_bd_net -net gt_rxp_in_0_1 [get_bd_ports gt_rxp_in_0] [get_bd_pins axi_ethernet_t_gt_wrapper/gt_rxp_in_0]
   connect_bd_net -net gtrefclk_n_0_1 [get_bd_ports gtrefclk_n_0] [get_bd_pins axi_ethernet_t_gt_wrapper/gtrefclk_n_0]
   connect_bd_net -net gtrefclk_p_0_1 [get_bd_ports gtrefclk_p_0] [get_bd_pins axi_ethernet_t_gt_wrapper/gtrefclk_p_0]
-  connect_bd_net -net pma_reset_0_1 [get_bd_pins util_vector_logic_0/Res] [get_bd_pins axi_ethernet_t_gt_wrapper/pma_reset] [get_bd_pins axis_ila_1/probe7] [get_bd_pins axi_ethernet_t/pma_reset]
+  connect_bd_net -net pma_reset_0_1 [get_bd_pins util_vector_logic_0/Res] [get_bd_pins axi_ethernet_t_gt_wrapper/pma_reset] [get_bd_pins axis_ila_1/probe7] [get_bd_pins axi_ethernet_t/pma_reset] [get_bd_pins pma_reset_handler_0/rst]
   set_property HDL_ATTRIBUTE.DEBUG {true} [get_bd_nets pma_reset_0_1]
+  connect_bd_net -net pma_reset_handler_0_pma_reset [get_bd_pins pma_reset_handler_0/pma_reset] [get_bd_pins axi_ethernet_t_gt_wrapper/reset_rx_datapath_in]
   connect_bd_net -net proc_sys_reset_0_interconnect_aresetn [get_bd_pins proc_sys_reset_0/interconnect_aresetn] [get_bd_pins smartconnect_0/aresetn]
   connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins proc_sys_reset_0/peripheral_aresetn] [get_bd_pins axi_dma_0/axi_resetn] [get_bd_pins util_vector_logic_0/Op1] [get_bd_pins util_vector_logic_1/Op1] [get_bd_pins axi_ethernet_t_gt_wrapper/apb3presetn] [get_bd_pins axi_ethernet_t/s_axi_lite_resetn]
   connect_bd_net -net rxcommaalignen_out_s_0_gpi_out [get_bd_pins rxcommaalignen_out_s_0/gpi_out] [get_bd_pins axi_ethernet_t_gt_wrapper/gpi_0]
-  connect_bd_net -net status_vector [get_bd_pins axi_ethernet_t/status_vector] [get_bd_pins axis_ila_0/probe0]
+  connect_bd_net -net status_vector [get_bd_pins axi_ethernet_t/status_vector] [get_bd_pins axis_ila_0/probe0] [get_bd_pins pma_reset_handler_0/status_vector]
   set_property HDL_ATTRIBUTE.DEBUG {true} [get_bd_nets status_vector]
   connect_bd_net -net util_vector_logic_1_Res [get_bd_pins util_vector_logic_1/Res] [get_bd_pins clk_wiz/reset]
   connect_bd_net -net xlconstant_0_dout [get_bd_pins xlconstant_0/dout] [get_bd_pins axi_ethernet_t/signal_detect] [get_bd_pins axi_ethernet_t/mmcm_locked]
