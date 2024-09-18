@@ -58,8 +58,8 @@ if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
 
 set list_projs [get_projects -quiet]
 if { $list_projs eq "" } {
-   create_project project_1 myproj -part xcvc1902-vsva2197-2MP-e-S-es1
-   set_property BOARD_PART xilinx.com:vck190_es:part0:1.0 [current_project]
+   create_project project_1 myproj -part xcvc1902-vsva2197-2MP-e-S 
+   set_property BOARD_PART xilinx.com:vck190:part0:2.0 [current_project]
 }
 
 

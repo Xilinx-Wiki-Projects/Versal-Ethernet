@@ -16,8 +16,7 @@
 set project_name axi_eth_subsys
 
 # Set the project device:
-set device xcvc1902-vsva2197-2MP-e-S-es1
-
+set device xcvc1902-vsva2197-2MP-e-S
 
 #Set the path to the constraints file:
 set impl_const ../hardware/vck190_${project_name}.xdc
