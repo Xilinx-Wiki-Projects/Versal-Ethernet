@@ -1,0 +1,6 @@
+[Crash Reporter] Started with processId = 2214973, at dir = '/group/techsup/ajayad/GitEnterpriseRepo/VPK120-Ethernet/2023.2/4x25g_mrmac/Scripts', at time = Mon Aug 19 16:24:02 2024
+[Crash Reporter] Created Process registration file in crash store: /group/techsup/ajayad/GitEnterpriseRepo/VPK120-Ethernet/2023.2/4x25g_mrmac/Scripts/.crashReporter/xsjapps57_1724109839_2214801/crashStore/processRegFile.txt
+[Crash Reporter] New process registration successfull for <hostname>:<pid> = xsjapps57:2214862
+[Crash Reporter] Crash Reporter exit condition met. No registered process is running and No pending crash report transmission.
+[Crash Reporter] Deleted crash store.
+[Crash Reporter] Exiting at Mon Aug 19 16:27:30 2024

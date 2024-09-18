@@ -1,0 +1,140 @@
+/include/ "system-conf.dtsi"
+/ {
+
+};
+
+&mrmac_4x25g_gt_wrapper_gt_quad_base {
+    status = "disabled";
+};
+
+&mrmac_4x25g_gt_wrapper_axi_gpio_gt_rate_reset_ctl_0 {
+    status = "disabled";
+    reg = <0x0 0xa4090000 0x0 0x40000>;
+};
+
+&mrmac_4x25g_gt_wrapper_axi_gpio_gt_rate_reset_ctl_1 {
+    status = "disabled";
+};
+
+&mrmac_4x25g_gt_wrapper_axi_gpio_gt_rate_reset_ctl_2 {
+    status = "disabled";
+};
+
+&mrmac_4x25g_gt_wrapper_axi_gpio_gt_rate_reset_ctl_3 {
+    status = "disabled";
+};
+
+&mrmac_4x25g_gt_wrapper_axi_gpio_gt_reset_mask {
+    status = "disabled";
+};
+
+&DMA_0_axi_dma_0 {
+    status = "disabled";
+    xlnx,addrwidth = /bits/ 8 <0x40>;
+    xlnx,include-dre;
+};
+&DMA_1_axi_dma_0 {
+    status = "disabled";
+    xlnx,addrwidth = /bits/ 8 <0x40>;
+    xlnx,include-dre;
+};
+&DMA_2_axi_dma_0 {
+    status = "disabled";
+    xlnx,addrwidth = /bits/ 8 <0x40>;
+    xlnx,include-dre;
+};
+&DMA_3_axi_dma_0 {
+    status = "disabled";
+    xlnx,addrwidth = /bits/ 8 <0x40>;
+    xlnx,include-dre;
+};
+
+&mrmac_4x25g_core {
+
+    axistream-connected = <&DMA_0_axi_dma_0>;
+    xlnx,mrmac-rate = <25000>;
+    xlnx,num-queues = /bits/ 16 <0x1>;
+
+    xlnx,gtpll = <&mrmac_4x25g_gt_wrapper_axi_gpio_gt_reset_mask>;
+
+    local-mac-address = [00 0a 35 00 00 00];
+};
+
+&mrmac_4x25g_core_1 {
+
+    axistream-connected = <&DMA_1_axi_dma_0>;
+    xlnx,mrmac-rate = <25000>;
+    xlnx,num-queues = /bits/ 16 <0x1>;
+
+    xlnx,gtpll = <&mrmac_4x25g_gt_wrapper_axi_gpio_gt_reset_mask>;
+
+    local-mac-address = [00 0a 35 00 00 01];
+};
+
+&mrmac_4x25g_core_2 {
+
+    axistream-connected = <&DMA_2_axi_dma_0>;
+    xlnx,mrmac-rate = <25000>;
+    xlnx,num-queues = /bits/ 16 <0x1>;
+
+    xlnx,gtpll = <&mrmac_4x25g_gt_wrapper_axi_gpio_gt_reset_mask>;
+
+    local-mac-address = [00 0a 35 00 00 02];
+};
+
+&mrmac_4x25g_core_3 {
+
+    axistream-connected = <&DMA_3_axi_dma_0>;
+    xlnx,mrmac-rate = <25000>;
+    xlnx,num-queues = /bits/ 16 <0x1>;
+
+    xlnx,gtpll = <&mrmac_4x25g_gt_wrapper_axi_gpio_gt_reset_mask>;
+
+    local-mac-address = [00 0a 35 00 00 03];
+};
+
+&i2c1 { /* PMC_MIO44/45 */
+        /* U35 TCA9548A switch */
+        tca9548@74 {
+                compatible = "nxp,pca9548";
+                #pinctrl-names = "default";
+                #address-cells = <0x1>;
+                #size-cells = <0x0>;
+                reg = <0x74>;
+                #i2c-mux-idle-disconnect;
+
+                i2c@7 {
+                  #address-cells = <0x1>;
+                  #size-cells = <0x0>;
+                  reg = <0x7>;
+
+                      phc@5b {
+                              compatible = "idt,8a34001";
+                              reg = <0x5b>;
+                      };
+              };
+      };
+};
+
+&i2c0 { /* PMC_MIO46/47 */
+
+        /* U33 TCA9548A switch */
+        tca9548@74 {
+                compatible = "nxp,pca9548";
+                #pinctrl-names = "default";
+                #address-cells = <0x1>;
+                #size-cells = <0x0>;
+                reg = <0x74>;
+                #i2c-mux-idle-disconnect;
+      };
+
+      /* U233 TCA6416A GPIO Exander */
+      gpio@20 {
+                compatible = "ti,tca6416, nxp,pca9505";
+                reg = <0x20>;
+                pinctrl-names = "default";
+                gpio-controller;
+    };
+};
+
+

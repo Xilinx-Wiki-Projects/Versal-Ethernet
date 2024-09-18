@@ -1,0 +1,5 @@
+PETALINUX_VER=2023.2
+VALIDATE_HW_CHKSUM=1
+HARDWARE_PATH=/group/techsup/ajayad/GitEnterpriseRepo/VPK120-Ethernet/2023.2/4x25g_mrmac/Hardware/vpk120_4x25g_mrmac_hw/vpk120_4x25g_mrmac_wrapper.xsa
+HDF_EXT=xsa
+YOCTO_SDK=0e8272633ed5009d6e138f15b1f9793d
