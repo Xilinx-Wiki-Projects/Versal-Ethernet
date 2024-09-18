@@ -40,8 +40,7 @@ The PetaLinux project will be rebuilt using the configurations in the PetaLinux 
 
 Once the build is complete, the built images can be found in the `Petalinux/images/linux/`
 directory. To package these images for SD boot, run the following from the `PetaLinux` directory:
-
-`petalinux-package --boot --fsbl images/linux/zynqmp_fsbl.elf --fpga images/linux/*.bit --pmufw images/linux/pmufw.elf --u-boot --force`
+`petalinux-package --boot --plm --psmfw --u-boot --dtb --force`
 
 Once packaged, the `BOOT.bin`, `boot.scr` and `image.ub` files (in the `Petalinux/images/linux` directory) can be copied to an SD card, and used to boot.
 
