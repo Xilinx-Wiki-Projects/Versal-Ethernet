@@ -1,7 +1,7 @@
 # VCK120 PL-based Ethernet v2023.2
-This repository contains VCK190 design files for PL based Ethernet designs.
+This repository contains VCK190 design files for PL-based Ethernet designs.
 
-Curerntly, there are 2 available designs:
+Currently, there are 2 available designs:
 
 - **pl_basex_2_5g** - PL 2.5G 2500 BaseX design utilizing the AXI 1G/2.5G Ethernet Subsystem.
 - **pl_eth_10g** - PL 10G design utilizing the 10G/25G High Speed Ethernet Subsystem.
@@ -15,7 +15,7 @@ Each design directory contains the following general structure:
 ├── Hardware
 │   ├── constraints
 │   │    └── <design>.xdc
-│   └── <IP Pathes and other RTL modules>
+│   └── <IP Patches and other RTL modules>
 ├── README.md
 ├── Scripts
 │   ├── <design>_bd.tcl
