@@ -2,7 +2,7 @@
 
 ## **Design Summary**
 
-This project is about building Versal based AXI 1G/2.5G Ethernet Subsystem example design and testing it by targeting on VCK190 ACAP device. 
+This project is about building a based AXI 1G/2.5G Ethernet Subsystem example design and testing it by targeting on VCK190 ACAP device. 
 
 ---
 
@@ -10,8 +10,8 @@ This project is about building Versal based AXI 1G/2.5G Ethernet Subsystem examp
 
 Here is a list of the required hardware to run the example design:
 - VCK190 Eval Board
-- 2.5G Supported Ethernet Cable
-- 2500 Base-X SFP
+- 1G Supported Ethernet Cable
+- 1000 Base-X SFP
 - A host machine that VCK190 is connected to through the cable
 
 ---
