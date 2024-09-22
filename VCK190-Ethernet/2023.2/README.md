@@ -1,4 +1,4 @@
-# VCK120 PL-based Ethernet v2023.2
+# VCK190 PL-based Ethernet v2023.2
 This repository contains VCK190 design files for PL-based Ethernet designs.
 
 Currently, there are 2 available designs:
