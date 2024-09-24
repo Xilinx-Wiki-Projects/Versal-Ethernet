@@ -58,8 +58,8 @@ if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
 
 set list_projs [get_projects -quiet]
 if { $list_projs eq "" } {
-   create_project project_1 myproj -part xcvc1902-vsva2197-2MP-e-S-es1
-   set_property BOARD_PART xilinx.com:vck190_es:part0:1.0 [current_project]
+   create_project project_1 myproj -part xcvc1902-vsva2197-2MP-e-S 
+   set_property BOARD_PART xilinx.com:vck190:part0:2.0 [current_project]
 }
 
 
@@ -529,8 +529,8 @@ proc create_root_design { parentCell } {
    CONFIG.MC_DQ_WIDTH {32} \
    CONFIG.MC_ECC {false} \
    CONFIG.MC_EN_ECC_SCRUBBING {false} \
-   CONFIG.MC_F1_CASLATENCY {28} \
-   CONFIG.MC_F1_CASWRITELATENCY {14} \
+   CONFIG.MC_F1_CASLATENCY {36} \
+   CONFIG.MC_F1_CASWRITELATENCY {18} \
    CONFIG.MC_F1_TCCD_L {0} \
    CONFIG.MC_F1_TCCD_L_MIN {0} \
    CONFIG.MC_F1_TFAW {40000} \

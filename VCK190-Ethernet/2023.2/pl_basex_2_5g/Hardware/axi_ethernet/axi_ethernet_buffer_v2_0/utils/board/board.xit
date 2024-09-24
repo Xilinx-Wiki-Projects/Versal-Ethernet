@@ -1,0 +1,20 @@
+package require xilinx::board 1.0
+namespace import ::xilinx::board::*
+set instname [current_inst]
+set f_xdc [add_ipfile -usedIn  [list synthesis implementation board ] -force ${instname}_board.xdc]
+puts_ipfile $f_xdc "#--------------------Physical Constraints-----------------"
+
+if { [get_project_property BOARD] == "" } {
+    close_ipfile $f_xdc
+    return 
+}
+
+set board_if [get_property PARAM_VALUE.MDIO_BOARD_INTERFACE]
+
+if { $board_if ne "Custom"} {
+       board_add_port_constraints $f_xdc $board_if MDC mdc_top
+       board_add_tri_state_port_constraints $f_xdc $board_if  MDIO_I  mdio_i_top MDIO_O mdio_o_top MDIO_T mdio_t_top
+}
+
+puts_ipfile $f_xdc ""
+close_ipfile $f_xdc
