@@ -1,0 +1,40 @@
+#-----------------------------------------------------------
+# Vivado v2023.2 (64-bit)
+# SW Build 4029153 on Fri Oct 13 20:13:54 MDT 2023
+# IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+# SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+# Start of session at: Tue Oct  1 08:03:12 2024
+# Process ID: 2757821
+# Current directory: /group/techsup/ajayad/GitHubRepo/Versal-Ethernet/VCK190-Ethernet/2023.2/pl_4x25g_mrmac/Scripts
+# Command line: vivado -source vck190-mrmac-top.tcl
+# Log file: /group/techsup/ajayad/GitHubRepo/Versal-Ethernet/VCK190-Ethernet/2023.2/pl_4x25g_mrmac/Scripts/vivado.log
+# Journal file: /group/techsup/ajayad/GitHubRepo/Versal-Ethernet/VCK190-Ethernet/2023.2/pl_4x25g_mrmac/Scripts/vivado.jou
+# Running On: xsjapps57, OS: Linux, CPU Frequency: 3078.530 MHz, CPU Physical cores: 20, Host memory: 540964 MB
+#-----------------------------------------------------------
+start_gui
+source vck190-mrmac-top.tcl
+close_project
+ls
+rm -rf ../Hardware/vck190-mrmac-4x25g_hw
+source vck190-mrmac-top.tcl
+ls
+close_project
+rm -rf ../Hardware/vck190-mrmac-4x25g_hw
+source vck190-mrmac-top.tcl
+close_project
+rm -rf ../Hardware/vck190-mrmac-4x25g_hw
+source vck190-mrmac-top.tcl
+source vck190_mrmac_top.tcl
+source vck190_mrmac_top.tcl
+close_project
+source vck190_mrmac_top.tcl
+close_project
+source vck190_mrmac_top.tcl
+close_project
+rm -rf ../Hardware/vck190-mrmac-4x25g_hw
+source vck190_mrmac_top.tcl
+close_project
+source vck190_mrmac_top.tcl
+close_project
+source vck190_mrmac_top.tcl
+update_compile_order -fileset sources_1

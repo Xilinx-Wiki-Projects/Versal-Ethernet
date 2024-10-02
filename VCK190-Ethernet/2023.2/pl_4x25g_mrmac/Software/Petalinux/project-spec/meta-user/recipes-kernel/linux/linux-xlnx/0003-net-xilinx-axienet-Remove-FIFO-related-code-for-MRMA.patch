@@ -1,0 +1,215 @@
+From 234f56bf935bccbe9ffe29ef63b0e1bd506aca44 Mon Sep 17 00:00:00 2001
+From: Sarath Babu Naidu Gaddam <sarath.babu.naidu.gaddam@xilinx.com>
+Date: Wed, 16 Jun 2021 01:29:49 -0600
+Subject: [PATCH 3/7] net: xilinx: axienet: Remove FIFO related code for MRMAC
+
+Updated MRMAC subsystem design in TRD does not use FIFOs.
+TX timestamps are part of the MM2S user app descriptor fields
+and RX timestamps are in band within the datastream.
+
+As there's no TS FIFOs, one step HW timestamping support based
+on that is also removed. Enhanced PTP logic currently supports
+only 2 step PTP.
+
+Signed-off-by: Sarath Babu Naidu Gaddam <sarath.babu.naidu.gaddam@xilinx.com>
+---
+ drivers/net/ethernet/xilinx/xilinx_axienet_main.c  | 99 +++++++---------------
+ drivers/net/ethernet/xilinx/xilinx_axienet_mcdma.c |  3 +-
+ 2 files changed, 32 insertions(+), 70 deletions(-)
+
+diff --git a/drivers/net/ethernet/xilinx/xilinx_axienet_main.c b/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
+index 47b37ee..c81669a 100644
+--- a/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
++++ b/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
+@@ -66,8 +66,7 @@
+ #define AXIENET_REGS_N		40
+ #define AXIENET_TS_HEADER_LEN	8
+ #define XXVENET_TS_HEADER_LEN	4
+-#define MRMAC_TS_HEADER_LEN	16
+-#define MRMAC_TS_HEADER_WORDS	(MRMAC_TS_HEADER_LEN / 4)
++#define XXVENET_TS_HEADER_WORDS   (XXVENET_TS_HEADER_LEN / 4)
+ #define NS_PER_SEC              1000000000ULL /* Nanoseconds per second */
+ 
+ #define MRMAC_RESET_DELAY	1 /* Delay in msecs*/
+@@ -712,21 +711,8 @@ static int axienet_device_reset(struct net_device *ndev)
+ #endif
+ 	}
+ 
+-#ifdef CONFIG_XILINX_AXI_EMAC_HWTSTAMP
+-	if (lp->axienet_config->mactype == XAXIENET_MRMAC) {
+-		axienet_rxts_iow(lp, XAXIFIFO_TXTS_RDFR,
+-				 XAXIFIFO_TXTS_RESET_MASK);
+-		axienet_rxts_iow(lp, XAXIFIFO_TXTS_SRR,
+-				 XAXIFIFO_TXTS_RESET_MASK);
+-		axienet_txts_iow(lp, XAXIFIFO_TXTS_RDFR,
+-				 XAXIFIFO_TXTS_RESET_MASK);
+-		axienet_txts_iow(lp, XAXIFIFO_TXTS_SRR,
+-				 XAXIFIFO_TXTS_RESET_MASK);
+-	}
+-#endif
+-
+-	if (lp->axienet_config->mactype == XAXIENET_1G &&
+-	    !lp->eth_hasnobuf) {
++	    if ((lp->axienet_config->mactype == XAXIENET_1G) &&
++		!lp->eth_hasnobuf) {
+ 		axienet_status = axienet_ior(lp, XAE_IP_OFFSET);
+ 		if (axienet_status & XAE_INT_RXRJECT_MASK)
+ 			axienet_iow(lp, XAE_IS_OFFSET, XAE_INT_RXRJECT_MASK);
+@@ -830,16 +816,14 @@ void axienet_tx_hwtstamp(struct axienet_local *lp,
+ 		}
+ 	}
+ 
+-	if (lp->axienet_config->mactype != XAXIENET_10G_25G &&
+-	    lp->axienet_config->mactype != XAXIENET_MRMAC)
++	if (lp->axienet_config->mactype != XAXIENET_10G_25G) 
+ 		val = axienet_txts_ior(lp, XAXIFIFO_TXTS_RXFD);
+ 
+ skb_exit:
+ 	time64 = sec * NS_PER_SEC + nsec;
+ 	memset(shhwtstamps, 0, sizeof(struct skb_shared_hwtstamps));
+ 	shhwtstamps->hwtstamp = ns_to_ktime(time64);
+-	if (lp->axienet_config->mactype != XAXIENET_10G_25G &&
+-	    lp->axienet_config->mactype != XAXIENET_MRMAC)
++	if (lp->axienet_config->mactype != XAXIENET_10G_25G) 
+ 		skb_pull((struct sk_buff *)cur_p->ptp_tx_skb,
+ 			 AXIENET_TS_HEADER_LEN);
+ 
+@@ -1096,7 +1080,7 @@ static int axienet_create_tsheader(u8 *buf, u8 msg_type,
+ 	struct axidma_bd *cur_p;
+ #endif
+ 	u64 val;
+-	u32 tmp[MRMAC_TS_HEADER_WORDS];
++	u32 tmp[XXVENET_TS_HEADER_WORDS];
+ 	int i;
+ 	unsigned long flags;
+ 
+@@ -1109,33 +1093,11 @@ static int axienet_create_tsheader(u8 *buf, u8 msg_type,
+ 	if ((msg_type & 0xF) == TX_TS_OP_NOOP) {
+ 		buf[0] = TX_TS_OP_NOOP;
+ 	} else if ((msg_type & 0xF) == TX_TS_OP_ONESTEP) {
+-		if (lp->axienet_config->mactype == XAXIENET_MRMAC) {
+-			/* For Sync Packet */
+-			if ((msg_type & 0xF0) == MSG_TYPE_SYNC_FLAG) {
+-				buf[0] = TX_TS_OP_ONESTEP | TX_TS_CSUM_UPDATE_MRMAC;
+-				buf[2] = cur_p->ptp_tx_ts_tag & 0xFF;
+-				buf[3] = (cur_p->ptp_tx_ts_tag >> 8) & 0xFF;
+-				buf[4] = TX_PTP_CF_OFFSET;
+-				buf[6] = TX_PTP_CSUM_OFFSET;
+-			}
+-			/* For PDelay Response packet */
+-			if ((msg_type & 0xF0) == MSG_TYPE_PDELAY_RESP_FLAG) {
+-				buf[0] = TX_TS_OP_ONESTEP | TX_TS_CSUM_UPDATE_MRMAC |
+-					TX_TS_PDELAY_UPDATE_MRMAC;
+-				buf[2] = cur_p->ptp_tx_ts_tag & 0xFF;
+-				buf[3] = (cur_p->ptp_tx_ts_tag >> 8) & 0xFF;
+-				buf[4] = TX_PTP_CF_OFFSET;
+-				buf[6] = TX_PTP_CSUM_OFFSET;
+-				/* Prev saved TS */
+-				memcpy(&buf[8], &lp->ptp_os_cf, 8);
+-			}
+-		} else {
+ 			/* Legacy */
+ 			buf[0] = TX_TS_OP_ONESTEP;
+ 			buf[1] = TX_TS_CSUM_UPDATE;
+ 			buf[4] = TX_PTP_TS_OFFSET;
+ 			buf[6] = TX_PTP_CSUM_OFFSET;
+-		}
+ 	} else {
+ 		buf[0] = TX_TS_OP_TWOSTEP;
+ 		buf[2] = cur_p->ptp_tx_ts_tag & 0xFF;
+@@ -1147,8 +1109,7 @@ static int axienet_create_tsheader(u8 *buf, u8 msg_type,
+ 		memcpy(&val, buf, AXIENET_TS_HEADER_LEN);
+ 		swab64s(&val);
+ 		memcpy(buf, &val, AXIENET_TS_HEADER_LEN);
+-	} else if (lp->axienet_config->mactype == XAXIENET_10G_25G ||
+-		   lp->axienet_config->mactype == XAXIENET_MRMAC) {
++	} else if (lp->axienet_config->mactype == XAXIENET_10G_25G){ 
+ 		memcpy(&tmp[0], buf, lp->axienet_config->ts_header_len);
+ 		/* Check for Transmit Data FIFO Vacancy */
+ 		spin_lock_irqsave(&lp->ptp_tx_lock, flags);
+@@ -3462,7 +3423,6 @@ static const struct axienet_config axienet_mrmac_config = {
+ 	.setoptions = xxvenet_setoptions,
+ 	.clk_init = xxvenet_clk_init,
+ 	.tx_ptplen = XXV_TX_PTP_LEN,
+-	.ts_header_len = MRMAC_TS_HEADER_LEN,
+ };
+ 
+ /* Match table for of_platform binding */
+@@ -3789,29 +3749,31 @@ static int axienet_probe(struct platform_device *pdev)
+ 	}
+ 
+ #ifdef CONFIG_XILINX_AXI_EMAC_HWTSTAMP
+-	/* Find AXI Stream FIFO */
+-	np = of_parse_phandle(pdev->dev.of_node, "axififo-connected", 0);
+-	if (IS_ERR(np)) {
+-		dev_err(&pdev->dev, "could not find TX Timestamp FIFO\n");
+-		ret = PTR_ERR(np);
+-		goto cleanup_clk;
+-	}
+-
+-	ret = of_address_to_resource(np, 0, &txtsres);
+-	if (ret) {
+-		dev_err(&pdev->dev, "unable to get Tx Timestamp resource\n");
+-		goto cleanup_clk;
+-	}
+ 
+-	lp->tx_ts_regs = devm_ioremap_resource(&pdev->dev, &txtsres);
+-	if (IS_ERR(lp->tx_ts_regs)) {
+-		dev_err(&pdev->dev, "could not map Tx Timestamp regs\n");
+-		ret = PTR_ERR(lp->tx_ts_regs);
+-		goto cleanup_clk;
+-	}
++	if (lp->axienet_config->mactype != XAXIENET_MRMAC) {
++		struct resource txtsres, rxtsres;
+ 
+-		if (lp->axienet_config->mactype == XAXIENET_10G_25G ||
+-		    lp->axienet_config->mactype == XAXIENET_MRMAC) {
++		/* Find AXI Stream FIFO */
++		np = of_parse_phandle(pdev->dev.of_node, "axififo-connected",
++				0);
++		if (IS_ERR(np)) {
++			dev_err(&pdev->dev, "could not find TX Timestamp FIFO\n");
++			ret = PTR_ERR(np);
++			goto free_netdev;
++		}
++		ret = of_address_to_resource(np, 0, &txtsres);
++		if (ret) {
++			dev_err(&pdev->dev,
++					"unable to get Tx Timestamp resource\n");
++			goto free_netdev;
++		}
++		lp->tx_ts_regs = devm_ioremap_resource(&pdev->dev, &txtsres);
++		if (IS_ERR(lp->tx_ts_regs)) {
++			dev_err(&pdev->dev, "could not map Tx Timestamp regs\n");
++			ret = PTR_ERR(lp->tx_ts_regs);
++			goto cleanup_clk;
++		}
++		if (lp->axienet_config->mactype == XAXIENET_10G_25G) {
+ 			np = of_parse_phandle(pdev->dev.of_node,
+ 					      "xlnx,rxtsfifo", 0);
+ 			if (IS_ERR(np)) {
+@@ -3843,6 +3805,7 @@ static int axienet_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	of_node_put(np);
++}
+ #endif
+ 	if (lp->axienet_config->mactype == XAXIENET_10G_25G ||
+ 	    lp->axienet_config->mactype == XAXIENET_1G_10G_25G)
+diff --git a/drivers/net/ethernet/xilinx/xilinx_axienet_mcdma.c b/drivers/net/ethernet/xilinx/xilinx_axienet_mcdma.c
+index 14babfe..428e654 100644
+--- a/drivers/net/ethernet/xilinx/xilinx_axienet_mcdma.c
++++ b/drivers/net/ethernet/xilinx/xilinx_axienet_mcdma.c
+@@ -737,8 +737,7 @@ void __maybe_unused axienet_mcdma_err_handler(unsigned long data)
+ 		axienet_iow(lp, XAE_FCC_OFFSET, XAE_FCC_FCRX_MASK);
+ 
+ #ifdef CONFIG_XILINX_AXI_EMAC_HWTSTAMP
+-	if (lp->axienet_config->mactype == XAXIENET_10G_25G ||
+-	    lp->axienet_config->mactype == XAXIENET_MRMAC) {
++	if (lp->axienet_config->mactype == XAXIENET_10G_25G){ 
+ 		axienet_rxts_iow(lp, XAXIFIFO_TXTS_RDFR,
+ 				 XAXIFIFO_TXTS_RESET_MASK);
+ 		axienet_rxts_iow(lp, XAXIFIFO_TXTS_SRR,
+-- 
+2.7.4
+
