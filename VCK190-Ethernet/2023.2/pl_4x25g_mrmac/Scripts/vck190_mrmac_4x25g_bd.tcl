@@ -1,6 +1,6 @@
 
 ################################################################
-# This is a generated script based on design: mrmac_0_exdes_support
+# This is a generated script based on design: vck190_mrmac_4x25g
 #
 # Though there are limitations about the generated script,
 # the main purpose of this utility is to make learning
@@ -41,7 +41,7 @@ if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
 ################################################################
 
 # To test this script, run the following commands from Vivado Tcl console:
-# source mrmac_0_exdes_support_script.tcl
+# source vck190_mrmac_4x25g_script.tcl
 
 # If there is no project opened, this script will create a
 # project, but make sure you do not have an existing project
@@ -134,19 +134,19 @@ xilinx.com:ip:mrmac:2.2\
 xilinx.com:ip:versal_cips:3.4\
 xilinx.com:ip:axi_noc:1.0\
 xilinx.com:ip:smartconnect:1.0\
-xilinx.com:ip:util_vector_logic:2.0\
-xilinx.com:ip:proc_sys_reset:5.0\
 xilinx.com:ip:xlconstant:1.1\
-xilinx.com:ip:xlconcat:2.1\
-xilinx.com:ip:clk_wizard:1.0\
-xilinx.com:ip:axi_mcdma:1.1\
-xilinx.com:ip:axis_data_fifo:2.0\
-xilinx.com:ip:gt_quad_base:1.1\
 xilinx.com:ip:util_ds_buf:2.2\
 xilinx.com:ip:axi_apb_bridge:3.0\
 xilinx.com:ip:xlslice:1.0\
+xilinx.com:ip:xlconcat:2.1\
 xilinx.com:ip:axi_gpio:2.0\
 xilinx.com:ip:bufg_gt:1.0\
+xilinx.com:ip:gt_quad_base:1.1\
+xilinx.com:ip:util_vector_logic:2.0\
+xilinx.com:ip:proc_sys_reset:5.0\
+xilinx.com:ip:clk_wizard:1.0\
+xilinx.com:ip:axi_mcdma:1.1\
+xilinx.com:ip:axis_data_fifo:2.0\
 "
 
    set list_ips_missing ""
@@ -176,13 +176,13 @@ if { $bCheckIPsPassed != 1 } {
 ##################################################################
 
 
-# Hierarchical cell: bufgt_gt_txoutclk1
-proc create_hier_cell_bufgt_gt_txoutclk1 { parentCell nameHier } {
+# Hierarchical cell: MCDMA3
+proc create_hier_cell_MCDMA3 { parentCell nameHier } {
 
   variable script_folder
 
   if { $parentCell eq "" || $nameHier eq "" } {
-     catch {common::send_gid_msg -ssname BD::TCL -id 2092 -severity "ERROR" "create_hier_cell_bufgt_gt_txoutclk1() - Empty argument(s)!"}
+     catch {common::send_gid_msg -ssname BD::TCL -id 2092 -severity "ERROR" "create_hier_cell_MCDMA3() - Empty argument(s)!"}
      return
   }
 
@@ -211,45 +211,606 @@ proc create_hier_cell_bufgt_gt_txoutclk1 { parentCell nameHier } {
   current_bd_instance $hier_obj
 
   # Create interface pins
+  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M_AXI_SG_3
+
+  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M_AXI_MM2S_3
+
+  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M_AXI_S2MM_3
+
+  create_bd_intf_pin -mode Slave -vlnv xilinx.com:interface:aximm_rtl:1.0 S_AXI_LITE_3
+
 
   # Create pins
-  create_bd_pin -dir O -from 3 -to 0 rx_usr_clk1_0
-  create_bd_pin -dir I -type clk outclk
-  create_bd_pin -dir I -type clk outclk1
+  create_bd_pin -dir I -type clk s_axi_aclk
+  create_bd_pin -dir I -type rst s_axi_aresetn
+  create_bd_pin -dir I rx_axis_tlast_3
+  create_bd_pin -dir I rx_axis_tvalid_3
+  create_bd_pin -dir I -from 63 -to 0 s_axis_tdata_3
+  create_bd_pin -dir O -type intr mm2s_ch1_introut_3
+  create_bd_pin -dir O -type intr s2mm_ch1_introut_3
+  create_bd_pin -dir O -from 63 -to 0 m_axis_tdata_3
+  create_bd_pin -dir O tx_tlast3
+  create_bd_pin -dir O tx_tvalid3
+  create_bd_pin -dir I tx_axis_tready_3
+  create_bd_pin -dir I -type clk m_axis_aclk_0
+  create_bd_pin -dir I -type rst core_reset
+  create_bd_pin -dir O -from 10 -to 0 tx_tkeep3
+  create_bd_pin -dir I -from 10 -to 0 s_axis_tkeep_3
+  create_bd_pin -dir I -type rst axi_resetn_3
 
-  # Create instance: conct_rx_usr_clk, and set properties
-  set conct_rx_usr_clk [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 conct_rx_usr_clk ]
-  set_property CONFIG.NUM_PORTS {4} $conct_rx_usr_clk
+  # Create instance: axi_mcdma_0, and set properties
+  set axi_mcdma_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_mcdma:1.1 axi_mcdma_0 ]
+  set_property -dict [list \
+    CONFIG.c_addr_width {32} \
+    CONFIG.c_include_mm2s_dre {1} \
+    CONFIG.c_include_s2mm_dre {1} \
+    CONFIG.c_m_axi_mm2s_data_width {64} \
+    CONFIG.c_m_axi_s2mm_data_width {64} \
+    CONFIG.c_m_axis_mm2s_tdata_width {64} \
+    CONFIG.c_mm2s_burst_size {256} \
+    CONFIG.c_prmry_is_aclk_async {1} \
+    CONFIG.c_s2mm_burst_size {256} \
+    CONFIG.c_sg_include_stscntrl_strm {0} \
+    CONFIG.c_sg_length_width {14} \
+  ] $axi_mcdma_0
 
 
-  # Create instance: bufg_gt_0, and set properties
-  set bufg_gt_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt:1.0 bufg_gt_0 ]
-  set_property CONFIG.FREQ_HZ {644531000.0} $bufg_gt_0
+  # Create instance: axis_data_fifo_0, and set properties
+  set axis_data_fifo_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_data_fifo:2.0 axis_data_fifo_0 ]
+  set_property -dict [list \
+    CONFIG.FIFO_DEPTH {8192} \
+    CONFIG.FIFO_MODE {2} \
+    CONFIG.HAS_TKEEP {1} \
+    CONFIG.IS_ACLK_ASYNC {0} \
+    CONFIG.TDATA_NUM_BYTES {8} \
+  ] $axis_data_fifo_0
 
 
-  # Create instance: bufg_gt_1, and set properties
-  set bufg_gt_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt:1.0 bufg_gt_1 ]
-  set_property CONFIG.FREQ_HZ {644531000.0} $bufg_gt_1
+  # Create instance: axis_data_fifo_1, and set properties
+  set axis_data_fifo_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_data_fifo:2.0 axis_data_fifo_1 ]
+  set_property -dict [list \
+    CONFIG.FIFO_DEPTH {4096} \
+    CONFIG.FIFO_MODE {2} \
+    CONFIG.HAS_TKEEP {1} \
+    CONFIG.IS_ACLK_ASYNC {0} \
+    CONFIG.TDATA_NUM_BYTES {8} \
+  ] $axis_data_fifo_1
 
+
+  # Create instance: xlslice_0, and set properties
+  set xlslice_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_0 ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {7} \
+    CONFIG.DIN_WIDTH {11} \
+  ] $xlslice_0
+
+
+  # Create instance: xlconcat_0, and set properties
+  set xlconcat_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_0 ]
+  set_property -dict [list \
+    CONFIG.IN0_WIDTH {8} \
+    CONFIG.IN1_WIDTH {3} \
+  ] $xlconcat_0
+
+
+  # Create instance: xlconstant_0, and set properties
+  set xlconstant_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 xlconstant_0 ]
+  set_property -dict [list \
+    CONFIG.CONST_VAL {0} \
+    CONFIG.CONST_WIDTH {3} \
+  ] $xlconstant_0
+
+
+  # Create interface connections
+  connect_bd_intf_net -intf_net Conn1 [get_bd_intf_pins axi_mcdma_0/M_AXI_SG] [get_bd_intf_pins M_AXI_SG_3]
+  connect_bd_intf_net -intf_net Conn2 [get_bd_intf_pins axi_mcdma_0/M_AXI_MM2S] [get_bd_intf_pins M_AXI_MM2S_3]
+  connect_bd_intf_net -intf_net Conn3 [get_bd_intf_pins axi_mcdma_0/M_AXI_S2MM] [get_bd_intf_pins M_AXI_S2MM_3]
+  connect_bd_intf_net -intf_net Conn4 [get_bd_intf_pins axi_mcdma_0/S_AXI_LITE] [get_bd_intf_pins S_AXI_LITE_3]
+  connect_bd_intf_net -intf_net axi_mcdma_0_M_AXIS_MM2S_3 [get_bd_intf_pins axi_mcdma_0/M_AXIS_MM2S] [get_bd_intf_pins axis_data_fifo_1/S_AXIS]
+  connect_bd_intf_net -intf_net axis_data_fifo_0_M_AXIS_3 [get_bd_intf_pins axis_data_fifo_0/M_AXIS] [get_bd_intf_pins axi_mcdma_0/S_AXIS_S2MM]
 
   # Create port connections
-  connect_bd_net -net bufg_gt_0_usrclk [get_bd_pins bufg_gt_0/usrclk] [get_bd_pins conct_rx_usr_clk/In0] [get_bd_pins conct_rx_usr_clk/In1]
-  connect_bd_net -net bufg_gt_1_usrclk [get_bd_pins bufg_gt_1/usrclk] [get_bd_pins conct_rx_usr_clk/In2] [get_bd_pins conct_rx_usr_clk/In3]
-  connect_bd_net -net conct_rx_usr_clk_dout [get_bd_pins conct_rx_usr_clk/dout] [get_bd_pins rx_usr_clk1_0]
-  connect_bd_net -net outclk1_1 [get_bd_pins outclk1] [get_bd_pins bufg_gt_1/outclk]
-  connect_bd_net -net outclk_1 [get_bd_pins outclk] [get_bd_pins bufg_gt_0/outclk]
+  connect_bd_net -net Net [get_bd_pins m_axis_aclk_0] [get_bd_pins axi_mcdma_0/m_axi_mm2s_aclk] [get_bd_pins axi_mcdma_0/m_axi_s2mm_aclk] [get_bd_pins axis_data_fifo_0/s_axis_aclk] [get_bd_pins axis_data_fifo_1/s_axis_aclk]
+  connect_bd_net -net axi_mcdma_3_mm2s_ch1_introut [get_bd_pins axi_mcdma_0/mm2s_ch1_introut] [get_bd_pins mm2s_ch1_introut_3]
+  connect_bd_net -net axi_mcdma_3_s2mm_ch1_introut [get_bd_pins axi_mcdma_0/s2mm_ch1_introut] [get_bd_pins s2mm_ch1_introut_3]
+  connect_bd_net -net axi_resetn_3_1 [get_bd_pins axi_resetn_3] [get_bd_pins axi_mcdma_0/axi_resetn]
+  connect_bd_net -net axis_data_fifo_7_m_axis_tdata [get_bd_pins axis_data_fifo_1/m_axis_tdata] [get_bd_pins m_axis_tdata_3]
+  connect_bd_net -net axis_data_fifo_7_m_axis_tkeep [get_bd_pins axis_data_fifo_1/m_axis_tkeep] [get_bd_pins xlconcat_0/In0]
+  connect_bd_net -net axis_data_fifo_7_m_axis_tlast [get_bd_pins axis_data_fifo_1/m_axis_tlast] [get_bd_pins tx_tlast3]
+  connect_bd_net -net axis_data_fifo_7_m_axis_tvalid [get_bd_pins axis_data_fifo_1/m_axis_tvalid] [get_bd_pins tx_tvalid3]
+  connect_bd_net -net rx_axis_tlast_3_1 [get_bd_pins rx_axis_tlast_3] [get_bd_pins axis_data_fifo_0/s_axis_tlast]
+  connect_bd_net -net rx_axis_tvalid_3_1 [get_bd_pins rx_axis_tvalid_3] [get_bd_pins axis_data_fifo_0/s_axis_tvalid]
+  connect_bd_net -net s_axi_aclk_1 [get_bd_pins s_axi_aclk] [get_bd_pins axi_mcdma_0/m_axi_sg_aclk] [get_bd_pins axi_mcdma_0/s_axi_lite_aclk]
+  connect_bd_net -net s_axis_aresetn_1 [get_bd_pins core_reset] [get_bd_pins axis_data_fifo_0/s_axis_aresetn] [get_bd_pins axis_data_fifo_1/s_axis_aresetn]
+  connect_bd_net -net s_axis_tdata_3_1 [get_bd_pins s_axis_tdata_3] [get_bd_pins axis_data_fifo_0/s_axis_tdata]
+  connect_bd_net -net s_axis_tkeep_3_1 [get_bd_pins s_axis_tkeep_3] [get_bd_pins xlslice_0/Din]
+  connect_bd_net -net tx_axis_tready_3_1 [get_bd_pins tx_axis_tready_3] [get_bd_pins axis_data_fifo_1/m_axis_tready]
+  connect_bd_net -net xlconcat_1_dout [get_bd_pins xlconcat_0/dout] [get_bd_pins tx_tkeep3]
+  connect_bd_net -net xlconstant_0_dout [get_bd_pins xlconstant_0/dout] [get_bd_pins xlconcat_0/In1]
+  connect_bd_net -net xlslice_3_Dout [get_bd_pins xlslice_0/Dout] [get_bd_pins axis_data_fifo_0/s_axis_tkeep]
 
   # Restore current instance
   current_bd_instance $oldCurInst
 }
 
-# Hierarchical cell: bufgt_gt_rxoutclk
-proc create_hier_cell_bufgt_gt_rxoutclk { parentCell nameHier } {
+# Hierarchical cell: MCDMA2
+proc create_hier_cell_MCDMA2 { parentCell nameHier } {
 
   variable script_folder
 
   if { $parentCell eq "" || $nameHier eq "" } {
-     catch {common::send_gid_msg -ssname BD::TCL -id 2092 -severity "ERROR" "create_hier_cell_bufgt_gt_rxoutclk() - Empty argument(s)!"}
+     catch {common::send_gid_msg -ssname BD::TCL -id 2092 -severity "ERROR" "create_hier_cell_MCDMA2() - Empty argument(s)!"}
+     return
+  }
+
+  # Get object for parentCell
+  set parentObj [get_bd_cells $parentCell]
+  if { $parentObj == "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2090 -severity "ERROR" "Unable to find parent cell <$parentCell>!"}
+     return
+  }
+
+  # Make sure parentObj is hier blk
+  set parentType [get_property TYPE $parentObj]
+  if { $parentType ne "hier" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2091 -severity "ERROR" "Parent <$parentObj> has TYPE = <$parentType>. Expected to be <hier>."}
+     return
+  }
+
+  # Save current instance; Restore later
+  set oldCurInst [current_bd_instance .]
+
+  # Set parent object as current
+  current_bd_instance $parentObj
+
+  # Create cell and set as current instance
+  set hier_obj [create_bd_cell -type hier $nameHier]
+  current_bd_instance $hier_obj
+
+  # Create interface pins
+  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M_AXI_SG_2
+
+  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M_AXI_MM2S_2
+
+  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M_AXI_S2MM_2
+
+  create_bd_intf_pin -mode Slave -vlnv xilinx.com:interface:aximm_rtl:1.0 S_AXI_LITE_2
+
+
+  # Create pins
+  create_bd_pin -dir I -type clk s_axi_aclk
+  create_bd_pin -dir I -type rst s_axi_aresetn
+  create_bd_pin -dir O -type intr mm2s_ch1_introut_2
+  create_bd_pin -dir O -type intr s2mm_ch1_introut_2
+  create_bd_pin -dir I -type clk m_axis_aclk_0
+  create_bd_pin -dir I rx_axis_tlast_2
+  create_bd_pin -dir I rx_axis_tvalid_2
+  create_bd_pin -dir I -from 63 -to 0 s_axis_tdata_2
+  create_bd_pin -dir I -from 10 -to 0 s_axis_tkeep_2
+  create_bd_pin -dir O -from 63 -to 0 m_axis_tdata_2
+  create_bd_pin -dir O tx_tlast2
+  create_bd_pin -dir O tx_tvalid2
+  create_bd_pin -dir I tx_axis_tready_2
+  create_bd_pin -dir I -type rst core_reset
+  create_bd_pin -dir O -from 10 -to 0 tx_tkeep2
+  create_bd_pin -dir I -type rst axi_resetn_2
+
+  # Create instance: axi_mcdma_0, and set properties
+  set axi_mcdma_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_mcdma:1.1 axi_mcdma_0 ]
+  set_property -dict [list \
+    CONFIG.c_addr_width {32} \
+    CONFIG.c_include_mm2s_dre {1} \
+    CONFIG.c_include_s2mm_dre {1} \
+    CONFIG.c_m_axi_mm2s_data_width {64} \
+    CONFIG.c_m_axi_s2mm_data_width {64} \
+    CONFIG.c_m_axis_mm2s_tdata_width {64} \
+    CONFIG.c_mm2s_burst_size {256} \
+    CONFIG.c_prmry_is_aclk_async {1} \
+    CONFIG.c_s2mm_burst_size {256} \
+    CONFIG.c_sg_include_stscntrl_strm {0} \
+    CONFIG.c_sg_length_width {14} \
+  ] $axi_mcdma_0
+
+
+  # Create instance: axis_data_fifo_0, and set properties
+  set axis_data_fifo_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_data_fifo:2.0 axis_data_fifo_0 ]
+  set_property -dict [list \
+    CONFIG.FIFO_DEPTH {8192} \
+    CONFIG.FIFO_MODE {2} \
+    CONFIG.HAS_TKEEP {1} \
+    CONFIG.IS_ACLK_ASYNC {0} \
+    CONFIG.TDATA_NUM_BYTES {8} \
+  ] $axis_data_fifo_0
+
+
+  # Create instance: xlslice_0, and set properties
+  set xlslice_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_0 ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {7} \
+    CONFIG.DIN_WIDTH {11} \
+  ] $xlslice_0
+
+
+  # Create instance: axis_data_fifo_1, and set properties
+  set axis_data_fifo_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_data_fifo:2.0 axis_data_fifo_1 ]
+  set_property -dict [list \
+    CONFIG.FIFO_DEPTH {4096} \
+    CONFIG.FIFO_MODE {2} \
+    CONFIG.HAS_TKEEP {1} \
+    CONFIG.IS_ACLK_ASYNC {0} \
+    CONFIG.TDATA_NUM_BYTES {8} \
+  ] $axis_data_fifo_1
+
+
+  # Create instance: xlconcat_0, and set properties
+  set xlconcat_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_0 ]
+  set_property -dict [list \
+    CONFIG.IN0_WIDTH {8} \
+    CONFIG.IN1_WIDTH {3} \
+  ] $xlconcat_0
+
+
+  # Create instance: xlconstant_0, and set properties
+  set xlconstant_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 xlconstant_0 ]
+  set_property -dict [list \
+    CONFIG.CONST_VAL {0} \
+    CONFIG.CONST_WIDTH {3} \
+  ] $xlconstant_0
+
+
+  # Create interface connections
+  connect_bd_intf_net -intf_net Conn3 [get_bd_intf_pins axi_mcdma_0/M_AXI_SG] [get_bd_intf_pins M_AXI_SG_2]
+  connect_bd_intf_net -intf_net Conn4 [get_bd_intf_pins axi_mcdma_0/M_AXI_MM2S] [get_bd_intf_pins M_AXI_MM2S_2]
+  connect_bd_intf_net -intf_net Conn5 [get_bd_intf_pins axi_mcdma_0/M_AXI_S2MM] [get_bd_intf_pins M_AXI_S2MM_2]
+  connect_bd_intf_net -intf_net Conn6 [get_bd_intf_pins axi_mcdma_0/S_AXI_LITE] [get_bd_intf_pins S_AXI_LITE_2]
+  connect_bd_intf_net -intf_net axi_mcdma_2_M_AXIS_MM2S [get_bd_intf_pins axi_mcdma_0/M_AXIS_MM2S] [get_bd_intf_pins axis_data_fifo_1/S_AXIS]
+  connect_bd_intf_net -intf_net axis_data_fifo_4_M_AXIS [get_bd_intf_pins axi_mcdma_0/S_AXIS_S2MM] [get_bd_intf_pins axis_data_fifo_0/M_AXIS]
+
+  # Create port connections
+  connect_bd_net -net Net [get_bd_pins m_axis_aclk_0] [get_bd_pins axi_mcdma_0/m_axi_mm2s_aclk] [get_bd_pins axi_mcdma_0/m_axi_s2mm_aclk] [get_bd_pins axis_data_fifo_0/s_axis_aclk] [get_bd_pins axis_data_fifo_1/s_axis_aclk]
+  connect_bd_net -net axi_mcdma_2_mm2s_ch1_introut [get_bd_pins axi_mcdma_0/mm2s_ch1_introut] [get_bd_pins mm2s_ch1_introut_2]
+  connect_bd_net -net axi_mcdma_2_s2mm_ch1_introut [get_bd_pins axi_mcdma_0/s2mm_ch1_introut] [get_bd_pins s2mm_ch1_introut_2]
+  connect_bd_net -net axi_resetn_2_1 [get_bd_pins axi_resetn_2] [get_bd_pins axi_mcdma_0/axi_resetn]
+  connect_bd_net -net axis_data_fifo_5_m_axis_tdata [get_bd_pins axis_data_fifo_1/m_axis_tdata] [get_bd_pins m_axis_tdata_2]
+  connect_bd_net -net axis_data_fifo_5_m_axis_tkeep [get_bd_pins axis_data_fifo_1/m_axis_tkeep] [get_bd_pins xlconcat_0/In0]
+  connect_bd_net -net axis_data_fifo_5_m_axis_tlast [get_bd_pins axis_data_fifo_1/m_axis_tlast] [get_bd_pins tx_tlast2]
+  connect_bd_net -net axis_data_fifo_5_m_axis_tvalid [get_bd_pins axis_data_fifo_1/m_axis_tvalid] [get_bd_pins tx_tvalid2]
+  connect_bd_net -net rx_axis_tlast_2_1 [get_bd_pins rx_axis_tlast_2] [get_bd_pins axis_data_fifo_0/s_axis_tlast]
+  connect_bd_net -net rx_axis_tvalid_2_1 [get_bd_pins rx_axis_tvalid_2] [get_bd_pins axis_data_fifo_0/s_axis_tvalid]
+  connect_bd_net -net s_axi_aclk_1 [get_bd_pins s_axi_aclk] [get_bd_pins axi_mcdma_0/m_axi_sg_aclk] [get_bd_pins axi_mcdma_0/s_axi_lite_aclk]
+  connect_bd_net -net s_axis_aresetn_1 [get_bd_pins core_reset] [get_bd_pins axis_data_fifo_0/s_axis_aresetn] [get_bd_pins axis_data_fifo_1/s_axis_aresetn]
+  connect_bd_net -net s_axis_tdata_2_1 [get_bd_pins s_axis_tdata_2] [get_bd_pins axis_data_fifo_0/s_axis_tdata]
+  connect_bd_net -net s_axis_tkeep_2_1 [get_bd_pins s_axis_tkeep_2] [get_bd_pins xlslice_0/Din]
+  connect_bd_net -net tx_axis_tready_2_1 [get_bd_pins tx_axis_tready_2] [get_bd_pins axis_data_fifo_1/m_axis_tready]
+  connect_bd_net -net xlconcat_2_dout [get_bd_pins xlconcat_0/dout] [get_bd_pins tx_tkeep2]
+  connect_bd_net -net xlconstant_0_dout [get_bd_pins xlconstant_0/dout] [get_bd_pins xlconcat_0/In1]
+  connect_bd_net -net xlslice_2_Dout [get_bd_pins xlslice_0/Dout] [get_bd_pins axis_data_fifo_0/s_axis_tkeep]
+
+  # Restore current instance
+  current_bd_instance $oldCurInst
+}
+
+# Hierarchical cell: MCDMA1
+proc create_hier_cell_MCDMA1 { parentCell nameHier } {
+
+  variable script_folder
+
+  if { $parentCell eq "" || $nameHier eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2092 -severity "ERROR" "create_hier_cell_MCDMA1() - Empty argument(s)!"}
+     return
+  }
+
+  # Get object for parentCell
+  set parentObj [get_bd_cells $parentCell]
+  if { $parentObj == "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2090 -severity "ERROR" "Unable to find parent cell <$parentCell>!"}
+     return
+  }
+
+  # Make sure parentObj is hier blk
+  set parentType [get_property TYPE $parentObj]
+  if { $parentType ne "hier" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2091 -severity "ERROR" "Parent <$parentObj> has TYPE = <$parentType>. Expected to be <hier>."}
+     return
+  }
+
+  # Save current instance; Restore later
+  set oldCurInst [current_bd_instance .]
+
+  # Set parent object as current
+  current_bd_instance $parentObj
+
+  # Create cell and set as current instance
+  set hier_obj [create_bd_cell -type hier $nameHier]
+  current_bd_instance $hier_obj
+
+  # Create interface pins
+  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M_AXI_S2MM_1
+
+  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M_AXI_MM2S_1
+
+  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M_AXI_SG_1
+
+  create_bd_intf_pin -mode Slave -vlnv xilinx.com:interface:aximm_rtl:1.0 S_AXI_LITE_1
+
+
+  # Create pins
+  create_bd_pin -dir I -type clk s_axi_aclk
+  create_bd_pin -dir I -type rst s_axi_aresetn
+  create_bd_pin -dir O -type intr mm2s_ch1_introut_1
+  create_bd_pin -dir O -type intr s2mm_ch1_introut_1
+  create_bd_pin -dir I -type clk m_axis_aclk_0
+  create_bd_pin -dir I rx_axis_tlast_1
+  create_bd_pin -dir I rx_axis_tvalid_1
+  create_bd_pin -dir I -from 63 -to 0 s_axis_tdata_1
+  create_bd_pin -dir I -from 10 -to 0 s_axis_tkeep_1
+  create_bd_pin -dir O -from 63 -to 0 m_axis_tdata_1
+  create_bd_pin -dir O tx_tlast1
+  create_bd_pin -dir O tx_tvalid1
+  create_bd_pin -dir I tx_axis_tready_1
+  create_bd_pin -dir I -type rst core_reset
+  create_bd_pin -dir O -from 10 -to 0 tx_tkeep1
+  create_bd_pin -dir I -type rst axi_resetn_1
+
+  # Create instance: axi_mcdma_0, and set properties
+  set axi_mcdma_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_mcdma:1.1 axi_mcdma_0 ]
+  set_property -dict [list \
+    CONFIG.c_addr_width {32} \
+    CONFIG.c_include_mm2s_dre {1} \
+    CONFIG.c_include_s2mm_dre {1} \
+    CONFIG.c_m_axi_mm2s_data_width {64} \
+    CONFIG.c_m_axi_s2mm_data_width {64} \
+    CONFIG.c_m_axis_mm2s_tdata_width {64} \
+    CONFIG.c_mm2s_burst_size {256} \
+    CONFIG.c_prmry_is_aclk_async {1} \
+    CONFIG.c_s2mm_burst_size {256} \
+    CONFIG.c_sg_include_stscntrl_strm {0} \
+    CONFIG.c_sg_length_width {14} \
+  ] $axi_mcdma_0
+
+
+  # Create instance: axis_data_fifo_0, and set properties
+  set axis_data_fifo_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_data_fifo:2.0 axis_data_fifo_0 ]
+  set_property -dict [list \
+    CONFIG.FIFO_DEPTH {8192} \
+    CONFIG.FIFO_MODE {2} \
+    CONFIG.HAS_TKEEP {1} \
+    CONFIG.IS_ACLK_ASYNC {0} \
+    CONFIG.TDATA_NUM_BYTES {8} \
+  ] $axis_data_fifo_0
+
+
+  # Create instance: xlslice_0, and set properties
+  set xlslice_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_0 ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {7} \
+    CONFIG.DIN_WIDTH {11} \
+  ] $xlslice_0
+
+
+  # Create instance: axis_data_fifo_1, and set properties
+  set axis_data_fifo_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_data_fifo:2.0 axis_data_fifo_1 ]
+  set_property -dict [list \
+    CONFIG.FIFO_DEPTH {4096} \
+    CONFIG.FIFO_MODE {2} \
+    CONFIG.HAS_TKEEP {1} \
+    CONFIG.IS_ACLK_ASYNC {0} \
+    CONFIG.TDATA_NUM_BYTES {8} \
+  ] $axis_data_fifo_1
+
+
+  # Create instance: xlconcat_0, and set properties
+  set xlconcat_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_0 ]
+  set_property -dict [list \
+    CONFIG.IN0_WIDTH {8} \
+    CONFIG.IN1_WIDTH {3} \
+  ] $xlconcat_0
+
+
+  # Create instance: xlconstant_0, and set properties
+  set xlconstant_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 xlconstant_0 ]
+  set_property -dict [list \
+    CONFIG.CONST_VAL {0} \
+    CONFIG.CONST_WIDTH {3} \
+  ] $xlconstant_0
+
+
+  # Create interface connections
+  connect_bd_intf_net -intf_net Conn1 [get_bd_intf_pins axi_mcdma_0/M_AXI_S2MM] [get_bd_intf_pins M_AXI_S2MM_1]
+  connect_bd_intf_net -intf_net Conn2 [get_bd_intf_pins axi_mcdma_0/M_AXI_MM2S] [get_bd_intf_pins M_AXI_MM2S_1]
+  connect_bd_intf_net -intf_net Conn3 [get_bd_intf_pins axi_mcdma_0/M_AXI_SG] [get_bd_intf_pins M_AXI_SG_1]
+  connect_bd_intf_net -intf_net Conn6 [get_bd_intf_pins axi_mcdma_0/S_AXI_LITE] [get_bd_intf_pins S_AXI_LITE_1]
+  connect_bd_intf_net -intf_net axi_mcdma_1_M_AXIS_MM2S [get_bd_intf_pins axi_mcdma_0/M_AXIS_MM2S] [get_bd_intf_pins axis_data_fifo_1/S_AXIS]
+  connect_bd_intf_net -intf_net axis_data_fifo_2_M_AXIS [get_bd_intf_pins axi_mcdma_0/S_AXIS_S2MM] [get_bd_intf_pins axis_data_fifo_0/M_AXIS]
+
+  # Create port connections
+  connect_bd_net -net Net [get_bd_pins m_axis_aclk_0] [get_bd_pins axi_mcdma_0/m_axi_mm2s_aclk] [get_bd_pins axi_mcdma_0/m_axi_s2mm_aclk] [get_bd_pins axis_data_fifo_0/s_axis_aclk] [get_bd_pins axis_data_fifo_1/s_axis_aclk]
+  connect_bd_net -net axi_mcdma_1_mm2s_ch1_introut [get_bd_pins axi_mcdma_0/mm2s_ch1_introut] [get_bd_pins mm2s_ch1_introut_1]
+  connect_bd_net -net axi_mcdma_1_s2mm_ch1_introut [get_bd_pins axi_mcdma_0/s2mm_ch1_introut] [get_bd_pins s2mm_ch1_introut_1]
+  connect_bd_net -net axi_resetn_1_1 [get_bd_pins axi_resetn_1] [get_bd_pins axi_mcdma_0/axi_resetn]
+  connect_bd_net -net axis_data_fifo_3_m_axis_tdata [get_bd_pins axis_data_fifo_1/m_axis_tdata] [get_bd_pins m_axis_tdata_1]
+  connect_bd_net -net axis_data_fifo_3_m_axis_tkeep [get_bd_pins axis_data_fifo_1/m_axis_tkeep] [get_bd_pins xlconcat_0/In0]
+  connect_bd_net -net axis_data_fifo_3_m_axis_tlast [get_bd_pins axis_data_fifo_1/m_axis_tlast] [get_bd_pins tx_tlast1]
+  connect_bd_net -net axis_data_fifo_3_m_axis_tvalid [get_bd_pins axis_data_fifo_1/m_axis_tvalid] [get_bd_pins tx_tvalid1]
+  connect_bd_net -net rx_axis_tlast_1_1 [get_bd_pins rx_axis_tlast_1] [get_bd_pins axis_data_fifo_0/s_axis_tlast]
+  connect_bd_net -net rx_axis_tvalid_1_1 [get_bd_pins rx_axis_tvalid_1] [get_bd_pins axis_data_fifo_0/s_axis_tvalid]
+  connect_bd_net -net s_axi_aclk_1 [get_bd_pins s_axi_aclk] [get_bd_pins axi_mcdma_0/m_axi_sg_aclk] [get_bd_pins axi_mcdma_0/s_axi_lite_aclk]
+  connect_bd_net -net s_axis_aresetn_1 [get_bd_pins core_reset] [get_bd_pins axis_data_fifo_0/s_axis_aresetn] [get_bd_pins axis_data_fifo_1/s_axis_aresetn]
+  connect_bd_net -net s_axis_tdata_1_1 [get_bd_pins s_axis_tdata_1] [get_bd_pins axis_data_fifo_0/s_axis_tdata]
+  connect_bd_net -net s_axis_tkeep_1_1 [get_bd_pins s_axis_tkeep_1] [get_bd_pins xlslice_0/Din]
+  connect_bd_net -net tx_axis_tready_1_1 [get_bd_pins tx_axis_tready_1] [get_bd_pins axis_data_fifo_1/m_axis_tready]
+  connect_bd_net -net xlconcat_0_dout [get_bd_pins xlconcat_0/dout] [get_bd_pins tx_tkeep1]
+  connect_bd_net -net xlconstant_0_dout [get_bd_pins xlconstant_0/dout] [get_bd_pins xlconcat_0/In1]
+  connect_bd_net -net xlslice_1_Dout [get_bd_pins xlslice_0/Dout] [get_bd_pins axis_data_fifo_0/s_axis_tkeep]
+
+  # Restore current instance
+  current_bd_instance $oldCurInst
+}
+
+# Hierarchical cell: MCDMA0
+proc create_hier_cell_MCDMA0 { parentCell nameHier } {
+
+  variable script_folder
+
+  if { $parentCell eq "" || $nameHier eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2092 -severity "ERROR" "create_hier_cell_MCDMA0() - Empty argument(s)!"}
+     return
+  }
+
+  # Get object for parentCell
+  set parentObj [get_bd_cells $parentCell]
+  if { $parentObj == "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2090 -severity "ERROR" "Unable to find parent cell <$parentCell>!"}
+     return
+  }
+
+  # Make sure parentObj is hier blk
+  set parentType [get_property TYPE $parentObj]
+  if { $parentType ne "hier" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2091 -severity "ERROR" "Parent <$parentObj> has TYPE = <$parentType>. Expected to be <hier>."}
+     return
+  }
+
+  # Save current instance; Restore later
+  set oldCurInst [current_bd_instance .]
+
+  # Set parent object as current
+  current_bd_instance $parentObj
+
+  # Create cell and set as current instance
+  set hier_obj [create_bd_cell -type hier $nameHier]
+  current_bd_instance $hier_obj
+
+  # Create interface pins
+  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M_AXI_SG_0
+
+  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M_AXI_MM2S_0
+
+  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M_AXI_S2MM_0
+
+  create_bd_intf_pin -mode Slave -vlnv xilinx.com:interface:aximm_rtl:1.0 S_AXI_LITE_0
+
+
+  # Create pins
+  create_bd_pin -dir I -type clk s_axi_aclk
+  create_bd_pin -dir I -type rst s_axi_aresetn
+  create_bd_pin -dir O -type intr mm2s_ch1_introut_0
+  create_bd_pin -dir O -type intr s2mm_ch1_introut_0
+  create_bd_pin -dir I -type clk m_axis_aclk_0
+  create_bd_pin -dir I rx_tlast
+  create_bd_pin -dir I rx_tvalid
+  create_bd_pin -dir I -from 63 -to 0 s_axis_tdata_0
+  create_bd_pin -dir I -from 10 -to 0 s_axis_tkeep_0
+  create_bd_pin -dir O -from 63 -to 0 m_axis_tdata_0
+  create_bd_pin -dir O tx_tlast
+  create_bd_pin -dir O tx_tvalid
+  create_bd_pin -dir I tx_axis_tready_0
+  create_bd_pin -dir I -type rst core_reset
+  create_bd_pin -dir O -from 10 -to 0 tx_tkeep0
+  create_bd_pin -dir I -type rst axi_resetn_0
+
+  # Create instance: axi_mcdma_0, and set properties
+  set axi_mcdma_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_mcdma:1.1 axi_mcdma_0 ]
+  set_property -dict [list \
+    CONFIG.c_addr_width {32} \
+    CONFIG.c_include_mm2s_dre {1} \
+    CONFIG.c_include_s2mm_dre {1} \
+    CONFIG.c_m_axi_mm2s_data_width {64} \
+    CONFIG.c_m_axi_s2mm_data_width {64} \
+    CONFIG.c_m_axis_mm2s_tdata_width {64} \
+    CONFIG.c_mm2s_burst_size {256} \
+    CONFIG.c_prmry_is_aclk_async {1} \
+    CONFIG.c_s2mm_burst_size {256} \
+    CONFIG.c_sg_include_stscntrl_strm {0} \
+    CONFIG.c_sg_length_width {14} \
+  ] $axi_mcdma_0
+
+
+  # Create instance: axis_data_fifo_0, and set properties
+  set axis_data_fifo_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_data_fifo:2.0 axis_data_fifo_0 ]
+  set_property -dict [list \
+    CONFIG.FIFO_DEPTH {8192} \
+    CONFIG.FIFO_MODE {2} \
+    CONFIG.HAS_TKEEP {1} \
+    CONFIG.IS_ACLK_ASYNC {0} \
+    CONFIG.TDATA_NUM_BYTES {8} \
+  ] $axis_data_fifo_0
+
+
+  # Create instance: xlslice_0, and set properties
+  set xlslice_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_0 ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {7} \
+    CONFIG.DIN_WIDTH {11} \
+  ] $xlslice_0
+
+
+  # Create instance: axis_data_fifo_1, and set properties
+  set axis_data_fifo_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_data_fifo:2.0 axis_data_fifo_1 ]
+  set_property -dict [list \
+    CONFIG.FIFO_DEPTH {4096} \
+    CONFIG.FIFO_MODE {2} \
+    CONFIG.HAS_TKEEP {1} \
+    CONFIG.IS_ACLK_ASYNC {0} \
+    CONFIG.TDATA_NUM_BYTES {8} \
+  ] $axis_data_fifo_1
+
+
+  # Create instance: xlconcat_0, and set properties
+  set xlconcat_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_0 ]
+  set_property -dict [list \
+    CONFIG.IN0_WIDTH {8} \
+    CONFIG.IN1_WIDTH {3} \
+  ] $xlconcat_0
+
+
+  # Create instance: xlconstant_0, and set properties
+  set xlconstant_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 xlconstant_0 ]
+  set_property -dict [list \
+    CONFIG.CONST_VAL {0} \
+    CONFIG.CONST_WIDTH {3} \
+  ] $xlconstant_0
+
+
+  # Create interface connections
+  connect_bd_intf_net -intf_net Conn1 [get_bd_intf_pins axi_mcdma_0/M_AXI_SG] [get_bd_intf_pins M_AXI_SG_0]
+  connect_bd_intf_net -intf_net Conn2 [get_bd_intf_pins axi_mcdma_0/M_AXI_MM2S] [get_bd_intf_pins M_AXI_MM2S_0]
+  connect_bd_intf_net -intf_net Conn3 [get_bd_intf_pins axi_mcdma_0/M_AXI_S2MM] [get_bd_intf_pins M_AXI_S2MM_0]
+  connect_bd_intf_net -intf_net Conn4 [get_bd_intf_pins axi_mcdma_0/S_AXI_LITE] [get_bd_intf_pins S_AXI_LITE_0]
+  connect_bd_intf_net -intf_net axi_mcdma_0_M_AXIS_MM2S [get_bd_intf_pins axi_mcdma_0/M_AXIS_MM2S] [get_bd_intf_pins axis_data_fifo_1/S_AXIS]
+  connect_bd_intf_net -intf_net axis_data_fifo_0_M_AXIS [get_bd_intf_pins axi_mcdma_0/S_AXIS_S2MM] [get_bd_intf_pins axis_data_fifo_0/M_AXIS]
+
+  # Create port connections
+  connect_bd_net -net Net [get_bd_pins m_axis_aclk_0] [get_bd_pins axi_mcdma_0/m_axi_mm2s_aclk] [get_bd_pins axi_mcdma_0/m_axi_s2mm_aclk] [get_bd_pins axis_data_fifo_0/s_axis_aclk] [get_bd_pins axis_data_fifo_1/s_axis_aclk]
+  connect_bd_net -net axi_mcdma_0_mm2s_ch1_introut [get_bd_pins axi_mcdma_0/mm2s_ch1_introut] [get_bd_pins mm2s_ch1_introut_0]
+  connect_bd_net -net axi_mcdma_0_s2mm_ch1_introut [get_bd_pins axi_mcdma_0/s2mm_ch1_introut] [get_bd_pins s2mm_ch1_introut_0]
+  connect_bd_net -net axi_resetn_0_1 [get_bd_pins axi_resetn_0] [get_bd_pins axi_mcdma_0/axi_resetn]
+  connect_bd_net -net axis_data_fifo_1_m_axis_tdata [get_bd_pins axis_data_fifo_1/m_axis_tdata] [get_bd_pins m_axis_tdata_0]
+  connect_bd_net -net axis_data_fifo_1_m_axis_tkeep [get_bd_pins axis_data_fifo_1/m_axis_tkeep] [get_bd_pins xlconcat_0/In0]
+  connect_bd_net -net axis_data_fifo_1_m_axis_tlast [get_bd_pins axis_data_fifo_1/m_axis_tlast] [get_bd_pins tx_tlast]
+  connect_bd_net -net axis_data_fifo_1_m_axis_tvalid [get_bd_pins axis_data_fifo_1/m_axis_tvalid] [get_bd_pins tx_tvalid]
+  connect_bd_net -net m_axis_tready_1_1 [get_bd_pins tx_axis_tready_0] [get_bd_pins axis_data_fifo_1/m_axis_tready]
+  connect_bd_net -net rx_tlast_1 [get_bd_pins rx_tlast] [get_bd_pins axis_data_fifo_0/s_axis_tlast]
+  connect_bd_net -net rx_tvalid_1 [get_bd_pins rx_tvalid] [get_bd_pins axis_data_fifo_0/s_axis_tvalid]
+  connect_bd_net -net s_axi_aclk_1 [get_bd_pins s_axi_aclk] [get_bd_pins axi_mcdma_0/m_axi_sg_aclk] [get_bd_pins axi_mcdma_0/s_axi_lite_aclk]
+  connect_bd_net -net s_axis_aresetn_1 [get_bd_pins core_reset] [get_bd_pins axis_data_fifo_0/s_axis_aresetn] [get_bd_pins axis_data_fifo_1/s_axis_aresetn]
+  connect_bd_net -net s_axis_tdata_0_1 [get_bd_pins s_axis_tdata_0] [get_bd_pins axis_data_fifo_0/s_axis_tdata]
+  connect_bd_net -net s_axis_tkeep_0_1 [get_bd_pins s_axis_tkeep_0] [get_bd_pins xlslice_0/Din]
+  connect_bd_net -net xlconcat_3_dout [get_bd_pins xlconcat_0/dout] [get_bd_pins tx_tkeep0]
+  connect_bd_net -net xlconstant_0_dout [get_bd_pins xlconstant_0/dout] [get_bd_pins xlconcat_0/In1]
+  connect_bd_net -net xlslice_0_Dout [get_bd_pins xlslice_0/Dout] [get_bd_pins axis_data_fifo_0/s_axis_tkeep]
+
+  # Restore current instance
+  current_bd_instance $oldCurInst
+}
+
+# Hierarchical cell: usr_rdy_reset
+proc create_hier_cell_usr_rdy_reset { parentCell nameHier } {
+
+  variable script_folder
+
+  if { $parentCell eq "" || $nameHier eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2092 -severity "ERROR" "create_hier_cell_usr_rdy_reset() - Empty argument(s)!"}
      return
   }
 
@@ -280,47 +841,220 @@ proc create_hier_cell_bufgt_gt_rxoutclk { parentCell nameHier } {
   # Create interface pins
 
   # Create pins
-  create_bd_pin -dir O -from 3 -to 0 rx_usr_clk1_0
-  create_bd_pin -dir I -type clk outclk
-  create_bd_pin -dir I -type clk outclk1
-  create_bd_pin -dir I -type clk outclk2
-  create_bd_pin -dir I -type clk outclk3
+  create_bd_pin -dir I -from 0 -to 0 mst_rx_dp_reset_in_3
+  create_bd_pin -dir I -from 0 -to 0 mst_rx_dp_reset_in_1
+  create_bd_pin -dir I -from 0 -to 0 mst_rx_dp_reset_in_2
+  create_bd_pin -dir I -from 0 -to 0 mst_rx_dp_reset_in_0
+  create_bd_pin -dir O -from 3 -to 0 rx_mst_dp_reset
+  create_bd_pin -dir I -from 0 -to 0 mst_rx_reset_in_3
+  create_bd_pin -dir I -from 0 -to 0 mst_rx_reset_in_1
+  create_bd_pin -dir I -from 0 -to 0 mst_rx_reset_in_2
+  create_bd_pin -dir I -from 0 -to 0 mst_rx_reset_in_0
+  create_bd_pin -dir O -from 3 -to 0 rx_mst_reset_out
+  create_bd_pin -dir I -from 0 -to 0 mst_tx_dp_reset_in_3
+  create_bd_pin -dir I -from 0 -to 0 mst_tx_dp_reset_in_1
+  create_bd_pin -dir I -from 0 -to 0 mst_tx_dp_reset_in_2
+  create_bd_pin -dir I -from 0 -to 0 mst_tx_dp_reset_in_0
+  create_bd_pin -dir O -from 3 -to 0 tx_mst_dp_reset
+  create_bd_pin -dir I -from 0 -to 0 mst_tx_reset_in_3
+  create_bd_pin -dir I -from 0 -to 0 mst_tx_reset_in_1
+  create_bd_pin -dir I -from 0 -to 0 mst_tx_reset_in_2
+  create_bd_pin -dir I -from 0 -to 0 mst_tx_reset_in_0
+  create_bd_pin -dir O -from 3 -to 0 tx_mst_reset_out
+  create_bd_pin -dir I -from 0 -to 0 txuserrdy_in_3
+  create_bd_pin -dir O -from 3 -to 0 rx_userrdy_out
+  create_bd_pin -dir I -from 0 -to 0 txuserrdy_in_1
+  create_bd_pin -dir I -from 0 -to 0 txuserrdy_in_2
+  create_bd_pin -dir I -from 0 -to 0 txuserrdy_in_0
+  create_bd_pin -dir I -from 0 -to 0 rxuserrdy_in_3
+  create_bd_pin -dir I -from 0 -to 0 rxuserrdy_in_1
+  create_bd_pin -dir I -from 0 -to 0 rxuserrdy_in_2
+  create_bd_pin -dir I -from 0 -to 0 rxuserrdy_in_0
+  create_bd_pin -dir O -from 3 -to 0 tx_userrdy_out_0
 
-  # Create instance: conct_rx_usr_clk, and set properties
-  set conct_rx_usr_clk [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 conct_rx_usr_clk ]
-  set_property CONFIG.NUM_PORTS {4} $conct_rx_usr_clk
+  # Create instance: xlconcat_4, and set properties
+  set xlconcat_4 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_4 ]
+  set_property CONFIG.NUM_PORTS {4} $xlconcat_4
 
 
-  # Create instance: bufg_gt_0, and set properties
-  set bufg_gt_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt:1.0 bufg_gt_0 ]
-  set_property CONFIG.FREQ_HZ {644531000.0} $bufg_gt_0
+  # Create instance: xlconcat_0, and set properties
+  set xlconcat_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_0 ]
+  set_property CONFIG.NUM_PORTS {4} $xlconcat_0
 
 
-  # Create instance: bufg_gt_1, and set properties
-  set bufg_gt_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt:1.0 bufg_gt_1 ]
-  set_property CONFIG.FREQ_HZ {644531000.0} $bufg_gt_1
+  # Create instance: xlconcat_3, and set properties
+  set xlconcat_3 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_3 ]
+  set_property CONFIG.NUM_PORTS {4} $xlconcat_3
 
 
-  # Create instance: bufg_gt_2, and set properties
-  set bufg_gt_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt:1.0 bufg_gt_2 ]
-  set_property CONFIG.FREQ_HZ {644531000.0} $bufg_gt_2
+  # Create instance: xlconcat_2, and set properties
+  set xlconcat_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_2 ]
+  set_property CONFIG.NUM_PORTS {4} $xlconcat_2
 
 
-  # Create instance: bufg_gt_3, and set properties
-  set bufg_gt_3 [ create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt:1.0 bufg_gt_3 ]
-  set_property CONFIG.FREQ_HZ {644531000.0} $bufg_gt_3
+  # Create instance: xlconcat_5, and set properties
+  set xlconcat_5 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_5 ]
+  set_property CONFIG.NUM_PORTS {4} $xlconcat_5
+
+
+  # Create instance: xlconcat_1, and set properties
+  set xlconcat_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_1 ]
+  set_property CONFIG.NUM_PORTS {4} $xlconcat_1
 
 
   # Create port connections
-  connect_bd_net -net bufg_gt_0_usrclk [get_bd_pins bufg_gt_0/usrclk] [get_bd_pins conct_rx_usr_clk/In0]
-  connect_bd_net -net bufg_gt_1_usrclk [get_bd_pins bufg_gt_1/usrclk] [get_bd_pins conct_rx_usr_clk/In1]
-  connect_bd_net -net bufg_gt_2_usrclk [get_bd_pins bufg_gt_2/usrclk] [get_bd_pins conct_rx_usr_clk/In2]
-  connect_bd_net -net bufg_gt_3_usrclk [get_bd_pins bufg_gt_3/usrclk] [get_bd_pins conct_rx_usr_clk/In3]
-  connect_bd_net -net conct_rx_usr_clk_dout [get_bd_pins conct_rx_usr_clk/dout] [get_bd_pins rx_usr_clk1_0]
-  connect_bd_net -net outclk1_1 [get_bd_pins outclk1] [get_bd_pins bufg_gt_1/outclk]
-  connect_bd_net -net outclk2_1 [get_bd_pins outclk2] [get_bd_pins bufg_gt_2/outclk]
-  connect_bd_net -net outclk3_1 [get_bd_pins outclk3] [get_bd_pins bufg_gt_3/outclk]
-  connect_bd_net -net outclk_1 [get_bd_pins outclk] [get_bd_pins bufg_gt_0/outclk]
+  connect_bd_net -net In0_1 [get_bd_pins mst_rx_dp_reset_in_0] [get_bd_pins xlconcat_4/In0]
+  connect_bd_net -net In0_2 [get_bd_pins rxuserrdy_in_0] [get_bd_pins xlconcat_1/In0]
+  connect_bd_net -net In10_1 [get_bd_pins mst_tx_dp_reset_in_2] [get_bd_pins xlconcat_3/In2]
+  connect_bd_net -net In11_1 [get_bd_pins mst_tx_dp_reset_in_0] [get_bd_pins xlconcat_3/In0]
+  connect_bd_net -net In12_1 [get_bd_pins mst_tx_reset_in_3] [get_bd_pins xlconcat_2/In3]
+  connect_bd_net -net In13_1 [get_bd_pins mst_tx_reset_in_1] [get_bd_pins xlconcat_2/In1]
+  connect_bd_net -net In14_1 [get_bd_pins mst_tx_reset_in_2] [get_bd_pins xlconcat_2/In2]
+  connect_bd_net -net In15_1 [get_bd_pins mst_tx_reset_in_0] [get_bd_pins xlconcat_2/In0]
+  connect_bd_net -net In16_1 [get_bd_pins txuserrdy_in_3] [get_bd_pins xlconcat_5/In3]
+  connect_bd_net -net In17_1 [get_bd_pins txuserrdy_in_1] [get_bd_pins xlconcat_5/In1]
+  connect_bd_net -net In18_1 [get_bd_pins txuserrdy_in_2] [get_bd_pins xlconcat_5/In2]
+  connect_bd_net -net In19_1 [get_bd_pins txuserrdy_in_0] [get_bd_pins xlconcat_5/In0]
+  connect_bd_net -net In1_1 [get_bd_pins mst_rx_dp_reset_in_1] [get_bd_pins xlconcat_4/In1]
+  connect_bd_net -net In1_2 [get_bd_pins rxuserrdy_in_1] [get_bd_pins xlconcat_1/In1]
+  connect_bd_net -net In2_1 [get_bd_pins mst_rx_dp_reset_in_2] [get_bd_pins xlconcat_4/In2]
+  connect_bd_net -net In2_2 [get_bd_pins rxuserrdy_in_2] [get_bd_pins xlconcat_1/In2]
+  connect_bd_net -net In3_1 [get_bd_pins mst_rx_dp_reset_in_3] [get_bd_pins xlconcat_4/In3]
+  connect_bd_net -net In3_2 [get_bd_pins rxuserrdy_in_3] [get_bd_pins xlconcat_1/In3]
+  connect_bd_net -net In4_1 [get_bd_pins mst_rx_reset_in_3] [get_bd_pins xlconcat_0/In3]
+  connect_bd_net -net In5_1 [get_bd_pins mst_rx_reset_in_1] [get_bd_pins xlconcat_0/In1]
+  connect_bd_net -net In6_1 [get_bd_pins mst_rx_reset_in_2] [get_bd_pins xlconcat_0/In2]
+  connect_bd_net -net In7_1 [get_bd_pins mst_rx_reset_in_0] [get_bd_pins xlconcat_0/In0]
+  connect_bd_net -net In8_1 [get_bd_pins mst_tx_dp_reset_in_3] [get_bd_pins xlconcat_3/In3]
+  connect_bd_net -net In9_1 [get_bd_pins mst_tx_dp_reset_in_1] [get_bd_pins xlconcat_3/In1]
+  connect_bd_net -net xlconcat_0_dout [get_bd_pins xlconcat_0/dout] [get_bd_pins rx_mst_reset_out]
+  connect_bd_net -net xlconcat_1_dout [get_bd_pins xlconcat_1/dout] [get_bd_pins tx_userrdy_out_0]
+  connect_bd_net -net xlconcat_2_dout [get_bd_pins xlconcat_2/dout] [get_bd_pins tx_mst_reset_out]
+  connect_bd_net -net xlconcat_3_dout [get_bd_pins xlconcat_3/dout] [get_bd_pins tx_mst_dp_reset]
+  connect_bd_net -net xlconcat_4_dout [get_bd_pins xlconcat_4/dout] [get_bd_pins rx_mst_dp_reset]
+  connect_bd_net -net xlconcat_5_dout [get_bd_pins xlconcat_5/dout] [get_bd_pins rx_userrdy_out]
+
+  # Restore current instance
+  current_bd_instance $oldCurInst
+}
+
+# Hierarchical cell: clk_rst_wrapper
+proc create_hier_cell_clk_rst_wrapper { parentCell nameHier } {
+
+  variable script_folder
+
+  if { $parentCell eq "" || $nameHier eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2092 -severity "ERROR" "create_hier_cell_clk_rst_wrapper() - Empty argument(s)!"}
+     return
+  }
+
+  # Get object for parentCell
+  set parentObj [get_bd_cells $parentCell]
+  if { $parentObj == "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2090 -severity "ERROR" "Unable to find parent cell <$parentCell>!"}
+     return
+  }
+
+  # Make sure parentObj is hier blk
+  set parentType [get_property TYPE $parentObj]
+  if { $parentType ne "hier" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2091 -severity "ERROR" "Parent <$parentObj> has TYPE = <$parentType>. Expected to be <hier>."}
+     return
+  }
+
+  # Save current instance; Restore later
+  set oldCurInst [current_bd_instance .]
+
+  # Set parent object as current
+  current_bd_instance $parentObj
+
+  # Create cell and set as current instance
+  set hier_obj [create_bd_cell -type hier $nameHier]
+  current_bd_instance $hier_obj
+
+  # Create interface pins
+
+  # Create pins
+  create_bd_pin -dir I -from 3 -to 0 Op1
+  create_bd_pin -dir O -from 3 -to 0 tx_reset
+  create_bd_pin -dir O -from 3 -to 0 rx_reset
+  create_bd_pin -dir I -from 3 -to 0 Op2
+  create_bd_pin -dir O -from 3 -to 0 tx_rx_axi_clk
+  create_bd_pin -dir I -type rst ext_reset_in
+  create_bd_pin -dir I -type clk slowest_sync_clk
+  create_bd_pin -dir O -from 0 -to 0 -type rst interconnect_aresetn
+  create_bd_pin -dir O -from 0 -to 3 -type rst bus_struct_reset
+  create_bd_pin -dir O -from 0 -to 0 -type rst peripheral_aresetn
+  create_bd_pin -dir O -type clk clk_out1
+  create_bd_pin -dir I -from 3 -to 0 -type clk clk_in1
+  create_bd_pin -dir O -from 0 -to 0 -type rst peripheral_aresetn2
+
+  # Create instance: util_vector_logic_0, and set properties
+  set util_vector_logic_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_vector_logic:2.0 util_vector_logic_0 ]
+  set_property -dict [list \
+    CONFIG.C_OPERATION {not} \
+    CONFIG.C_SIZE {4} \
+  ] $util_vector_logic_0
+
+
+  # Create instance: util_vector_logic_1, and set properties
+  set util_vector_logic_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_vector_logic:2.0 util_vector_logic_1 ]
+  set_property -dict [list \
+    CONFIG.C_OPERATION {not} \
+    CONFIG.C_SIZE {4} \
+  ] $util_vector_logic_1
+
+
+  # Create instance: xlconcat_6, and set properties
+  set xlconcat_6 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_6 ]
+  set_property CONFIG.NUM_PORTS {4} $xlconcat_6
+
+
+  # Create instance: proc_sys_reset_0, and set properties
+  set proc_sys_reset_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 proc_sys_reset_0 ]
+  set_property -dict [list \
+    CONFIG.C_AUX_RESET_HIGH {0} \
+    CONFIG.C_NUM_BUS_RST {4} \
+  ] $proc_sys_reset_0
+
+
+  # Create instance: proc_sys_reset_1, and set properties
+  set proc_sys_reset_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 proc_sys_reset_1 ]
+  set_property -dict [list \
+    CONFIG.C_AUX_RESET_HIGH {0} \
+    CONFIG.C_NUM_BUS_RST {4} \
+  ] $proc_sys_reset_1
+
+
+  # Create instance: clk_wizard_0, and set properties
+  set clk_wizard_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wizard:1.0 clk_wizard_0 ]
+  set_property -dict [list \
+    CONFIG.CLKOUT_DRIVES {BUFG,BUFG,BUFG,BUFG,BUFG,BUFG,BUFG} \
+    CONFIG.CLKOUT_DYN_PS {None,None,None,None,None,None,None} \
+    CONFIG.CLKOUT_GROUPING {Auto,Auto,Auto,Auto,Auto,Auto,Auto} \
+    CONFIG.CLKOUT_MATCHED_ROUTING {false,false,false,false,false,false,false} \
+    CONFIG.CLKOUT_PORT {clk_out1,clk_out2,clk_out3,clk_out4,clk_out5,clk_out6,clk_out7} \
+    CONFIG.CLKOUT_REQUESTED_DUTY_CYCLE {50.000,50.000,50.000,50.000,50.000,50.000,50.000} \
+    CONFIG.CLKOUT_REQUESTED_OUT_FREQUENCY {390.625,100.000,100.000,100.000,100.000,100.000,100.000} \
+    CONFIG.CLKOUT_REQUESTED_PHASE {0.000,0.000,0.000,0.000,0.000,0.000,0.000} \
+    CONFIG.CLKOUT_USED {true,false,false,false,false,false,false} \
+  ] $clk_wizard_0
+
+
+  # Create port connections
+  connect_bd_net -net Op1_1 [get_bd_pins Op1] [get_bd_pins util_vector_logic_0/Op1]
+  connect_bd_net -net Op2_1 [get_bd_pins Op2] [get_bd_pins util_vector_logic_1/Op1]
+  connect_bd_net -net clk_in1_1 [get_bd_pins clk_in1] [get_bd_pins clk_wizard_0/clk_in1]
+  connect_bd_net -net clk_wizard_0_clk_out1 [get_bd_pins clk_wizard_0/clk_out1] [get_bd_pins clk_out1] [get_bd_pins xlconcat_6/In1] [get_bd_pins xlconcat_6/In2] [get_bd_pins xlconcat_6/In3] [get_bd_pins xlconcat_6/In0] [get_bd_pins proc_sys_reset_1/slowest_sync_clk]
+  connect_bd_net -net ext_reset_in_1 [get_bd_pins ext_reset_in] [get_bd_pins proc_sys_reset_0/ext_reset_in] [get_bd_pins proc_sys_reset_1/ext_reset_in]
+  connect_bd_net -net proc_sys_reset_0_bus_struct_reset [get_bd_pins proc_sys_reset_0/bus_struct_reset] [get_bd_pins bus_struct_reset]
+  connect_bd_net -net proc_sys_reset_0_interconnect_aresetn [get_bd_pins proc_sys_reset_0/interconnect_aresetn] [get_bd_pins interconnect_aresetn]
+  connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins proc_sys_reset_0/peripheral_aresetn] [get_bd_pins peripheral_aresetn]
+  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins proc_sys_reset_1/peripheral_aresetn] [get_bd_pins peripheral_aresetn2]
+  connect_bd_net -net slowest_sync_clk_1 [get_bd_pins slowest_sync_clk] [get_bd_pins proc_sys_reset_0/slowest_sync_clk]
+  connect_bd_net -net util_vector_logic_0_Res [get_bd_pins util_vector_logic_0/Res] [get_bd_pins rx_reset]
+  connect_bd_net -net util_vector_logic_1_Res [get_bd_pins util_vector_logic_1/Res] [get_bd_pins tx_reset]
+  connect_bd_net -net xlconcat_6_dout [get_bd_pins xlconcat_6/dout] [get_bd_pins tx_rx_axi_clk]
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -371,8 +1105,6 @@ proc create_hier_cell_mrmac_0_gt_wrapper { parentCell nameHier } {
 
   create_bd_intf_pin -mode Slave -vlnv xilinx.com:interface:aximm_rtl:1.0 S00_AXI_0
 
-  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:gt_rtl:1.0 GT_Serial
-
   create_bd_intf_pin -mode Slave -vlnv xilinx.com:interface:gt_rx_interface_rtl:1.0 RX1_GT_IP_Interface
 
   create_bd_intf_pin -mode Slave -vlnv xilinx.com:interface:gt_rx_interface_rtl:1.0 RX2_GT_IP_Interface
@@ -391,9 +1123,7 @@ proc create_hier_cell_mrmac_0_gt_wrapper { parentCell nameHier } {
   create_bd_pin -dir O -from 0 -to 0 -type clk RX_REC_CLK_out_n_0_0
   create_bd_pin -dir O -from 0 -to 0 -type clk RX_REC_CLK_out_p_0_0
   create_bd_pin -dir O -type rst ch1_rxmstresetdone_1
-  create_bd_pin -dir O -from 3 -to 0 rx_usr_clk1_0
   create_bd_pin -dir O -type rst ch0_rxmstresetdone_1
-  create_bd_pin -dir O -from 3 -to 0 tx_usr_clk_0
   create_bd_pin -dir I -from 3 -to 0 tx_mst_reset_in_0
   create_bd_pin -dir O -type rst ch3_rxmstresetdone_1
   create_bd_pin -dir I -from 3 -to 0 tx_userrdy_in_0
@@ -424,445 +1154,10 @@ proc create_hier_cell_mrmac_0_gt_wrapper { parentCell nameHier } {
   create_bd_pin -dir I -type rst s_axi_aresetn
   create_bd_pin -dir I -from 0 -to 0 -type clk IBUF_DS_P_0
   create_bd_pin -dir I -from 0 -to 0 -type clk IBUF_DS_N_0
-  create_bd_pin -dir O -from 3 -to 0 rx_usr_clk2
-  create_bd_pin -dir O -from 3 -to 0 tx_usr_clk_1
-
-  # Create instance: gt_quad_base, and set properties
-  set gt_quad_base [ create_bd_cell -type ip -vlnv xilinx.com:ip:gt_quad_base:1.1 gt_quad_base ]
-  set_property -dict [list \
-    CONFIG.APB3_CLK_FREQUENCY {199.999817} \
-    CONFIG.CHANNEL_ORDERING {/mrmac_0_gt_wrapper/gt_quad_base/TX0_GT_IP_Interface mrmac_0_exdes_support_mrmac_0_core_0_0./mrmac_0_core/gt_tx_serdes_interface_0.0 /mrmac_0_gt_wrapper/gt_quad_base/TX1_GT_IP_Interface\
-mrmac_0_exdes_support_mrmac_0_core_0_1./mrmac_0_core/gt_tx_serdes_interface_1.1 /mrmac_0_gt_wrapper/gt_quad_base/TX2_GT_IP_Interface mrmac_0_exdes_support_mrmac_0_core_0_2./mrmac_0_core/gt_tx_serdes_interface_2.2\
-/mrmac_0_gt_wrapper/gt_quad_base/TX3_GT_IP_Interface mrmac_0_exdes_support_mrmac_0_core_0_3./mrmac_0_core/gt_tx_serdes_interface_3.3 /mrmac_0_gt_wrapper/gt_quad_base/RX0_GT_IP_Interface mrmac_0_exdes_support_mrmac_0_core_0_0./mrmac_0_core/gt_rx_serdes_interface_0.0\
-/mrmac_0_gt_wrapper/gt_quad_base/RX1_GT_IP_Interface mrmac_0_exdes_support_mrmac_0_core_0_1./mrmac_0_core/gt_rx_serdes_interface_1.1 /mrmac_0_gt_wrapper/gt_quad_base/RX2_GT_IP_Interface mrmac_0_exdes_support_mrmac_0_core_0_2./mrmac_0_core/gt_rx_serdes_interface_2.2\
-/mrmac_0_gt_wrapper/gt_quad_base/RX3_GT_IP_Interface mrmac_0_exdes_support_mrmac_0_core_0_3./mrmac_0_core/gt_rx_serdes_interface_3.3} \
-    CONFIG.GT_TYPE {GTY} \
-    CONFIG.PORTS_INFO_DICT {LANE_SEL_DICT {PROT0 {RX0 TX0} PROT1 {RX1 TX1} PROT2 {RX2 TX2} PROT3 {RX3 TX3}} GT_TYPE GTY REG_CONF_INTF APB3_INTF BOARD_PARAMETER { }} \
-    CONFIG.PROT0_ENABLE {true} \
-    CONFIG.PROT0_GT_DIRECTION {DUPLEX} \
-    CONFIG.PROT0_LR0_SETTINGS {GT_DIRECTION DUPLEX TX_PAM_SEL NRZ TX_HD_EN 0 TX_GRAY_BYP true TX_GRAY_LITTLEENDIAN true TX_PRECODE_BYP true TX_PRECODE_LITTLEENDIAN false TX_LINE_RATE 25.78125 TX_PLL_TYPE\
-LCPLL TX_REFCLK_FREQUENCY 156.25 TX_ACTUAL_REFCLK_FREQUENCY 156.250000000000 TX_FRACN_ENABLED true TX_FRACN_OVRD false TX_FRACN_NUMERATOR 0 TX_REFCLK_SOURCE R0 TX_DATA_ENCODING RAW TX_USER_DATA_WIDTH 80\
-TX_INT_DATA_WIDTH 80 TX_BUFFER_MODE 1 TX_BUFFER_BYPASS_MODE Fast_Sync TX_PIPM_ENABLE false TX_OUTCLK_SOURCE TXPROGDIVCLK TXPROGDIV_FREQ_ENABLE true TXPROGDIV_FREQ_SOURCE LCPLL TXPROGDIV_FREQ_VAL 644.531\
-TX_DIFF_SWING_EMPH_MODE CUSTOM TX_64B66B_SCRAMBLER false TX_64B66B_ENCODER false TX_64B66B_CRC false TX_RATE_GROUP A TX_LANE_DESKEW_HDMI_ENABLE false TX_BUFFER_RESET_ON_RATE_CHANGE ENABLE PRESET None RX_PAM_SEL\
-NRZ RX_HD_EN 0 RX_GRAY_BYP true RX_GRAY_LITTLEENDIAN true RX_PRECODE_BYP true RX_PRECODE_LITTLEENDIAN false INTERNAL_PRESET None RX_LINE_RATE 25.78125 RX_PLL_TYPE LCPLL RX_REFCLK_FREQUENCY 156.25 RX_ACTUAL_REFCLK_FREQUENCY\
-156.250000000000 RX_FRACN_ENABLED true RX_FRACN_OVRD false RX_FRACN_NUMERATOR 0 RX_REFCLK_SOURCE R0 RX_DATA_DECODING RAW RX_USER_DATA_WIDTH 80 RX_INT_DATA_WIDTH 80 RX_BUFFER_MODE 1 RX_OUTCLK_SOURCE RXPROGDIVCLK\
-RXPROGDIV_FREQ_ENABLE true RXPROGDIV_FREQ_SOURCE LCPLL RXPROGDIV_FREQ_VAL 644.531 RXRECCLK_FREQ_ENABLE true RXRECCLK_FREQ_VAL 644.531 INS_LOSS_NYQ 20 RX_EQ_MODE AUTO RX_COUPLING AC RX_TERMINATION PROGRAMMABLE\
-RX_RATE_GROUP A RX_TERMINATION_PROG_VALUE 800 RX_PPM_OFFSET 0 RX_64B66B_DESCRAMBLER false RX_64B66B_DECODER false RX_64B66B_CRC false OOB_ENABLE false RX_COMMA_ALIGN_WORD 1 RX_COMMA_SHOW_REALIGN_ENABLE\
-true PCIE_ENABLE false RX_COMMA_P_ENABLE false RX_COMMA_M_ENABLE false RX_COMMA_DOUBLE_ENABLE false RX_COMMA_P_VAL 0101111100 RX_COMMA_M_VAL 1010000011 RX_COMMA_MASK 0000000000 RX_SLIDE_MODE OFF RX_SSC_PPM\
-0 RX_CB_NUM_SEQ 0 RX_CB_LEN_SEQ 1 RX_CB_MAX_SKEW 1 RX_CB_MAX_LEVEL 1 RX_CB_MASK 00000000 RX_CB_VAL 00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CB_K 00000000 RX_CB_DISP\
-00000000 RX_CB_MASK_0_0 false RX_CB_VAL_0_0 0000000000 RX_CB_K_0_0 false RX_CB_DISP_0_0 false RX_CB_MASK_0_1 false RX_CB_VAL_0_1 0000000000 RX_CB_K_0_1 false RX_CB_DISP_0_1 false RX_CB_MASK_0_2 false RX_CB_VAL_0_2\
-0000000000 RX_CB_K_0_2 false RX_CB_DISP_0_2 false RX_CB_MASK_0_3 false RX_CB_VAL_0_3 0000000000 RX_CB_K_0_3 false RX_CB_DISP_0_3 false RX_CB_MASK_1_0 false RX_CB_VAL_1_0 0000000000 RX_CB_K_1_0 false RX_CB_DISP_1_0\
-false RX_CB_MASK_1_1 false RX_CB_VAL_1_1 0000000000 RX_CB_K_1_1 false RX_CB_DISP_1_1 false RX_CB_MASK_1_2 false RX_CB_VAL_1_2 0000000000 RX_CB_K_1_2 false RX_CB_DISP_1_2 false RX_CB_MASK_1_3 false RX_CB_VAL_1_3\
-0000000000 RX_CB_K_1_3 false RX_CB_DISP_1_3 false RX_CC_NUM_SEQ 0 RX_CC_LEN_SEQ 1 RX_CC_PERIODICITY 5000 RX_CC_KEEP_IDLE DISABLE RX_CC_PRECEDENCE ENABLE RX_CC_REPEAT_WAIT 0 RX_CC_MASK 00000000 RX_CC_VAL\
-00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CC_K 00000000 RX_CC_DISP 00000000 RX_CC_MASK_0_0 false RX_CC_VAL_0_0 0000000000 RX_CC_K_0_0 false RX_CC_DISP_0_0 false\
-RX_CC_MASK_0_1 false RX_CC_VAL_0_1 0000000000 RX_CC_K_0_1 false RX_CC_DISP_0_1 false RX_CC_MASK_0_2 false RX_CC_VAL_0_2 0000000000 RX_CC_K_0_2 false RX_CC_DISP_0_2 false RX_CC_MASK_0_3 false RX_CC_VAL_0_3\
-0000000000 RX_CC_K_0_3 false RX_CC_DISP_0_3 false RX_CC_MASK_1_0 false RX_CC_VAL_1_0 0000000000 RX_CC_K_1_0 false RX_CC_DISP_1_0 false RX_CC_MASK_1_1 false RX_CC_VAL_1_1 0000000000 RX_CC_K_1_1 false RX_CC_DISP_1_1\
-false RX_CC_MASK_1_2 false RX_CC_VAL_1_2 0000000000 RX_CC_K_1_2 false RX_CC_DISP_1_2 false RX_CC_MASK_1_3 false RX_CC_VAL_1_3 0000000000 RX_CC_K_1_3 false RX_CC_DISP_1_3 false PCIE_USERCLK2_FREQ 250 PCIE_USERCLK_FREQ\
-250 RX_JTOL_FC 10 RX_JTOL_LF_SLOPE -20 RX_BUFFER_BYPASS_MODE Fast_Sync RX_BUFFER_BYPASS_MODE_LANE MULTI RX_BUFFER_RESET_ON_CB_CHANGE ENABLE RX_BUFFER_RESET_ON_COMMAALIGN DISABLE RX_BUFFER_RESET_ON_RATE_CHANGE\
-ENABLE RESET_SEQUENCE_INTERVAL 0 RX_COMMA_PRESET NONE RX_COMMA_VALID_ONLY 0 GT_TYPE GTY} \
-    CONFIG.PROT0_LR10_SETTINGS {NA NA} \
-    CONFIG.PROT0_LR11_SETTINGS {NA NA} \
-    CONFIG.PROT0_LR12_SETTINGS {NA NA} \
-    CONFIG.PROT0_LR13_SETTINGS {NA NA} \
-    CONFIG.PROT0_LR14_SETTINGS {NA NA} \
-    CONFIG.PROT0_LR15_SETTINGS {NA NA} \
-    CONFIG.PROT0_LR1_SETTINGS {GT_DIRECTION DUPLEX TX_PAM_SEL NRZ TX_HD_EN 0 TX_GRAY_BYP true TX_GRAY_LITTLEENDIAN true TX_PRECODE_BYP true TX_PRECODE_LITTLEENDIAN false TX_LINE_RATE 25.78125 TX_PLL_TYPE\
-LCPLL TX_REFCLK_FREQUENCY 156.25 TX_ACTUAL_REFCLK_FREQUENCY 156.250000000000 TX_FRACN_ENABLED true TX_FRACN_OVRD false TX_FRACN_NUMERATOR 0 TX_REFCLK_SOURCE R0 TX_DATA_ENCODING RAW TX_USER_DATA_WIDTH 80\
-TX_INT_DATA_WIDTH 80 TX_BUFFER_MODE 1 TX_BUFFER_BYPASS_MODE Fast_Sync TX_PIPM_ENABLE false TX_OUTCLK_SOURCE TXPROGDIVCLK TXPROGDIV_FREQ_ENABLE true TXPROGDIV_FREQ_SOURCE LCPLL TXPROGDIV_FREQ_VAL 644.531\
-TX_DIFF_SWING_EMPH_MODE CUSTOM TX_64B66B_SCRAMBLER false TX_64B66B_ENCODER false TX_64B66B_CRC false TX_RATE_GROUP A TX_LANE_DESKEW_HDMI_ENABLE false TX_BUFFER_RESET_ON_RATE_CHANGE ENABLE PRESET None RX_PAM_SEL\
-NRZ RX_HD_EN 0 RX_GRAY_BYP true RX_GRAY_LITTLEENDIAN true RX_PRECODE_BYP true RX_PRECODE_LITTLEENDIAN false INTERNAL_PRESET None RX_LINE_RATE 25.78125 RX_PLL_TYPE LCPLL RX_REFCLK_FREQUENCY 156.25 RX_ACTUAL_REFCLK_FREQUENCY\
-156.250000000000 RX_FRACN_ENABLED true RX_FRACN_OVRD false RX_FRACN_NUMERATOR 0 RX_REFCLK_SOURCE R0 RX_DATA_DECODING RAW RX_USER_DATA_WIDTH 80 RX_INT_DATA_WIDTH 80 RX_BUFFER_MODE 1 RX_OUTCLK_SOURCE RXPROGDIVCLK\
-RXPROGDIV_FREQ_ENABLE true RXPROGDIV_FREQ_SOURCE LCPLL RXPROGDIV_FREQ_VAL 644.531 RXRECCLK_FREQ_ENABLE true RXRECCLK_FREQ_VAL 644.531 INS_LOSS_NYQ 20 RX_EQ_MODE AUTO RX_COUPLING AC RX_TERMINATION PROGRAMMABLE\
-RX_RATE_GROUP A RX_TERMINATION_PROG_VALUE 800 RX_PPM_OFFSET 0 RX_64B66B_DESCRAMBLER false RX_64B66B_DECODER false RX_64B66B_CRC false OOB_ENABLE false RX_COMMA_ALIGN_WORD 1 RX_COMMA_SHOW_REALIGN_ENABLE\
-true PCIE_ENABLE false RX_COMMA_P_ENABLE false RX_COMMA_M_ENABLE false RX_COMMA_DOUBLE_ENABLE false RX_COMMA_P_VAL 0101111100 RX_COMMA_M_VAL 1010000011 RX_COMMA_MASK 0000000000 RX_SLIDE_MODE OFF RX_SSC_PPM\
-0 RX_CB_NUM_SEQ 0 RX_CB_LEN_SEQ 1 RX_CB_MAX_SKEW 1 RX_CB_MAX_LEVEL 1 RX_CB_MASK 00000000 RX_CB_VAL 00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CB_K 00000000 RX_CB_DISP\
-00000000 RX_CB_MASK_0_0 false RX_CB_VAL_0_0 0000000000 RX_CB_K_0_0 false RX_CB_DISP_0_0 false RX_CB_MASK_0_1 false RX_CB_VAL_0_1 0000000000 RX_CB_K_0_1 false RX_CB_DISP_0_1 false RX_CB_MASK_0_2 false RX_CB_VAL_0_2\
-0000000000 RX_CB_K_0_2 false RX_CB_DISP_0_2 false RX_CB_MASK_0_3 false RX_CB_VAL_0_3 0000000000 RX_CB_K_0_3 false RX_CB_DISP_0_3 false RX_CB_MASK_1_0 false RX_CB_VAL_1_0 0000000000 RX_CB_K_1_0 false RX_CB_DISP_1_0\
-false RX_CB_MASK_1_1 false RX_CB_VAL_1_1 0000000000 RX_CB_K_1_1 false RX_CB_DISP_1_1 false RX_CB_MASK_1_2 false RX_CB_VAL_1_2 0000000000 RX_CB_K_1_2 false RX_CB_DISP_1_2 false RX_CB_MASK_1_3 false RX_CB_VAL_1_3\
-0000000000 RX_CB_K_1_3 false RX_CB_DISP_1_3 false RX_CC_NUM_SEQ 0 RX_CC_LEN_SEQ 1 RX_CC_PERIODICITY 5000 RX_CC_KEEP_IDLE DISABLE RX_CC_PRECEDENCE ENABLE RX_CC_REPEAT_WAIT 0 RX_CC_MASK 00000000 RX_CC_VAL\
-00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CC_K 00000000 RX_CC_DISP 00000000 RX_CC_MASK_0_0 false RX_CC_VAL_0_0 0000000000 RX_CC_K_0_0 false RX_CC_DISP_0_0 false\
-RX_CC_MASK_0_1 false RX_CC_VAL_0_1 0000000000 RX_CC_K_0_1 false RX_CC_DISP_0_1 false RX_CC_MASK_0_2 false RX_CC_VAL_0_2 0000000000 RX_CC_K_0_2 false RX_CC_DISP_0_2 false RX_CC_MASK_0_3 false RX_CC_VAL_0_3\
-0000000000 RX_CC_K_0_3 false RX_CC_DISP_0_3 false RX_CC_MASK_1_0 false RX_CC_VAL_1_0 0000000000 RX_CC_K_1_0 false RX_CC_DISP_1_0 false RX_CC_MASK_1_1 false RX_CC_VAL_1_1 0000000000 RX_CC_K_1_1 false RX_CC_DISP_1_1\
-false RX_CC_MASK_1_2 false RX_CC_VAL_1_2 0000000000 RX_CC_K_1_2 false RX_CC_DISP_1_2 false RX_CC_MASK_1_3 false RX_CC_VAL_1_3 0000000000 RX_CC_K_1_3 false RX_CC_DISP_1_3 false PCIE_USERCLK2_FREQ 250 PCIE_USERCLK_FREQ\
-250 RX_JTOL_FC 10 RX_JTOL_LF_SLOPE -20 RX_BUFFER_BYPASS_MODE Fast_Sync RX_BUFFER_BYPASS_MODE_LANE MULTI RX_BUFFER_RESET_ON_CB_CHANGE ENABLE RX_BUFFER_RESET_ON_COMMAALIGN DISABLE RX_BUFFER_RESET_ON_RATE_CHANGE\
-ENABLE RESET_SEQUENCE_INTERVAL 0 RX_COMMA_PRESET NONE RX_COMMA_VALID_ONLY 0 GT_TYPE GTY} \
-    CONFIG.PROT0_LR2_SETTINGS {GT_DIRECTION DUPLEX TX_PAM_SEL NRZ TX_HD_EN 0 TX_GRAY_BYP true TX_GRAY_LITTLEENDIAN true TX_PRECODE_BYP true TX_PRECODE_LITTLEENDIAN false TX_LINE_RATE 25.78125 TX_PLL_TYPE\
-LCPLL TX_REFCLK_FREQUENCY 156.25 TX_ACTUAL_REFCLK_FREQUENCY 156.250000000000 TX_FRACN_ENABLED true TX_FRACN_OVRD false TX_FRACN_NUMERATOR 0 TX_REFCLK_SOURCE R0 TX_DATA_ENCODING RAW TX_USER_DATA_WIDTH 80\
-TX_INT_DATA_WIDTH 80 TX_BUFFER_MODE 1 TX_BUFFER_BYPASS_MODE Fast_Sync TX_PIPM_ENABLE false TX_OUTCLK_SOURCE TXPROGDIVCLK TXPROGDIV_FREQ_ENABLE true TXPROGDIV_FREQ_SOURCE LCPLL TXPROGDIV_FREQ_VAL 644.531\
-TX_DIFF_SWING_EMPH_MODE CUSTOM TX_64B66B_SCRAMBLER false TX_64B66B_ENCODER false TX_64B66B_CRC false TX_RATE_GROUP A TX_LANE_DESKEW_HDMI_ENABLE false TX_BUFFER_RESET_ON_RATE_CHANGE ENABLE PRESET None RX_PAM_SEL\
-NRZ RX_HD_EN 0 RX_GRAY_BYP true RX_GRAY_LITTLEENDIAN true RX_PRECODE_BYP true RX_PRECODE_LITTLEENDIAN false INTERNAL_PRESET None RX_LINE_RATE 25.78125 RX_PLL_TYPE LCPLL RX_REFCLK_FREQUENCY 156.25 RX_ACTUAL_REFCLK_FREQUENCY\
-156.250000000000 RX_FRACN_ENABLED true RX_FRACN_OVRD false RX_FRACN_NUMERATOR 0 RX_REFCLK_SOURCE R0 RX_DATA_DECODING RAW RX_USER_DATA_WIDTH 80 RX_INT_DATA_WIDTH 80 RX_BUFFER_MODE 1 RX_OUTCLK_SOURCE RXPROGDIVCLK\
-RXPROGDIV_FREQ_ENABLE true RXPROGDIV_FREQ_SOURCE LCPLL RXPROGDIV_FREQ_VAL 644.531 RXRECCLK_FREQ_ENABLE true RXRECCLK_FREQ_VAL 644.531 INS_LOSS_NYQ 20 RX_EQ_MODE AUTO RX_COUPLING AC RX_TERMINATION PROGRAMMABLE\
-RX_RATE_GROUP A RX_TERMINATION_PROG_VALUE 800 RX_PPM_OFFSET 0 RX_64B66B_DESCRAMBLER false RX_64B66B_DECODER false RX_64B66B_CRC false OOB_ENABLE false RX_COMMA_ALIGN_WORD 1 RX_COMMA_SHOW_REALIGN_ENABLE\
-true PCIE_ENABLE false RX_COMMA_P_ENABLE false RX_COMMA_M_ENABLE false RX_COMMA_DOUBLE_ENABLE false RX_COMMA_P_VAL 0101111100 RX_COMMA_M_VAL 1010000011 RX_COMMA_MASK 0000000000 RX_SLIDE_MODE OFF RX_SSC_PPM\
-0 RX_CB_NUM_SEQ 0 RX_CB_LEN_SEQ 1 RX_CB_MAX_SKEW 1 RX_CB_MAX_LEVEL 1 RX_CB_MASK 00000000 RX_CB_VAL 00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CB_K 00000000 RX_CB_DISP\
-00000000 RX_CB_MASK_0_0 false RX_CB_VAL_0_0 0000000000 RX_CB_K_0_0 false RX_CB_DISP_0_0 false RX_CB_MASK_0_1 false RX_CB_VAL_0_1 0000000000 RX_CB_K_0_1 false RX_CB_DISP_0_1 false RX_CB_MASK_0_2 false RX_CB_VAL_0_2\
-0000000000 RX_CB_K_0_2 false RX_CB_DISP_0_2 false RX_CB_MASK_0_3 false RX_CB_VAL_0_3 0000000000 RX_CB_K_0_3 false RX_CB_DISP_0_3 false RX_CB_MASK_1_0 false RX_CB_VAL_1_0 0000000000 RX_CB_K_1_0 false RX_CB_DISP_1_0\
-false RX_CB_MASK_1_1 false RX_CB_VAL_1_1 0000000000 RX_CB_K_1_1 false RX_CB_DISP_1_1 false RX_CB_MASK_1_2 false RX_CB_VAL_1_2 0000000000 RX_CB_K_1_2 false RX_CB_DISP_1_2 false RX_CB_MASK_1_3 false RX_CB_VAL_1_3\
-0000000000 RX_CB_K_1_3 false RX_CB_DISP_1_3 false RX_CC_NUM_SEQ 0 RX_CC_LEN_SEQ 1 RX_CC_PERIODICITY 5000 RX_CC_KEEP_IDLE DISABLE RX_CC_PRECEDENCE ENABLE RX_CC_REPEAT_WAIT 0 RX_CC_MASK 00000000 RX_CC_VAL\
-00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CC_K 00000000 RX_CC_DISP 00000000 RX_CC_MASK_0_0 false RX_CC_VAL_0_0 0000000000 RX_CC_K_0_0 false RX_CC_DISP_0_0 false\
-RX_CC_MASK_0_1 false RX_CC_VAL_0_1 0000000000 RX_CC_K_0_1 false RX_CC_DISP_0_1 false RX_CC_MASK_0_2 false RX_CC_VAL_0_2 0000000000 RX_CC_K_0_2 false RX_CC_DISP_0_2 false RX_CC_MASK_0_3 false RX_CC_VAL_0_3\
-0000000000 RX_CC_K_0_3 false RX_CC_DISP_0_3 false RX_CC_MASK_1_0 false RX_CC_VAL_1_0 0000000000 RX_CC_K_1_0 false RX_CC_DISP_1_0 false RX_CC_MASK_1_1 false RX_CC_VAL_1_1 0000000000 RX_CC_K_1_1 false RX_CC_DISP_1_1\
-false RX_CC_MASK_1_2 false RX_CC_VAL_1_2 0000000000 RX_CC_K_1_2 false RX_CC_DISP_1_2 false RX_CC_MASK_1_3 false RX_CC_VAL_1_3 0000000000 RX_CC_K_1_3 false RX_CC_DISP_1_3 false PCIE_USERCLK2_FREQ 250 PCIE_USERCLK_FREQ\
-250 RX_JTOL_FC 10 RX_JTOL_LF_SLOPE -20 RX_BUFFER_BYPASS_MODE Fast_Sync RX_BUFFER_BYPASS_MODE_LANE MULTI RX_BUFFER_RESET_ON_CB_CHANGE ENABLE RX_BUFFER_RESET_ON_COMMAALIGN DISABLE RX_BUFFER_RESET_ON_RATE_CHANGE\
-ENABLE RESET_SEQUENCE_INTERVAL 0 RX_COMMA_PRESET NONE RX_COMMA_VALID_ONLY 0 GT_TYPE GTY} \
-    CONFIG.PROT0_LR3_SETTINGS {NA NA} \
-    CONFIG.PROT0_LR4_SETTINGS {NA NA} \
-    CONFIG.PROT0_LR5_SETTINGS {NA NA} \
-    CONFIG.PROT0_LR6_SETTINGS {NA NA} \
-    CONFIG.PROT0_LR7_SETTINGS {NA NA} \
-    CONFIG.PROT0_LR8_SETTINGS {NA NA} \
-    CONFIG.PROT0_LR9_SETTINGS {NA NA} \
-    CONFIG.PROT0_NO_OF_LANES {1} \
-    CONFIG.PROT0_RX_MASTERCLK_SRC {RX0} \
-    CONFIG.PROT0_TX_MASTERCLK_SRC {TX0} \
-    CONFIG.PROT1_ENABLE {true} \
-    CONFIG.PROT1_GT_DIRECTION {DUPLEX} \
-    CONFIG.PROT1_LR0_SETTINGS {GT_DIRECTION DUPLEX TX_PAM_SEL NRZ TX_HD_EN 0 TX_GRAY_BYP true TX_GRAY_LITTLEENDIAN true TX_PRECODE_BYP true TX_PRECODE_LITTLEENDIAN false TX_LINE_RATE 25.78125 TX_PLL_TYPE\
-LCPLL TX_REFCLK_FREQUENCY 156.25 TX_ACTUAL_REFCLK_FREQUENCY 156.250000000000 TX_FRACN_ENABLED true TX_FRACN_OVRD false TX_FRACN_NUMERATOR 0 TX_REFCLK_SOURCE R0 TX_DATA_ENCODING RAW TX_USER_DATA_WIDTH 80\
-TX_INT_DATA_WIDTH 80 TX_BUFFER_MODE 1 TX_BUFFER_BYPASS_MODE Fast_Sync TX_PIPM_ENABLE false TX_OUTCLK_SOURCE TXPROGDIVCLK TXPROGDIV_FREQ_ENABLE true TXPROGDIV_FREQ_SOURCE LCPLL TXPROGDIV_FREQ_VAL 644.531\
-TX_DIFF_SWING_EMPH_MODE CUSTOM TX_64B66B_SCRAMBLER false TX_64B66B_ENCODER false TX_64B66B_CRC false TX_RATE_GROUP A TX_LANE_DESKEW_HDMI_ENABLE false TX_BUFFER_RESET_ON_RATE_CHANGE ENABLE PRESET None RX_PAM_SEL\
-NRZ RX_HD_EN 0 RX_GRAY_BYP true RX_GRAY_LITTLEENDIAN true RX_PRECODE_BYP true RX_PRECODE_LITTLEENDIAN false INTERNAL_PRESET None RX_LINE_RATE 25.78125 RX_PLL_TYPE LCPLL RX_REFCLK_FREQUENCY 156.25 RX_ACTUAL_REFCLK_FREQUENCY\
-156.250000000000 RX_FRACN_ENABLED true RX_FRACN_OVRD false RX_FRACN_NUMERATOR 0 RX_REFCLK_SOURCE R0 RX_DATA_DECODING RAW RX_USER_DATA_WIDTH 80 RX_INT_DATA_WIDTH 80 RX_BUFFER_MODE 1 RX_OUTCLK_SOURCE RXPROGDIVCLK\
-RXPROGDIV_FREQ_ENABLE true RXPROGDIV_FREQ_SOURCE LCPLL RXPROGDIV_FREQ_VAL 644.531 RXRECCLK_FREQ_ENABLE true RXRECCLK_FREQ_VAL 644.531 INS_LOSS_NYQ 20 RX_EQ_MODE AUTO RX_COUPLING AC RX_TERMINATION PROGRAMMABLE\
-RX_RATE_GROUP A RX_TERMINATION_PROG_VALUE 800 RX_PPM_OFFSET 0 RX_64B66B_DESCRAMBLER false RX_64B66B_DECODER false RX_64B66B_CRC false OOB_ENABLE false RX_COMMA_ALIGN_WORD 1 RX_COMMA_SHOW_REALIGN_ENABLE\
-true PCIE_ENABLE false RX_COMMA_P_ENABLE false RX_COMMA_M_ENABLE false RX_COMMA_DOUBLE_ENABLE false RX_COMMA_P_VAL 0101111100 RX_COMMA_M_VAL 1010000011 RX_COMMA_MASK 0000000000 RX_SLIDE_MODE OFF RX_SSC_PPM\
-0 RX_CB_NUM_SEQ 0 RX_CB_LEN_SEQ 1 RX_CB_MAX_SKEW 1 RX_CB_MAX_LEVEL 1 RX_CB_MASK 00000000 RX_CB_VAL 00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CB_K 00000000 RX_CB_DISP\
-00000000 RX_CB_MASK_0_0 false RX_CB_VAL_0_0 0000000000 RX_CB_K_0_0 false RX_CB_DISP_0_0 false RX_CB_MASK_0_1 false RX_CB_VAL_0_1 0000000000 RX_CB_K_0_1 false RX_CB_DISP_0_1 false RX_CB_MASK_0_2 false RX_CB_VAL_0_2\
-0000000000 RX_CB_K_0_2 false RX_CB_DISP_0_2 false RX_CB_MASK_0_3 false RX_CB_VAL_0_3 0000000000 RX_CB_K_0_3 false RX_CB_DISP_0_3 false RX_CB_MASK_1_0 false RX_CB_VAL_1_0 0000000000 RX_CB_K_1_0 false RX_CB_DISP_1_0\
-false RX_CB_MASK_1_1 false RX_CB_VAL_1_1 0000000000 RX_CB_K_1_1 false RX_CB_DISP_1_1 false RX_CB_MASK_1_2 false RX_CB_VAL_1_2 0000000000 RX_CB_K_1_2 false RX_CB_DISP_1_2 false RX_CB_MASK_1_3 false RX_CB_VAL_1_3\
-0000000000 RX_CB_K_1_3 false RX_CB_DISP_1_3 false RX_CC_NUM_SEQ 0 RX_CC_LEN_SEQ 1 RX_CC_PERIODICITY 5000 RX_CC_KEEP_IDLE DISABLE RX_CC_PRECEDENCE ENABLE RX_CC_REPEAT_WAIT 0 RX_CC_MASK 00000000 RX_CC_VAL\
-00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CC_K 00000000 RX_CC_DISP 00000000 RX_CC_MASK_0_0 false RX_CC_VAL_0_0 0000000000 RX_CC_K_0_0 false RX_CC_DISP_0_0 false\
-RX_CC_MASK_0_1 false RX_CC_VAL_0_1 0000000000 RX_CC_K_0_1 false RX_CC_DISP_0_1 false RX_CC_MASK_0_2 false RX_CC_VAL_0_2 0000000000 RX_CC_K_0_2 false RX_CC_DISP_0_2 false RX_CC_MASK_0_3 false RX_CC_VAL_0_3\
-0000000000 RX_CC_K_0_3 false RX_CC_DISP_0_3 false RX_CC_MASK_1_0 false RX_CC_VAL_1_0 0000000000 RX_CC_K_1_0 false RX_CC_DISP_1_0 false RX_CC_MASK_1_1 false RX_CC_VAL_1_1 0000000000 RX_CC_K_1_1 false RX_CC_DISP_1_1\
-false RX_CC_MASK_1_2 false RX_CC_VAL_1_2 0000000000 RX_CC_K_1_2 false RX_CC_DISP_1_2 false RX_CC_MASK_1_3 false RX_CC_VAL_1_3 0000000000 RX_CC_K_1_3 false RX_CC_DISP_1_3 false PCIE_USERCLK2_FREQ 250 PCIE_USERCLK_FREQ\
-250 RX_JTOL_FC 10 RX_JTOL_LF_SLOPE -20 RX_BUFFER_BYPASS_MODE Fast_Sync RX_BUFFER_BYPASS_MODE_LANE MULTI RX_BUFFER_RESET_ON_CB_CHANGE ENABLE RX_BUFFER_RESET_ON_COMMAALIGN DISABLE RX_BUFFER_RESET_ON_RATE_CHANGE\
-ENABLE RESET_SEQUENCE_INTERVAL 0 RX_COMMA_PRESET NONE RX_COMMA_VALID_ONLY 0 GT_TYPE GTY} \
-    CONFIG.PROT1_LR10_SETTINGS {NA NA} \
-    CONFIG.PROT1_LR11_SETTINGS {NA NA} \
-    CONFIG.PROT1_LR12_SETTINGS {NA NA} \
-    CONFIG.PROT1_LR13_SETTINGS {NA NA} \
-    CONFIG.PROT1_LR14_SETTINGS {NA NA} \
-    CONFIG.PROT1_LR15_SETTINGS {NA NA} \
-    CONFIG.PROT1_LR1_SETTINGS {GT_DIRECTION DUPLEX TX_PAM_SEL NRZ TX_HD_EN 0 TX_GRAY_BYP true TX_GRAY_LITTLEENDIAN true TX_PRECODE_BYP true TX_PRECODE_LITTLEENDIAN false TX_LINE_RATE 25.78125 TX_PLL_TYPE\
-LCPLL TX_REFCLK_FREQUENCY 156.25 TX_ACTUAL_REFCLK_FREQUENCY 156.250000000000 TX_FRACN_ENABLED true TX_FRACN_OVRD false TX_FRACN_NUMERATOR 0 TX_REFCLK_SOURCE R0 TX_DATA_ENCODING RAW TX_USER_DATA_WIDTH 80\
-TX_INT_DATA_WIDTH 80 TX_BUFFER_MODE 1 TX_BUFFER_BYPASS_MODE Fast_Sync TX_PIPM_ENABLE false TX_OUTCLK_SOURCE TXPROGDIVCLK TXPROGDIV_FREQ_ENABLE true TXPROGDIV_FREQ_SOURCE LCPLL TXPROGDIV_FREQ_VAL 644.531\
-TX_DIFF_SWING_EMPH_MODE CUSTOM TX_64B66B_SCRAMBLER false TX_64B66B_ENCODER false TX_64B66B_CRC false TX_RATE_GROUP A TX_LANE_DESKEW_HDMI_ENABLE false TX_BUFFER_RESET_ON_RATE_CHANGE ENABLE PRESET None RX_PAM_SEL\
-NRZ RX_HD_EN 0 RX_GRAY_BYP true RX_GRAY_LITTLEENDIAN true RX_PRECODE_BYP true RX_PRECODE_LITTLEENDIAN false INTERNAL_PRESET None RX_LINE_RATE 25.78125 RX_PLL_TYPE LCPLL RX_REFCLK_FREQUENCY 156.25 RX_ACTUAL_REFCLK_FREQUENCY\
-156.250000000000 RX_FRACN_ENABLED true RX_FRACN_OVRD false RX_FRACN_NUMERATOR 0 RX_REFCLK_SOURCE R0 RX_DATA_DECODING RAW RX_USER_DATA_WIDTH 80 RX_INT_DATA_WIDTH 80 RX_BUFFER_MODE 1 RX_OUTCLK_SOURCE RXPROGDIVCLK\
-RXPROGDIV_FREQ_ENABLE true RXPROGDIV_FREQ_SOURCE LCPLL RXPROGDIV_FREQ_VAL 644.531 RXRECCLK_FREQ_ENABLE true RXRECCLK_FREQ_VAL 644.531 INS_LOSS_NYQ 20 RX_EQ_MODE AUTO RX_COUPLING AC RX_TERMINATION PROGRAMMABLE\
-RX_RATE_GROUP A RX_TERMINATION_PROG_VALUE 800 RX_PPM_OFFSET 0 RX_64B66B_DESCRAMBLER false RX_64B66B_DECODER false RX_64B66B_CRC false OOB_ENABLE false RX_COMMA_ALIGN_WORD 1 RX_COMMA_SHOW_REALIGN_ENABLE\
-true PCIE_ENABLE false RX_COMMA_P_ENABLE false RX_COMMA_M_ENABLE false RX_COMMA_DOUBLE_ENABLE false RX_COMMA_P_VAL 0101111100 RX_COMMA_M_VAL 1010000011 RX_COMMA_MASK 0000000000 RX_SLIDE_MODE OFF RX_SSC_PPM\
-0 RX_CB_NUM_SEQ 0 RX_CB_LEN_SEQ 1 RX_CB_MAX_SKEW 1 RX_CB_MAX_LEVEL 1 RX_CB_MASK 00000000 RX_CB_VAL 00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CB_K 00000000 RX_CB_DISP\
-00000000 RX_CB_MASK_0_0 false RX_CB_VAL_0_0 0000000000 RX_CB_K_0_0 false RX_CB_DISP_0_0 false RX_CB_MASK_0_1 false RX_CB_VAL_0_1 0000000000 RX_CB_K_0_1 false RX_CB_DISP_0_1 false RX_CB_MASK_0_2 false RX_CB_VAL_0_2\
-0000000000 RX_CB_K_0_2 false RX_CB_DISP_0_2 false RX_CB_MASK_0_3 false RX_CB_VAL_0_3 0000000000 RX_CB_K_0_3 false RX_CB_DISP_0_3 false RX_CB_MASK_1_0 false RX_CB_VAL_1_0 0000000000 RX_CB_K_1_0 false RX_CB_DISP_1_0\
-false RX_CB_MASK_1_1 false RX_CB_VAL_1_1 0000000000 RX_CB_K_1_1 false RX_CB_DISP_1_1 false RX_CB_MASK_1_2 false RX_CB_VAL_1_2 0000000000 RX_CB_K_1_2 false RX_CB_DISP_1_2 false RX_CB_MASK_1_3 false RX_CB_VAL_1_3\
-0000000000 RX_CB_K_1_3 false RX_CB_DISP_1_3 false RX_CC_NUM_SEQ 0 RX_CC_LEN_SEQ 1 RX_CC_PERIODICITY 5000 RX_CC_KEEP_IDLE DISABLE RX_CC_PRECEDENCE ENABLE RX_CC_REPEAT_WAIT 0 RX_CC_MASK 00000000 RX_CC_VAL\
-00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CC_K 00000000 RX_CC_DISP 00000000 RX_CC_MASK_0_0 false RX_CC_VAL_0_0 0000000000 RX_CC_K_0_0 false RX_CC_DISP_0_0 false\
-RX_CC_MASK_0_1 false RX_CC_VAL_0_1 0000000000 RX_CC_K_0_1 false RX_CC_DISP_0_1 false RX_CC_MASK_0_2 false RX_CC_VAL_0_2 0000000000 RX_CC_K_0_2 false RX_CC_DISP_0_2 false RX_CC_MASK_0_3 false RX_CC_VAL_0_3\
-0000000000 RX_CC_K_0_3 false RX_CC_DISP_0_3 false RX_CC_MASK_1_0 false RX_CC_VAL_1_0 0000000000 RX_CC_K_1_0 false RX_CC_DISP_1_0 false RX_CC_MASK_1_1 false RX_CC_VAL_1_1 0000000000 RX_CC_K_1_1 false RX_CC_DISP_1_1\
-false RX_CC_MASK_1_2 false RX_CC_VAL_1_2 0000000000 RX_CC_K_1_2 false RX_CC_DISP_1_2 false RX_CC_MASK_1_3 false RX_CC_VAL_1_3 0000000000 RX_CC_K_1_3 false RX_CC_DISP_1_3 false PCIE_USERCLK2_FREQ 250 PCIE_USERCLK_FREQ\
-250 RX_JTOL_FC 10 RX_JTOL_LF_SLOPE -20 RX_BUFFER_BYPASS_MODE Fast_Sync RX_BUFFER_BYPASS_MODE_LANE MULTI RX_BUFFER_RESET_ON_CB_CHANGE ENABLE RX_BUFFER_RESET_ON_COMMAALIGN DISABLE RX_BUFFER_RESET_ON_RATE_CHANGE\
-ENABLE RESET_SEQUENCE_INTERVAL 0 RX_COMMA_PRESET NONE RX_COMMA_VALID_ONLY 0 GT_TYPE GTY} \
-    CONFIG.PROT1_LR2_SETTINGS {GT_DIRECTION DUPLEX TX_PAM_SEL NRZ TX_HD_EN 0 TX_GRAY_BYP true TX_GRAY_LITTLEENDIAN true TX_PRECODE_BYP true TX_PRECODE_LITTLEENDIAN false TX_LINE_RATE 25.78125 TX_PLL_TYPE\
-LCPLL TX_REFCLK_FREQUENCY 156.25 TX_ACTUAL_REFCLK_FREQUENCY 156.250000000000 TX_FRACN_ENABLED true TX_FRACN_OVRD false TX_FRACN_NUMERATOR 0 TX_REFCLK_SOURCE R0 TX_DATA_ENCODING RAW TX_USER_DATA_WIDTH 80\
-TX_INT_DATA_WIDTH 80 TX_BUFFER_MODE 1 TX_BUFFER_BYPASS_MODE Fast_Sync TX_PIPM_ENABLE false TX_OUTCLK_SOURCE TXPROGDIVCLK TXPROGDIV_FREQ_ENABLE true TXPROGDIV_FREQ_SOURCE LCPLL TXPROGDIV_FREQ_VAL 644.531\
-TX_DIFF_SWING_EMPH_MODE CUSTOM TX_64B66B_SCRAMBLER false TX_64B66B_ENCODER false TX_64B66B_CRC false TX_RATE_GROUP A TX_LANE_DESKEW_HDMI_ENABLE false TX_BUFFER_RESET_ON_RATE_CHANGE ENABLE PRESET None RX_PAM_SEL\
-NRZ RX_HD_EN 0 RX_GRAY_BYP true RX_GRAY_LITTLEENDIAN true RX_PRECODE_BYP true RX_PRECODE_LITTLEENDIAN false INTERNAL_PRESET None RX_LINE_RATE 25.78125 RX_PLL_TYPE LCPLL RX_REFCLK_FREQUENCY 156.25 RX_ACTUAL_REFCLK_FREQUENCY\
-156.250000000000 RX_FRACN_ENABLED true RX_FRACN_OVRD false RX_FRACN_NUMERATOR 0 RX_REFCLK_SOURCE R0 RX_DATA_DECODING RAW RX_USER_DATA_WIDTH 80 RX_INT_DATA_WIDTH 80 RX_BUFFER_MODE 1 RX_OUTCLK_SOURCE RXPROGDIVCLK\
-RXPROGDIV_FREQ_ENABLE true RXPROGDIV_FREQ_SOURCE LCPLL RXPROGDIV_FREQ_VAL 644.531 RXRECCLK_FREQ_ENABLE true RXRECCLK_FREQ_VAL 644.531 INS_LOSS_NYQ 20 RX_EQ_MODE AUTO RX_COUPLING AC RX_TERMINATION PROGRAMMABLE\
-RX_RATE_GROUP A RX_TERMINATION_PROG_VALUE 800 RX_PPM_OFFSET 0 RX_64B66B_DESCRAMBLER false RX_64B66B_DECODER false RX_64B66B_CRC false OOB_ENABLE false RX_COMMA_ALIGN_WORD 1 RX_COMMA_SHOW_REALIGN_ENABLE\
-true PCIE_ENABLE false RX_COMMA_P_ENABLE false RX_COMMA_M_ENABLE false RX_COMMA_DOUBLE_ENABLE false RX_COMMA_P_VAL 0101111100 RX_COMMA_M_VAL 1010000011 RX_COMMA_MASK 0000000000 RX_SLIDE_MODE OFF RX_SSC_PPM\
-0 RX_CB_NUM_SEQ 0 RX_CB_LEN_SEQ 1 RX_CB_MAX_SKEW 1 RX_CB_MAX_LEVEL 1 RX_CB_MASK 00000000 RX_CB_VAL 00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CB_K 00000000 RX_CB_DISP\
-00000000 RX_CB_MASK_0_0 false RX_CB_VAL_0_0 0000000000 RX_CB_K_0_0 false RX_CB_DISP_0_0 false RX_CB_MASK_0_1 false RX_CB_VAL_0_1 0000000000 RX_CB_K_0_1 false RX_CB_DISP_0_1 false RX_CB_MASK_0_2 false RX_CB_VAL_0_2\
-0000000000 RX_CB_K_0_2 false RX_CB_DISP_0_2 false RX_CB_MASK_0_3 false RX_CB_VAL_0_3 0000000000 RX_CB_K_0_3 false RX_CB_DISP_0_3 false RX_CB_MASK_1_0 false RX_CB_VAL_1_0 0000000000 RX_CB_K_1_0 false RX_CB_DISP_1_0\
-false RX_CB_MASK_1_1 false RX_CB_VAL_1_1 0000000000 RX_CB_K_1_1 false RX_CB_DISP_1_1 false RX_CB_MASK_1_2 false RX_CB_VAL_1_2 0000000000 RX_CB_K_1_2 false RX_CB_DISP_1_2 false RX_CB_MASK_1_3 false RX_CB_VAL_1_3\
-0000000000 RX_CB_K_1_3 false RX_CB_DISP_1_3 false RX_CC_NUM_SEQ 0 RX_CC_LEN_SEQ 1 RX_CC_PERIODICITY 5000 RX_CC_KEEP_IDLE DISABLE RX_CC_PRECEDENCE ENABLE RX_CC_REPEAT_WAIT 0 RX_CC_MASK 00000000 RX_CC_VAL\
-00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CC_K 00000000 RX_CC_DISP 00000000 RX_CC_MASK_0_0 false RX_CC_VAL_0_0 0000000000 RX_CC_K_0_0 false RX_CC_DISP_0_0 false\
-RX_CC_MASK_0_1 false RX_CC_VAL_0_1 0000000000 RX_CC_K_0_1 false RX_CC_DISP_0_1 false RX_CC_MASK_0_2 false RX_CC_VAL_0_2 0000000000 RX_CC_K_0_2 false RX_CC_DISP_0_2 false RX_CC_MASK_0_3 false RX_CC_VAL_0_3\
-0000000000 RX_CC_K_0_3 false RX_CC_DISP_0_3 false RX_CC_MASK_1_0 false RX_CC_VAL_1_0 0000000000 RX_CC_K_1_0 false RX_CC_DISP_1_0 false RX_CC_MASK_1_1 false RX_CC_VAL_1_1 0000000000 RX_CC_K_1_1 false RX_CC_DISP_1_1\
-false RX_CC_MASK_1_2 false RX_CC_VAL_1_2 0000000000 RX_CC_K_1_2 false RX_CC_DISP_1_2 false RX_CC_MASK_1_3 false RX_CC_VAL_1_3 0000000000 RX_CC_K_1_3 false RX_CC_DISP_1_3 false PCIE_USERCLK2_FREQ 250 PCIE_USERCLK_FREQ\
-250 RX_JTOL_FC 10 RX_JTOL_LF_SLOPE -20 RX_BUFFER_BYPASS_MODE Fast_Sync RX_BUFFER_BYPASS_MODE_LANE MULTI RX_BUFFER_RESET_ON_CB_CHANGE ENABLE RX_BUFFER_RESET_ON_COMMAALIGN DISABLE RX_BUFFER_RESET_ON_RATE_CHANGE\
-ENABLE RESET_SEQUENCE_INTERVAL 0 RX_COMMA_PRESET NONE RX_COMMA_VALID_ONLY 0 GT_TYPE GTY} \
-    CONFIG.PROT1_LR3_SETTINGS {NA NA} \
-    CONFIG.PROT1_LR4_SETTINGS {NA NA} \
-    CONFIG.PROT1_LR5_SETTINGS {NA NA} \
-    CONFIG.PROT1_LR6_SETTINGS {NA NA} \
-    CONFIG.PROT1_LR7_SETTINGS {NA NA} \
-    CONFIG.PROT1_LR8_SETTINGS {NA NA} \
-    CONFIG.PROT1_LR9_SETTINGS {NA NA} \
-    CONFIG.PROT1_NO_OF_LANES {1} \
-    CONFIG.PROT1_RX_MASTERCLK_SRC {RX1} \
-    CONFIG.PROT1_TX_MASTERCLK_SRC {TX1} \
-    CONFIG.PROT2_ENABLE {true} \
-    CONFIG.PROT2_GT_DIRECTION {DUPLEX} \
-    CONFIG.PROT2_LR0_SETTINGS {GT_DIRECTION DUPLEX TX_PAM_SEL NRZ TX_HD_EN 0 TX_GRAY_BYP true TX_GRAY_LITTLEENDIAN true TX_PRECODE_BYP true TX_PRECODE_LITTLEENDIAN false TX_LINE_RATE 25.78125 TX_PLL_TYPE\
-LCPLL TX_REFCLK_FREQUENCY 156.25 TX_ACTUAL_REFCLK_FREQUENCY 156.250000000000 TX_FRACN_ENABLED true TX_FRACN_OVRD false TX_FRACN_NUMERATOR 0 TX_REFCLK_SOURCE R0 TX_DATA_ENCODING RAW TX_USER_DATA_WIDTH 80\
-TX_INT_DATA_WIDTH 80 TX_BUFFER_MODE 1 TX_BUFFER_BYPASS_MODE Fast_Sync TX_PIPM_ENABLE false TX_OUTCLK_SOURCE TXPROGDIVCLK TXPROGDIV_FREQ_ENABLE true TXPROGDIV_FREQ_SOURCE LCPLL TXPROGDIV_FREQ_VAL 644.531\
-TX_DIFF_SWING_EMPH_MODE CUSTOM TX_64B66B_SCRAMBLER false TX_64B66B_ENCODER false TX_64B66B_CRC false TX_RATE_GROUP A TX_LANE_DESKEW_HDMI_ENABLE false TX_BUFFER_RESET_ON_RATE_CHANGE ENABLE PRESET None RX_PAM_SEL\
-NRZ RX_HD_EN 0 RX_GRAY_BYP true RX_GRAY_LITTLEENDIAN true RX_PRECODE_BYP true RX_PRECODE_LITTLEENDIAN false INTERNAL_PRESET None RX_LINE_RATE 25.78125 RX_PLL_TYPE LCPLL RX_REFCLK_FREQUENCY 156.25 RX_ACTUAL_REFCLK_FREQUENCY\
-156.250000000000 RX_FRACN_ENABLED true RX_FRACN_OVRD false RX_FRACN_NUMERATOR 0 RX_REFCLK_SOURCE R0 RX_DATA_DECODING RAW RX_USER_DATA_WIDTH 80 RX_INT_DATA_WIDTH 80 RX_BUFFER_MODE 1 RX_OUTCLK_SOURCE RXPROGDIVCLK\
-RXPROGDIV_FREQ_ENABLE true RXPROGDIV_FREQ_SOURCE LCPLL RXPROGDIV_FREQ_VAL 644.531 RXRECCLK_FREQ_ENABLE true RXRECCLK_FREQ_VAL 644.531 INS_LOSS_NYQ 20 RX_EQ_MODE AUTO RX_COUPLING AC RX_TERMINATION PROGRAMMABLE\
-RX_RATE_GROUP A RX_TERMINATION_PROG_VALUE 800 RX_PPM_OFFSET 0 RX_64B66B_DESCRAMBLER false RX_64B66B_DECODER false RX_64B66B_CRC false OOB_ENABLE false RX_COMMA_ALIGN_WORD 1 RX_COMMA_SHOW_REALIGN_ENABLE\
-true PCIE_ENABLE false RX_COMMA_P_ENABLE false RX_COMMA_M_ENABLE false RX_COMMA_DOUBLE_ENABLE false RX_COMMA_P_VAL 0101111100 RX_COMMA_M_VAL 1010000011 RX_COMMA_MASK 0000000000 RX_SLIDE_MODE OFF RX_SSC_PPM\
-0 RX_CB_NUM_SEQ 0 RX_CB_LEN_SEQ 1 RX_CB_MAX_SKEW 1 RX_CB_MAX_LEVEL 1 RX_CB_MASK 00000000 RX_CB_VAL 00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CB_K 00000000 RX_CB_DISP\
-00000000 RX_CB_MASK_0_0 false RX_CB_VAL_0_0 0000000000 RX_CB_K_0_0 false RX_CB_DISP_0_0 false RX_CB_MASK_0_1 false RX_CB_VAL_0_1 0000000000 RX_CB_K_0_1 false RX_CB_DISP_0_1 false RX_CB_MASK_0_2 false RX_CB_VAL_0_2\
-0000000000 RX_CB_K_0_2 false RX_CB_DISP_0_2 false RX_CB_MASK_0_3 false RX_CB_VAL_0_3 0000000000 RX_CB_K_0_3 false RX_CB_DISP_0_3 false RX_CB_MASK_1_0 false RX_CB_VAL_1_0 0000000000 RX_CB_K_1_0 false RX_CB_DISP_1_0\
-false RX_CB_MASK_1_1 false RX_CB_VAL_1_1 0000000000 RX_CB_K_1_1 false RX_CB_DISP_1_1 false RX_CB_MASK_1_2 false RX_CB_VAL_1_2 0000000000 RX_CB_K_1_2 false RX_CB_DISP_1_2 false RX_CB_MASK_1_3 false RX_CB_VAL_1_3\
-0000000000 RX_CB_K_1_3 false RX_CB_DISP_1_3 false RX_CC_NUM_SEQ 0 RX_CC_LEN_SEQ 1 RX_CC_PERIODICITY 5000 RX_CC_KEEP_IDLE DISABLE RX_CC_PRECEDENCE ENABLE RX_CC_REPEAT_WAIT 0 RX_CC_MASK 00000000 RX_CC_VAL\
-00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CC_K 00000000 RX_CC_DISP 00000000 RX_CC_MASK_0_0 false RX_CC_VAL_0_0 0000000000 RX_CC_K_0_0 false RX_CC_DISP_0_0 false\
-RX_CC_MASK_0_1 false RX_CC_VAL_0_1 0000000000 RX_CC_K_0_1 false RX_CC_DISP_0_1 false RX_CC_MASK_0_2 false RX_CC_VAL_0_2 0000000000 RX_CC_K_0_2 false RX_CC_DISP_0_2 false RX_CC_MASK_0_3 false RX_CC_VAL_0_3\
-0000000000 RX_CC_K_0_3 false RX_CC_DISP_0_3 false RX_CC_MASK_1_0 false RX_CC_VAL_1_0 0000000000 RX_CC_K_1_0 false RX_CC_DISP_1_0 false RX_CC_MASK_1_1 false RX_CC_VAL_1_1 0000000000 RX_CC_K_1_1 false RX_CC_DISP_1_1\
-false RX_CC_MASK_1_2 false RX_CC_VAL_1_2 0000000000 RX_CC_K_1_2 false RX_CC_DISP_1_2 false RX_CC_MASK_1_3 false RX_CC_VAL_1_3 0000000000 RX_CC_K_1_3 false RX_CC_DISP_1_3 false PCIE_USERCLK2_FREQ 250 PCIE_USERCLK_FREQ\
-250 RX_JTOL_FC 10 RX_JTOL_LF_SLOPE -20 RX_BUFFER_BYPASS_MODE Fast_Sync RX_BUFFER_BYPASS_MODE_LANE MULTI RX_BUFFER_RESET_ON_CB_CHANGE ENABLE RX_BUFFER_RESET_ON_COMMAALIGN DISABLE RX_BUFFER_RESET_ON_RATE_CHANGE\
-ENABLE RESET_SEQUENCE_INTERVAL 0 RX_COMMA_PRESET NONE RX_COMMA_VALID_ONLY 0 GT_TYPE GTY} \
-    CONFIG.PROT2_LR10_SETTINGS {NA NA} \
-    CONFIG.PROT2_LR11_SETTINGS {NA NA} \
-    CONFIG.PROT2_LR12_SETTINGS {NA NA} \
-    CONFIG.PROT2_LR13_SETTINGS {NA NA} \
-    CONFIG.PROT2_LR14_SETTINGS {NA NA} \
-    CONFIG.PROT2_LR15_SETTINGS {NA NA} \
-    CONFIG.PROT2_LR1_SETTINGS {GT_DIRECTION DUPLEX TX_PAM_SEL NRZ TX_HD_EN 0 TX_GRAY_BYP true TX_GRAY_LITTLEENDIAN true TX_PRECODE_BYP true TX_PRECODE_LITTLEENDIAN false TX_LINE_RATE 25.78125 TX_PLL_TYPE\
-LCPLL TX_REFCLK_FREQUENCY 156.25 TX_ACTUAL_REFCLK_FREQUENCY 156.250000000000 TX_FRACN_ENABLED true TX_FRACN_OVRD false TX_FRACN_NUMERATOR 0 TX_REFCLK_SOURCE R0 TX_DATA_ENCODING RAW TX_USER_DATA_WIDTH 80\
-TX_INT_DATA_WIDTH 80 TX_BUFFER_MODE 1 TX_BUFFER_BYPASS_MODE Fast_Sync TX_PIPM_ENABLE false TX_OUTCLK_SOURCE TXPROGDIVCLK TXPROGDIV_FREQ_ENABLE true TXPROGDIV_FREQ_SOURCE LCPLL TXPROGDIV_FREQ_VAL 644.531\
-TX_DIFF_SWING_EMPH_MODE CUSTOM TX_64B66B_SCRAMBLER false TX_64B66B_ENCODER false TX_64B66B_CRC false TX_RATE_GROUP A TX_LANE_DESKEW_HDMI_ENABLE false TX_BUFFER_RESET_ON_RATE_CHANGE ENABLE PRESET None RX_PAM_SEL\
-NRZ RX_HD_EN 0 RX_GRAY_BYP true RX_GRAY_LITTLEENDIAN true RX_PRECODE_BYP true RX_PRECODE_LITTLEENDIAN false INTERNAL_PRESET None RX_LINE_RATE 25.78125 RX_PLL_TYPE LCPLL RX_REFCLK_FREQUENCY 156.25 RX_ACTUAL_REFCLK_FREQUENCY\
-156.250000000000 RX_FRACN_ENABLED true RX_FRACN_OVRD false RX_FRACN_NUMERATOR 0 RX_REFCLK_SOURCE R0 RX_DATA_DECODING RAW RX_USER_DATA_WIDTH 80 RX_INT_DATA_WIDTH 80 RX_BUFFER_MODE 1 RX_OUTCLK_SOURCE RXPROGDIVCLK\
-RXPROGDIV_FREQ_ENABLE true RXPROGDIV_FREQ_SOURCE LCPLL RXPROGDIV_FREQ_VAL 644.531 RXRECCLK_FREQ_ENABLE true RXRECCLK_FREQ_VAL 644.531 INS_LOSS_NYQ 20 RX_EQ_MODE AUTO RX_COUPLING AC RX_TERMINATION PROGRAMMABLE\
-RX_RATE_GROUP A RX_TERMINATION_PROG_VALUE 800 RX_PPM_OFFSET 0 RX_64B66B_DESCRAMBLER false RX_64B66B_DECODER false RX_64B66B_CRC false OOB_ENABLE false RX_COMMA_ALIGN_WORD 1 RX_COMMA_SHOW_REALIGN_ENABLE\
-true PCIE_ENABLE false RX_COMMA_P_ENABLE false RX_COMMA_M_ENABLE false RX_COMMA_DOUBLE_ENABLE false RX_COMMA_P_VAL 0101111100 RX_COMMA_M_VAL 1010000011 RX_COMMA_MASK 0000000000 RX_SLIDE_MODE OFF RX_SSC_PPM\
-0 RX_CB_NUM_SEQ 0 RX_CB_LEN_SEQ 1 RX_CB_MAX_SKEW 1 RX_CB_MAX_LEVEL 1 RX_CB_MASK 00000000 RX_CB_VAL 00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CB_K 00000000 RX_CB_DISP\
-00000000 RX_CB_MASK_0_0 false RX_CB_VAL_0_0 0000000000 RX_CB_K_0_0 false RX_CB_DISP_0_0 false RX_CB_MASK_0_1 false RX_CB_VAL_0_1 0000000000 RX_CB_K_0_1 false RX_CB_DISP_0_1 false RX_CB_MASK_0_2 false RX_CB_VAL_0_2\
-0000000000 RX_CB_K_0_2 false RX_CB_DISP_0_2 false RX_CB_MASK_0_3 false RX_CB_VAL_0_3 0000000000 RX_CB_K_0_3 false RX_CB_DISP_0_3 false RX_CB_MASK_1_0 false RX_CB_VAL_1_0 0000000000 RX_CB_K_1_0 false RX_CB_DISP_1_0\
-false RX_CB_MASK_1_1 false RX_CB_VAL_1_1 0000000000 RX_CB_K_1_1 false RX_CB_DISP_1_1 false RX_CB_MASK_1_2 false RX_CB_VAL_1_2 0000000000 RX_CB_K_1_2 false RX_CB_DISP_1_2 false RX_CB_MASK_1_3 false RX_CB_VAL_1_3\
-0000000000 RX_CB_K_1_3 false RX_CB_DISP_1_3 false RX_CC_NUM_SEQ 0 RX_CC_LEN_SEQ 1 RX_CC_PERIODICITY 5000 RX_CC_KEEP_IDLE DISABLE RX_CC_PRECEDENCE ENABLE RX_CC_REPEAT_WAIT 0 RX_CC_MASK 00000000 RX_CC_VAL\
-00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CC_K 00000000 RX_CC_DISP 00000000 RX_CC_MASK_0_0 false RX_CC_VAL_0_0 0000000000 RX_CC_K_0_0 false RX_CC_DISP_0_0 false\
-RX_CC_MASK_0_1 false RX_CC_VAL_0_1 0000000000 RX_CC_K_0_1 false RX_CC_DISP_0_1 false RX_CC_MASK_0_2 false RX_CC_VAL_0_2 0000000000 RX_CC_K_0_2 false RX_CC_DISP_0_2 false RX_CC_MASK_0_3 false RX_CC_VAL_0_3\
-0000000000 RX_CC_K_0_3 false RX_CC_DISP_0_3 false RX_CC_MASK_1_0 false RX_CC_VAL_1_0 0000000000 RX_CC_K_1_0 false RX_CC_DISP_1_0 false RX_CC_MASK_1_1 false RX_CC_VAL_1_1 0000000000 RX_CC_K_1_1 false RX_CC_DISP_1_1\
-false RX_CC_MASK_1_2 false RX_CC_VAL_1_2 0000000000 RX_CC_K_1_2 false RX_CC_DISP_1_2 false RX_CC_MASK_1_3 false RX_CC_VAL_1_3 0000000000 RX_CC_K_1_3 false RX_CC_DISP_1_3 false PCIE_USERCLK2_FREQ 250 PCIE_USERCLK_FREQ\
-250 RX_JTOL_FC 10 RX_JTOL_LF_SLOPE -20 RX_BUFFER_BYPASS_MODE Fast_Sync RX_BUFFER_BYPASS_MODE_LANE MULTI RX_BUFFER_RESET_ON_CB_CHANGE ENABLE RX_BUFFER_RESET_ON_COMMAALIGN DISABLE RX_BUFFER_RESET_ON_RATE_CHANGE\
-ENABLE RESET_SEQUENCE_INTERVAL 0 RX_COMMA_PRESET NONE RX_COMMA_VALID_ONLY 0 GT_TYPE GTY} \
-    CONFIG.PROT2_LR2_SETTINGS {GT_DIRECTION DUPLEX TX_PAM_SEL NRZ TX_HD_EN 0 TX_GRAY_BYP true TX_GRAY_LITTLEENDIAN true TX_PRECODE_BYP true TX_PRECODE_LITTLEENDIAN false TX_LINE_RATE 25.78125 TX_PLL_TYPE\
-LCPLL TX_REFCLK_FREQUENCY 156.25 TX_ACTUAL_REFCLK_FREQUENCY 156.250000000000 TX_FRACN_ENABLED true TX_FRACN_OVRD false TX_FRACN_NUMERATOR 0 TX_REFCLK_SOURCE R0 TX_DATA_ENCODING RAW TX_USER_DATA_WIDTH 80\
-TX_INT_DATA_WIDTH 80 TX_BUFFER_MODE 1 TX_BUFFER_BYPASS_MODE Fast_Sync TX_PIPM_ENABLE false TX_OUTCLK_SOURCE TXPROGDIVCLK TXPROGDIV_FREQ_ENABLE true TXPROGDIV_FREQ_SOURCE LCPLL TXPROGDIV_FREQ_VAL 644.531\
-TX_DIFF_SWING_EMPH_MODE CUSTOM TX_64B66B_SCRAMBLER false TX_64B66B_ENCODER false TX_64B66B_CRC false TX_RATE_GROUP A TX_LANE_DESKEW_HDMI_ENABLE false TX_BUFFER_RESET_ON_RATE_CHANGE ENABLE PRESET None RX_PAM_SEL\
-NRZ RX_HD_EN 0 RX_GRAY_BYP true RX_GRAY_LITTLEENDIAN true RX_PRECODE_BYP true RX_PRECODE_LITTLEENDIAN false INTERNAL_PRESET None RX_LINE_RATE 25.78125 RX_PLL_TYPE LCPLL RX_REFCLK_FREQUENCY 156.25 RX_ACTUAL_REFCLK_FREQUENCY\
-156.250000000000 RX_FRACN_ENABLED true RX_FRACN_OVRD false RX_FRACN_NUMERATOR 0 RX_REFCLK_SOURCE R0 RX_DATA_DECODING RAW RX_USER_DATA_WIDTH 80 RX_INT_DATA_WIDTH 80 RX_BUFFER_MODE 1 RX_OUTCLK_SOURCE RXPROGDIVCLK\
-RXPROGDIV_FREQ_ENABLE true RXPROGDIV_FREQ_SOURCE LCPLL RXPROGDIV_FREQ_VAL 644.531 RXRECCLK_FREQ_ENABLE true RXRECCLK_FREQ_VAL 644.531 INS_LOSS_NYQ 20 RX_EQ_MODE AUTO RX_COUPLING AC RX_TERMINATION PROGRAMMABLE\
-RX_RATE_GROUP A RX_TERMINATION_PROG_VALUE 800 RX_PPM_OFFSET 0 RX_64B66B_DESCRAMBLER false RX_64B66B_DECODER false RX_64B66B_CRC false OOB_ENABLE false RX_COMMA_ALIGN_WORD 1 RX_COMMA_SHOW_REALIGN_ENABLE\
-true PCIE_ENABLE false RX_COMMA_P_ENABLE false RX_COMMA_M_ENABLE false RX_COMMA_DOUBLE_ENABLE false RX_COMMA_P_VAL 0101111100 RX_COMMA_M_VAL 1010000011 RX_COMMA_MASK 0000000000 RX_SLIDE_MODE OFF RX_SSC_PPM\
-0 RX_CB_NUM_SEQ 0 RX_CB_LEN_SEQ 1 RX_CB_MAX_SKEW 1 RX_CB_MAX_LEVEL 1 RX_CB_MASK 00000000 RX_CB_VAL 00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CB_K 00000000 RX_CB_DISP\
-00000000 RX_CB_MASK_0_0 false RX_CB_VAL_0_0 0000000000 RX_CB_K_0_0 false RX_CB_DISP_0_0 false RX_CB_MASK_0_1 false RX_CB_VAL_0_1 0000000000 RX_CB_K_0_1 false RX_CB_DISP_0_1 false RX_CB_MASK_0_2 false RX_CB_VAL_0_2\
-0000000000 RX_CB_K_0_2 false RX_CB_DISP_0_2 false RX_CB_MASK_0_3 false RX_CB_VAL_0_3 0000000000 RX_CB_K_0_3 false RX_CB_DISP_0_3 false RX_CB_MASK_1_0 false RX_CB_VAL_1_0 0000000000 RX_CB_K_1_0 false RX_CB_DISP_1_0\
-false RX_CB_MASK_1_1 false RX_CB_VAL_1_1 0000000000 RX_CB_K_1_1 false RX_CB_DISP_1_1 false RX_CB_MASK_1_2 false RX_CB_VAL_1_2 0000000000 RX_CB_K_1_2 false RX_CB_DISP_1_2 false RX_CB_MASK_1_3 false RX_CB_VAL_1_3\
-0000000000 RX_CB_K_1_3 false RX_CB_DISP_1_3 false RX_CC_NUM_SEQ 0 RX_CC_LEN_SEQ 1 RX_CC_PERIODICITY 5000 RX_CC_KEEP_IDLE DISABLE RX_CC_PRECEDENCE ENABLE RX_CC_REPEAT_WAIT 0 RX_CC_MASK 00000000 RX_CC_VAL\
-00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CC_K 00000000 RX_CC_DISP 00000000 RX_CC_MASK_0_0 false RX_CC_VAL_0_0 0000000000 RX_CC_K_0_0 false RX_CC_DISP_0_0 false\
-RX_CC_MASK_0_1 false RX_CC_VAL_0_1 0000000000 RX_CC_K_0_1 false RX_CC_DISP_0_1 false RX_CC_MASK_0_2 false RX_CC_VAL_0_2 0000000000 RX_CC_K_0_2 false RX_CC_DISP_0_2 false RX_CC_MASK_0_3 false RX_CC_VAL_0_3\
-0000000000 RX_CC_K_0_3 false RX_CC_DISP_0_3 false RX_CC_MASK_1_0 false RX_CC_VAL_1_0 0000000000 RX_CC_K_1_0 false RX_CC_DISP_1_0 false RX_CC_MASK_1_1 false RX_CC_VAL_1_1 0000000000 RX_CC_K_1_1 false RX_CC_DISP_1_1\
-false RX_CC_MASK_1_2 false RX_CC_VAL_1_2 0000000000 RX_CC_K_1_2 false RX_CC_DISP_1_2 false RX_CC_MASK_1_3 false RX_CC_VAL_1_3 0000000000 RX_CC_K_1_3 false RX_CC_DISP_1_3 false PCIE_USERCLK2_FREQ 250 PCIE_USERCLK_FREQ\
-250 RX_JTOL_FC 10 RX_JTOL_LF_SLOPE -20 RX_BUFFER_BYPASS_MODE Fast_Sync RX_BUFFER_BYPASS_MODE_LANE MULTI RX_BUFFER_RESET_ON_CB_CHANGE ENABLE RX_BUFFER_RESET_ON_COMMAALIGN DISABLE RX_BUFFER_RESET_ON_RATE_CHANGE\
-ENABLE RESET_SEQUENCE_INTERVAL 0 RX_COMMA_PRESET NONE RX_COMMA_VALID_ONLY 0 GT_TYPE GTY} \
-    CONFIG.PROT2_LR3_SETTINGS {NA NA} \
-    CONFIG.PROT2_LR4_SETTINGS {NA NA} \
-    CONFIG.PROT2_LR5_SETTINGS {NA NA} \
-    CONFIG.PROT2_LR6_SETTINGS {NA NA} \
-    CONFIG.PROT2_LR7_SETTINGS {NA NA} \
-    CONFIG.PROT2_LR8_SETTINGS {NA NA} \
-    CONFIG.PROT2_LR9_SETTINGS {NA NA} \
-    CONFIG.PROT2_NO_OF_LANES {1} \
-    CONFIG.PROT2_RX_MASTERCLK_SRC {RX2} \
-    CONFIG.PROT2_TX_MASTERCLK_SRC {TX2} \
-    CONFIG.PROT3_ENABLE {true} \
-    CONFIG.PROT3_GT_DIRECTION {DUPLEX} \
-    CONFIG.PROT3_LR0_SETTINGS {GT_DIRECTION DUPLEX TX_PAM_SEL NRZ TX_HD_EN 0 TX_GRAY_BYP true TX_GRAY_LITTLEENDIAN true TX_PRECODE_BYP true TX_PRECODE_LITTLEENDIAN false TX_LINE_RATE 25.78125 TX_PLL_TYPE\
-LCPLL TX_REFCLK_FREQUENCY 156.25 TX_ACTUAL_REFCLK_FREQUENCY 156.250000000000 TX_FRACN_ENABLED true TX_FRACN_OVRD false TX_FRACN_NUMERATOR 0 TX_REFCLK_SOURCE R0 TX_DATA_ENCODING RAW TX_USER_DATA_WIDTH 80\
-TX_INT_DATA_WIDTH 80 TX_BUFFER_MODE 1 TX_BUFFER_BYPASS_MODE Fast_Sync TX_PIPM_ENABLE false TX_OUTCLK_SOURCE TXPROGDIVCLK TXPROGDIV_FREQ_ENABLE true TXPROGDIV_FREQ_SOURCE LCPLL TXPROGDIV_FREQ_VAL 644.531\
-TX_DIFF_SWING_EMPH_MODE CUSTOM TX_64B66B_SCRAMBLER false TX_64B66B_ENCODER false TX_64B66B_CRC false TX_RATE_GROUP A TX_LANE_DESKEW_HDMI_ENABLE false TX_BUFFER_RESET_ON_RATE_CHANGE ENABLE PRESET None RX_PAM_SEL\
-NRZ RX_HD_EN 0 RX_GRAY_BYP true RX_GRAY_LITTLEENDIAN true RX_PRECODE_BYP true RX_PRECODE_LITTLEENDIAN false INTERNAL_PRESET None RX_LINE_RATE 25.78125 RX_PLL_TYPE LCPLL RX_REFCLK_FREQUENCY 156.25 RX_ACTUAL_REFCLK_FREQUENCY\
-156.250000000000 RX_FRACN_ENABLED true RX_FRACN_OVRD false RX_FRACN_NUMERATOR 0 RX_REFCLK_SOURCE R0 RX_DATA_DECODING RAW RX_USER_DATA_WIDTH 80 RX_INT_DATA_WIDTH 80 RX_BUFFER_MODE 1 RX_OUTCLK_SOURCE RXPROGDIVCLK\
-RXPROGDIV_FREQ_ENABLE true RXPROGDIV_FREQ_SOURCE LCPLL RXPROGDIV_FREQ_VAL 644.531 RXRECCLK_FREQ_ENABLE true RXRECCLK_FREQ_VAL 644.531 INS_LOSS_NYQ 20 RX_EQ_MODE AUTO RX_COUPLING AC RX_TERMINATION PROGRAMMABLE\
-RX_RATE_GROUP A RX_TERMINATION_PROG_VALUE 800 RX_PPM_OFFSET 0 RX_64B66B_DESCRAMBLER false RX_64B66B_DECODER false RX_64B66B_CRC false OOB_ENABLE false RX_COMMA_ALIGN_WORD 1 RX_COMMA_SHOW_REALIGN_ENABLE\
-true PCIE_ENABLE false RX_COMMA_P_ENABLE false RX_COMMA_M_ENABLE false RX_COMMA_DOUBLE_ENABLE false RX_COMMA_P_VAL 0101111100 RX_COMMA_M_VAL 1010000011 RX_COMMA_MASK 0000000000 RX_SLIDE_MODE OFF RX_SSC_PPM\
-0 RX_CB_NUM_SEQ 0 RX_CB_LEN_SEQ 1 RX_CB_MAX_SKEW 1 RX_CB_MAX_LEVEL 1 RX_CB_MASK 00000000 RX_CB_VAL 00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CB_K 00000000 RX_CB_DISP\
-00000000 RX_CB_MASK_0_0 false RX_CB_VAL_0_0 0000000000 RX_CB_K_0_0 false RX_CB_DISP_0_0 false RX_CB_MASK_0_1 false RX_CB_VAL_0_1 0000000000 RX_CB_K_0_1 false RX_CB_DISP_0_1 false RX_CB_MASK_0_2 false RX_CB_VAL_0_2\
-0000000000 RX_CB_K_0_2 false RX_CB_DISP_0_2 false RX_CB_MASK_0_3 false RX_CB_VAL_0_3 0000000000 RX_CB_K_0_3 false RX_CB_DISP_0_3 false RX_CB_MASK_1_0 false RX_CB_VAL_1_0 0000000000 RX_CB_K_1_0 false RX_CB_DISP_1_0\
-false RX_CB_MASK_1_1 false RX_CB_VAL_1_1 0000000000 RX_CB_K_1_1 false RX_CB_DISP_1_1 false RX_CB_MASK_1_2 false RX_CB_VAL_1_2 0000000000 RX_CB_K_1_2 false RX_CB_DISP_1_2 false RX_CB_MASK_1_3 false RX_CB_VAL_1_3\
-0000000000 RX_CB_K_1_3 false RX_CB_DISP_1_3 false RX_CC_NUM_SEQ 0 RX_CC_LEN_SEQ 1 RX_CC_PERIODICITY 5000 RX_CC_KEEP_IDLE DISABLE RX_CC_PRECEDENCE ENABLE RX_CC_REPEAT_WAIT 0 RX_CC_MASK 00000000 RX_CC_VAL\
-00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CC_K 00000000 RX_CC_DISP 00000000 RX_CC_MASK_0_0 false RX_CC_VAL_0_0 0000000000 RX_CC_K_0_0 false RX_CC_DISP_0_0 false\
-RX_CC_MASK_0_1 false RX_CC_VAL_0_1 0000000000 RX_CC_K_0_1 false RX_CC_DISP_0_1 false RX_CC_MASK_0_2 false RX_CC_VAL_0_2 0000000000 RX_CC_K_0_2 false RX_CC_DISP_0_2 false RX_CC_MASK_0_3 false RX_CC_VAL_0_3\
-0000000000 RX_CC_K_0_3 false RX_CC_DISP_0_3 false RX_CC_MASK_1_0 false RX_CC_VAL_1_0 0000000000 RX_CC_K_1_0 false RX_CC_DISP_1_0 false RX_CC_MASK_1_1 false RX_CC_VAL_1_1 0000000000 RX_CC_K_1_1 false RX_CC_DISP_1_1\
-false RX_CC_MASK_1_2 false RX_CC_VAL_1_2 0000000000 RX_CC_K_1_2 false RX_CC_DISP_1_2 false RX_CC_MASK_1_3 false RX_CC_VAL_1_3 0000000000 RX_CC_K_1_3 false RX_CC_DISP_1_3 false PCIE_USERCLK2_FREQ 250 PCIE_USERCLK_FREQ\
-250 RX_JTOL_FC 10 RX_JTOL_LF_SLOPE -20 RX_BUFFER_BYPASS_MODE Fast_Sync RX_BUFFER_BYPASS_MODE_LANE MULTI RX_BUFFER_RESET_ON_CB_CHANGE ENABLE RX_BUFFER_RESET_ON_COMMAALIGN DISABLE RX_BUFFER_RESET_ON_RATE_CHANGE\
-ENABLE RESET_SEQUENCE_INTERVAL 0 RX_COMMA_PRESET NONE RX_COMMA_VALID_ONLY 0 GT_TYPE GTY} \
-    CONFIG.PROT3_LR10_SETTINGS {NA NA} \
-    CONFIG.PROT3_LR11_SETTINGS {NA NA} \
-    CONFIG.PROT3_LR12_SETTINGS {NA NA} \
-    CONFIG.PROT3_LR13_SETTINGS {NA NA} \
-    CONFIG.PROT3_LR14_SETTINGS {NA NA} \
-    CONFIG.PROT3_LR15_SETTINGS {NA NA} \
-    CONFIG.PROT3_LR1_SETTINGS {GT_DIRECTION DUPLEX TX_PAM_SEL NRZ TX_HD_EN 0 TX_GRAY_BYP true TX_GRAY_LITTLEENDIAN true TX_PRECODE_BYP true TX_PRECODE_LITTLEENDIAN false TX_LINE_RATE 25.78125 TX_PLL_TYPE\
-LCPLL TX_REFCLK_FREQUENCY 156.25 TX_ACTUAL_REFCLK_FREQUENCY 156.250000000000 TX_FRACN_ENABLED true TX_FRACN_OVRD false TX_FRACN_NUMERATOR 0 TX_REFCLK_SOURCE R0 TX_DATA_ENCODING RAW TX_USER_DATA_WIDTH 80\
-TX_INT_DATA_WIDTH 80 TX_BUFFER_MODE 1 TX_BUFFER_BYPASS_MODE Fast_Sync TX_PIPM_ENABLE false TX_OUTCLK_SOURCE TXPROGDIVCLK TXPROGDIV_FREQ_ENABLE true TXPROGDIV_FREQ_SOURCE LCPLL TXPROGDIV_FREQ_VAL 644.531\
-TX_DIFF_SWING_EMPH_MODE CUSTOM TX_64B66B_SCRAMBLER false TX_64B66B_ENCODER false TX_64B66B_CRC false TX_RATE_GROUP A TX_LANE_DESKEW_HDMI_ENABLE false TX_BUFFER_RESET_ON_RATE_CHANGE ENABLE PRESET None RX_PAM_SEL\
-NRZ RX_HD_EN 0 RX_GRAY_BYP true RX_GRAY_LITTLEENDIAN true RX_PRECODE_BYP true RX_PRECODE_LITTLEENDIAN false INTERNAL_PRESET None RX_LINE_RATE 25.78125 RX_PLL_TYPE LCPLL RX_REFCLK_FREQUENCY 156.25 RX_ACTUAL_REFCLK_FREQUENCY\
-156.250000000000 RX_FRACN_ENABLED true RX_FRACN_OVRD false RX_FRACN_NUMERATOR 0 RX_REFCLK_SOURCE R0 RX_DATA_DECODING RAW RX_USER_DATA_WIDTH 80 RX_INT_DATA_WIDTH 80 RX_BUFFER_MODE 1 RX_OUTCLK_SOURCE RXPROGDIVCLK\
-RXPROGDIV_FREQ_ENABLE true RXPROGDIV_FREQ_SOURCE LCPLL RXPROGDIV_FREQ_VAL 644.531 RXRECCLK_FREQ_ENABLE true RXRECCLK_FREQ_VAL 644.531 INS_LOSS_NYQ 20 RX_EQ_MODE AUTO RX_COUPLING AC RX_TERMINATION PROGRAMMABLE\
-RX_RATE_GROUP A RX_TERMINATION_PROG_VALUE 800 RX_PPM_OFFSET 0 RX_64B66B_DESCRAMBLER false RX_64B66B_DECODER false RX_64B66B_CRC false OOB_ENABLE false RX_COMMA_ALIGN_WORD 1 RX_COMMA_SHOW_REALIGN_ENABLE\
-true PCIE_ENABLE false RX_COMMA_P_ENABLE false RX_COMMA_M_ENABLE false RX_COMMA_DOUBLE_ENABLE false RX_COMMA_P_VAL 0101111100 RX_COMMA_M_VAL 1010000011 RX_COMMA_MASK 0000000000 RX_SLIDE_MODE OFF RX_SSC_PPM\
-0 RX_CB_NUM_SEQ 0 RX_CB_LEN_SEQ 1 RX_CB_MAX_SKEW 1 RX_CB_MAX_LEVEL 1 RX_CB_MASK 00000000 RX_CB_VAL 00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CB_K 00000000 RX_CB_DISP\
-00000000 RX_CB_MASK_0_0 false RX_CB_VAL_0_0 0000000000 RX_CB_K_0_0 false RX_CB_DISP_0_0 false RX_CB_MASK_0_1 false RX_CB_VAL_0_1 0000000000 RX_CB_K_0_1 false RX_CB_DISP_0_1 false RX_CB_MASK_0_2 false RX_CB_VAL_0_2\
-0000000000 RX_CB_K_0_2 false RX_CB_DISP_0_2 false RX_CB_MASK_0_3 false RX_CB_VAL_0_3 0000000000 RX_CB_K_0_3 false RX_CB_DISP_0_3 false RX_CB_MASK_1_0 false RX_CB_VAL_1_0 0000000000 RX_CB_K_1_0 false RX_CB_DISP_1_0\
-false RX_CB_MASK_1_1 false RX_CB_VAL_1_1 0000000000 RX_CB_K_1_1 false RX_CB_DISP_1_1 false RX_CB_MASK_1_2 false RX_CB_VAL_1_2 0000000000 RX_CB_K_1_2 false RX_CB_DISP_1_2 false RX_CB_MASK_1_3 false RX_CB_VAL_1_3\
-0000000000 RX_CB_K_1_3 false RX_CB_DISP_1_3 false RX_CC_NUM_SEQ 0 RX_CC_LEN_SEQ 1 RX_CC_PERIODICITY 5000 RX_CC_KEEP_IDLE DISABLE RX_CC_PRECEDENCE ENABLE RX_CC_REPEAT_WAIT 0 RX_CC_MASK 00000000 RX_CC_VAL\
-00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CC_K 00000000 RX_CC_DISP 00000000 RX_CC_MASK_0_0 false RX_CC_VAL_0_0 0000000000 RX_CC_K_0_0 false RX_CC_DISP_0_0 false\
-RX_CC_MASK_0_1 false RX_CC_VAL_0_1 0000000000 RX_CC_K_0_1 false RX_CC_DISP_0_1 false RX_CC_MASK_0_2 false RX_CC_VAL_0_2 0000000000 RX_CC_K_0_2 false RX_CC_DISP_0_2 false RX_CC_MASK_0_3 false RX_CC_VAL_0_3\
-0000000000 RX_CC_K_0_3 false RX_CC_DISP_0_3 false RX_CC_MASK_1_0 false RX_CC_VAL_1_0 0000000000 RX_CC_K_1_0 false RX_CC_DISP_1_0 false RX_CC_MASK_1_1 false RX_CC_VAL_1_1 0000000000 RX_CC_K_1_1 false RX_CC_DISP_1_1\
-false RX_CC_MASK_1_2 false RX_CC_VAL_1_2 0000000000 RX_CC_K_1_2 false RX_CC_DISP_1_2 false RX_CC_MASK_1_3 false RX_CC_VAL_1_3 0000000000 RX_CC_K_1_3 false RX_CC_DISP_1_3 false PCIE_USERCLK2_FREQ 250 PCIE_USERCLK_FREQ\
-250 RX_JTOL_FC 10 RX_JTOL_LF_SLOPE -20 RX_BUFFER_BYPASS_MODE Fast_Sync RX_BUFFER_BYPASS_MODE_LANE MULTI RX_BUFFER_RESET_ON_CB_CHANGE ENABLE RX_BUFFER_RESET_ON_COMMAALIGN DISABLE RX_BUFFER_RESET_ON_RATE_CHANGE\
-ENABLE RESET_SEQUENCE_INTERVAL 0 RX_COMMA_PRESET NONE RX_COMMA_VALID_ONLY 0 GT_TYPE GTY} \
-    CONFIG.PROT3_LR2_SETTINGS {GT_DIRECTION DUPLEX TX_PAM_SEL NRZ TX_HD_EN 0 TX_GRAY_BYP true TX_GRAY_LITTLEENDIAN true TX_PRECODE_BYP true TX_PRECODE_LITTLEENDIAN false TX_LINE_RATE 25.78125 TX_PLL_TYPE\
-LCPLL TX_REFCLK_FREQUENCY 156.25 TX_ACTUAL_REFCLK_FREQUENCY 156.250000000000 TX_FRACN_ENABLED true TX_FRACN_OVRD false TX_FRACN_NUMERATOR 0 TX_REFCLK_SOURCE R0 TX_DATA_ENCODING RAW TX_USER_DATA_WIDTH 80\
-TX_INT_DATA_WIDTH 80 TX_BUFFER_MODE 1 TX_BUFFER_BYPASS_MODE Fast_Sync TX_PIPM_ENABLE false TX_OUTCLK_SOURCE TXPROGDIVCLK TXPROGDIV_FREQ_ENABLE true TXPROGDIV_FREQ_SOURCE LCPLL TXPROGDIV_FREQ_VAL 644.531\
-TX_DIFF_SWING_EMPH_MODE CUSTOM TX_64B66B_SCRAMBLER false TX_64B66B_ENCODER false TX_64B66B_CRC false TX_RATE_GROUP A TX_LANE_DESKEW_HDMI_ENABLE false TX_BUFFER_RESET_ON_RATE_CHANGE ENABLE PRESET None RX_PAM_SEL\
-NRZ RX_HD_EN 0 RX_GRAY_BYP true RX_GRAY_LITTLEENDIAN true RX_PRECODE_BYP true RX_PRECODE_LITTLEENDIAN false INTERNAL_PRESET None RX_LINE_RATE 25.78125 RX_PLL_TYPE LCPLL RX_REFCLK_FREQUENCY 156.25 RX_ACTUAL_REFCLK_FREQUENCY\
-156.250000000000 RX_FRACN_ENABLED true RX_FRACN_OVRD false RX_FRACN_NUMERATOR 0 RX_REFCLK_SOURCE R0 RX_DATA_DECODING RAW RX_USER_DATA_WIDTH 80 RX_INT_DATA_WIDTH 80 RX_BUFFER_MODE 1 RX_OUTCLK_SOURCE RXPROGDIVCLK\
-RXPROGDIV_FREQ_ENABLE true RXPROGDIV_FREQ_SOURCE LCPLL RXPROGDIV_FREQ_VAL 644.531 RXRECCLK_FREQ_ENABLE true RXRECCLK_FREQ_VAL 644.531 INS_LOSS_NYQ 20 RX_EQ_MODE AUTO RX_COUPLING AC RX_TERMINATION PROGRAMMABLE\
-RX_RATE_GROUP A RX_TERMINATION_PROG_VALUE 800 RX_PPM_OFFSET 0 RX_64B66B_DESCRAMBLER false RX_64B66B_DECODER false RX_64B66B_CRC false OOB_ENABLE false RX_COMMA_ALIGN_WORD 1 RX_COMMA_SHOW_REALIGN_ENABLE\
-true PCIE_ENABLE false RX_COMMA_P_ENABLE false RX_COMMA_M_ENABLE false RX_COMMA_DOUBLE_ENABLE false RX_COMMA_P_VAL 0101111100 RX_COMMA_M_VAL 1010000011 RX_COMMA_MASK 0000000000 RX_SLIDE_MODE OFF RX_SSC_PPM\
-0 RX_CB_NUM_SEQ 0 RX_CB_LEN_SEQ 1 RX_CB_MAX_SKEW 1 RX_CB_MAX_LEVEL 1 RX_CB_MASK 00000000 RX_CB_VAL 00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CB_K 00000000 RX_CB_DISP\
-00000000 RX_CB_MASK_0_0 false RX_CB_VAL_0_0 0000000000 RX_CB_K_0_0 false RX_CB_DISP_0_0 false RX_CB_MASK_0_1 false RX_CB_VAL_0_1 0000000000 RX_CB_K_0_1 false RX_CB_DISP_0_1 false RX_CB_MASK_0_2 false RX_CB_VAL_0_2\
-0000000000 RX_CB_K_0_2 false RX_CB_DISP_0_2 false RX_CB_MASK_0_3 false RX_CB_VAL_0_3 0000000000 RX_CB_K_0_3 false RX_CB_DISP_0_3 false RX_CB_MASK_1_0 false RX_CB_VAL_1_0 0000000000 RX_CB_K_1_0 false RX_CB_DISP_1_0\
-false RX_CB_MASK_1_1 false RX_CB_VAL_1_1 0000000000 RX_CB_K_1_1 false RX_CB_DISP_1_1 false RX_CB_MASK_1_2 false RX_CB_VAL_1_2 0000000000 RX_CB_K_1_2 false RX_CB_DISP_1_2 false RX_CB_MASK_1_3 false RX_CB_VAL_1_3\
-0000000000 RX_CB_K_1_3 false RX_CB_DISP_1_3 false RX_CC_NUM_SEQ 0 RX_CC_LEN_SEQ 1 RX_CC_PERIODICITY 5000 RX_CC_KEEP_IDLE DISABLE RX_CC_PRECEDENCE ENABLE RX_CC_REPEAT_WAIT 0 RX_CC_MASK 00000000 RX_CC_VAL\
-00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CC_K 00000000 RX_CC_DISP 00000000 RX_CC_MASK_0_0 false RX_CC_VAL_0_0 0000000000 RX_CC_K_0_0 false RX_CC_DISP_0_0 false\
-RX_CC_MASK_0_1 false RX_CC_VAL_0_1 0000000000 RX_CC_K_0_1 false RX_CC_DISP_0_1 false RX_CC_MASK_0_2 false RX_CC_VAL_0_2 0000000000 RX_CC_K_0_2 false RX_CC_DISP_0_2 false RX_CC_MASK_0_3 false RX_CC_VAL_0_3\
-0000000000 RX_CC_K_0_3 false RX_CC_DISP_0_3 false RX_CC_MASK_1_0 false RX_CC_VAL_1_0 0000000000 RX_CC_K_1_0 false RX_CC_DISP_1_0 false RX_CC_MASK_1_1 false RX_CC_VAL_1_1 0000000000 RX_CC_K_1_1 false RX_CC_DISP_1_1\
-false RX_CC_MASK_1_2 false RX_CC_VAL_1_2 0000000000 RX_CC_K_1_2 false RX_CC_DISP_1_2 false RX_CC_MASK_1_3 false RX_CC_VAL_1_3 0000000000 RX_CC_K_1_3 false RX_CC_DISP_1_3 false PCIE_USERCLK2_FREQ 250 PCIE_USERCLK_FREQ\
-250 RX_JTOL_FC 10 RX_JTOL_LF_SLOPE -20 RX_BUFFER_BYPASS_MODE Fast_Sync RX_BUFFER_BYPASS_MODE_LANE MULTI RX_BUFFER_RESET_ON_CB_CHANGE ENABLE RX_BUFFER_RESET_ON_COMMAALIGN DISABLE RX_BUFFER_RESET_ON_RATE_CHANGE\
-ENABLE RESET_SEQUENCE_INTERVAL 0 RX_COMMA_PRESET NONE RX_COMMA_VALID_ONLY 0 GT_TYPE GTY} \
-    CONFIG.PROT3_LR3_SETTINGS {NA NA} \
-    CONFIG.PROT3_LR4_SETTINGS {NA NA} \
-    CONFIG.PROT3_LR5_SETTINGS {NA NA} \
-    CONFIG.PROT3_LR6_SETTINGS {NA NA} \
-    CONFIG.PROT3_LR7_SETTINGS {NA NA} \
-    CONFIG.PROT3_LR8_SETTINGS {NA NA} \
-    CONFIG.PROT3_LR9_SETTINGS {NA NA} \
-    CONFIG.PROT3_NO_OF_LANES {1} \
-    CONFIG.PROT3_RX_MASTERCLK_SRC {RX3} \
-    CONFIG.PROT3_TX_MASTERCLK_SRC {TX3} \
-    CONFIG.QUAD_USAGE {TX_QUAD_CH {TXQuad_0_/mrmac_0_gt_wrapper/gt_quad_base {/mrmac_0_gt_wrapper/gt_quad_base mrmac_0_exdes_support_mrmac_0_core_0_0.IP_CH0,mrmac_0_exdes_support_mrmac_0_core_0_1.IP_CH1,mrmac_0_exdes_support_mrmac_0_core_0_2.IP_CH2,mrmac_0_exdes_support_mrmac_0_core_0_3.IP_CH3\
-MSTRCLK 1,1,1,1 IS_CURRENT_QUAD 1}} RX_QUAD_CH {RXQuad_0_/mrmac_0_gt_wrapper/gt_quad_base {/mrmac_0_gt_wrapper/gt_quad_base mrmac_0_exdes_support_mrmac_0_core_0_0.IP_CH0,mrmac_0_exdes_support_mrmac_0_core_0_1.IP_CH1,mrmac_0_exdes_support_mrmac_0_core_0_2.IP_CH2,mrmac_0_exdes_support_mrmac_0_core_0_3.IP_CH3\
-MSTRCLK 1,1,1,1 IS_CURRENT_QUAD 1}}} \
-    CONFIG.REFCLK_LIST {/gt_ref_clk_p /gt_ref_clk_p} \
-    CONFIG.REFCLK_STRING {HSCLK0_LCPLLGTREFCLK0 refclk_PROT0_R0_PROT1_R0_156.25_MHz_unique1 HSCLK1_LCPLLGTREFCLK0 refclk_PROT2_R0_PROT3_R0_156.25_MHz_unique1} \
-    CONFIG.RX0_LANE_SEL {PROT0} \
-    CONFIG.RX1_LANE_SEL {PROT1} \
-    CONFIG.RX2_LANE_SEL {PROT2} \
-    CONFIG.RX3_LANE_SEL {PROT3} \
-    CONFIG.TX0_LANE_SEL {PROT0} \
-    CONFIG.TX1_LANE_SEL {PROT1} \
-    CONFIG.TX2_LANE_SEL {PROT2} \
-    CONFIG.TX3_LANE_SEL {PROT3} \
-  ] $gt_quad_base
-
-  set_property -dict [list \
-    CONFIG.CHANNEL_ORDERING.VALUE_MODE {auto} \
-    CONFIG.GT_TYPE.VALUE_MODE {auto} \
-    CONFIG.PROT0_ENABLE.VALUE_MODE {auto} \
-    CONFIG.PROT0_GT_DIRECTION.VALUE_MODE {auto} \
-    CONFIG.PROT0_LR0_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT0_LR10_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT0_LR11_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT0_LR12_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT0_LR13_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT0_LR14_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT0_LR15_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT0_LR1_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT0_LR2_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT0_LR3_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT0_LR4_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT0_LR5_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT0_LR6_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT0_LR7_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT0_LR8_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT0_LR9_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT0_NO_OF_LANES.VALUE_MODE {auto} \
-    CONFIG.PROT0_RX_MASTERCLK_SRC.VALUE_MODE {auto} \
-    CONFIG.PROT0_TX_MASTERCLK_SRC.VALUE_MODE {auto} \
-    CONFIG.PROT1_ENABLE.VALUE_MODE {auto} \
-    CONFIG.PROT1_GT_DIRECTION.VALUE_MODE {auto} \
-    CONFIG.PROT1_LR0_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT1_LR10_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT1_LR11_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT1_LR12_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT1_LR13_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT1_LR14_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT1_LR15_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT1_LR1_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT1_LR2_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT1_LR3_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT1_LR4_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT1_LR5_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT1_LR6_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT1_LR7_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT1_LR8_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT1_LR9_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT1_NO_OF_LANES.VALUE_MODE {auto} \
-    CONFIG.PROT1_RX_MASTERCLK_SRC.VALUE_MODE {auto} \
-    CONFIG.PROT1_TX_MASTERCLK_SRC.VALUE_MODE {auto} \
-    CONFIG.PROT2_ENABLE.VALUE_MODE {auto} \
-    CONFIG.PROT2_GT_DIRECTION.VALUE_MODE {auto} \
-    CONFIG.PROT2_LR0_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT2_LR10_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT2_LR11_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT2_LR12_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT2_LR13_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT2_LR14_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT2_LR15_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT2_LR1_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT2_LR2_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT2_LR3_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT2_LR4_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT2_LR5_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT2_LR6_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT2_LR7_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT2_LR8_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT2_LR9_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT2_NO_OF_LANES.VALUE_MODE {auto} \
-    CONFIG.PROT2_RX_MASTERCLK_SRC.VALUE_MODE {auto} \
-    CONFIG.PROT2_TX_MASTERCLK_SRC.VALUE_MODE {auto} \
-    CONFIG.PROT3_ENABLE.VALUE_MODE {auto} \
-    CONFIG.PROT3_GT_DIRECTION.VALUE_MODE {auto} \
-    CONFIG.PROT3_LR0_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT3_LR10_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT3_LR11_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT3_LR12_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT3_LR13_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT3_LR14_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT3_LR15_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT3_LR1_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT3_LR2_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT3_LR3_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT3_LR4_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT3_LR5_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT3_LR6_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT3_LR7_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT3_LR8_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT3_LR9_SETTINGS.VALUE_MODE {auto} \
-    CONFIG.PROT3_NO_OF_LANES.VALUE_MODE {auto} \
-    CONFIG.PROT3_RX_MASTERCLK_SRC.VALUE_MODE {auto} \
-    CONFIG.PROT3_TX_MASTERCLK_SRC.VALUE_MODE {auto} \
-    CONFIG.QUAD_USAGE.VALUE_MODE {auto} \
-    CONFIG.RX0_LANE_SEL.VALUE_MODE {auto} \
-    CONFIG.RX1_LANE_SEL.VALUE_MODE {auto} \
-    CONFIG.RX2_LANE_SEL.VALUE_MODE {auto} \
-    CONFIG.RX3_LANE_SEL.VALUE_MODE {auto} \
-    CONFIG.TX0_LANE_SEL.VALUE_MODE {auto} \
-    CONFIG.TX1_LANE_SEL.VALUE_MODE {auto} \
-    CONFIG.TX2_LANE_SEL.VALUE_MODE {auto} \
-    CONFIG.TX3_LANE_SEL.VALUE_MODE {auto} \
-  ] $gt_quad_base
-
+  create_bd_pin -dir O -from 3 -to 0 rx_alt_serdes_clk_new
+  create_bd_pin -dir O -from 3 -to 0 tx_alt_serdes_clk_new
+  create_bd_pin -dir O -from 3 -to 0 tx_core_clk_new
+  create_bd_pin -dir O -from 3 -to 0 rx_core_clk_serdes_clk_new
 
   # Create instance: util_ds_buf_0, and set properties
   set util_ds_buf_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.2 util_ds_buf_0 ]
@@ -1338,16 +1633,10 @@ MSTRCLK 1,1,1,1 IS_CURRENT_QUAD 1}}} \
   set_property CONFIG.NUM_PORTS {4} $conct_tx_usr_clk
 
 
-  # Create instance: bufgt_gt_rxoutclk
-  create_hier_cell_bufgt_gt_rxoutclk $hier_obj bufgt_gt_rxoutclk
-
   # Create instance: conct_rx_usr_clk, and set properties
   set conct_rx_usr_clk [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 conct_rx_usr_clk ]
   set_property CONFIG.NUM_PORTS {4} $conct_rx_usr_clk
 
-
-  # Create instance: bufgt_gt_txoutclk1
-  create_hier_cell_bufgt_gt_txoutclk1 $hier_obj bufgt_gt_txoutclk1
 
   # Create instance: bufg_gt_0_tx_outclk_div2_ch0, and set properties
   set bufg_gt_0_tx_outclk_div2_ch0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt:1.0 bufg_gt_0_tx_outclk_div2_ch0 ]
@@ -1379,11 +1668,496 @@ MSTRCLK 1,1,1,1 IS_CURRENT_QUAD 1}}} \
   set_property CONFIG.FREQ_HZ {644531000.0} $bufg_gt_0_rx_outclk_div2_ch3
 
 
+  # Create instance: bufg_gt_0, and set properties
+  set bufg_gt_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt:1.0 bufg_gt_0 ]
+  set_property CONFIG.FREQ_HZ {644531000.0} $bufg_gt_0
+
+
+  # Create instance: xlconstant_1, and set properties
+  set xlconstant_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 xlconstant_1 ]
+  set_property -dict [list \
+    CONFIG.CONST_VAL {0} \
+    CONFIG.CONST_WIDTH {3} \
+  ] $xlconstant_1
+
+
+  # Create instance: bufg_gt_1, and set properties
+  set bufg_gt_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt:1.0 bufg_gt_1 ]
+  set_property CONFIG.FREQ_HZ {644531000.0} $bufg_gt_1
+
+
+  # Create instance: xlconcat_1, and set properties
+  set xlconcat_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_1 ]
+  set_property CONFIG.NUM_PORTS {4} $xlconcat_1
+
+
+  # Create instance: bufg_gt_2, and set properties
+  set bufg_gt_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt:1.0 bufg_gt_2 ]
+  set_property CONFIG.FREQ_HZ {644531000.0} $bufg_gt_2
+
+
+  # Create instance: bufg_gt_3, and set properties
+  set bufg_gt_3 [ create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt:1.0 bufg_gt_3 ]
+  set_property CONFIG.FREQ_HZ {644531000.0} $bufg_gt_3
+
+
+  # Create instance: bufg_gt_4, and set properties
+  set bufg_gt_4 [ create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt:1.0 bufg_gt_4 ]
+  set_property CONFIG.FREQ_HZ {644531000.0} $bufg_gt_4
+
+
+  # Create instance: bufg_gt_5, and set properties
+  set bufg_gt_5 [ create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt:1.0 bufg_gt_5 ]
+  set_property CONFIG.FREQ_HZ {644531000.0} $bufg_gt_5
+
+
+  # Create instance: xlconcat_2, and set properties
+  set xlconcat_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_2 ]
+  set_property CONFIG.NUM_PORTS {4} $xlconcat_2
+
+
+  # Create instance: gt_quad_base, and set properties
+  set gt_quad_base [ create_bd_cell -type ip -vlnv xilinx.com:ip:gt_quad_base:1.1 gt_quad_base ]
+  set_property -dict [list \
+    CONFIG.APB3_CLK_FREQUENCY {199.999817} \
+    CONFIG.CHANNEL_ORDERING {/mrmac_0_gt_wrapper/gt_quad_base/TX0_GT_IP_Interface vck190_mrmac_4x25g_mrmac_0_core_0_0./mrmac_0_core/gt_tx_serdes_interface_0.0 /mrmac_0_gt_wrapper/gt_quad_base/TX1_GT_IP_Interface\
+vck190_mrmac_4x25g_mrmac_0_core_0_1./mrmac_0_core/gt_tx_serdes_interface_1.1 /mrmac_0_gt_wrapper/gt_quad_base/TX2_GT_IP_Interface vck190_mrmac_4x25g_mrmac_0_core_0_2./mrmac_0_core/gt_tx_serdes_interface_2.2\
+/mrmac_0_gt_wrapper/gt_quad_base/TX3_GT_IP_Interface vck190_mrmac_4x25g_mrmac_0_core_0_3./mrmac_0_core/gt_tx_serdes_interface_3.3 /mrmac_0_gt_wrapper/gt_quad_base/RX0_GT_IP_Interface vck190_mrmac_4x25g_mrmac_0_core_0_0./mrmac_0_core/gt_rx_serdes_interface_0.0\
+/mrmac_0_gt_wrapper/gt_quad_base/RX1_GT_IP_Interface vck190_mrmac_4x25g_mrmac_0_core_0_1./mrmac_0_core/gt_rx_serdes_interface_1.1 /mrmac_0_gt_wrapper/gt_quad_base/RX2_GT_IP_Interface vck190_mrmac_4x25g_mrmac_0_core_0_2./mrmac_0_core/gt_rx_serdes_interface_2.2\
+/mrmac_0_gt_wrapper/gt_quad_base/RX3_GT_IP_Interface vck190_mrmac_4x25g_mrmac_0_core_0_3./mrmac_0_core/gt_rx_serdes_interface_3.3} \
+    CONFIG.GT_TYPE {GTY} \
+    CONFIG.PORTS_INFO_DICT {LANE_SEL_DICT {PROT0 {RX0 TX0} PROT1 {RX1 TX1} PROT2 {RX2 TX2} PROT3 {RX3 TX3}} GT_TYPE GTY REG_CONF_INTF APB3_INTF BOARD_PARAMETER { }} \
+    CONFIG.PROT0_ENABLE {true} \
+    CONFIG.PROT0_GT_DIRECTION {DUPLEX} \
+    CONFIG.PROT0_LR0_SETTINGS {GT_DIRECTION DUPLEX TX_PAM_SEL NRZ TX_HD_EN 0 TX_GRAY_BYP true TX_GRAY_LITTLEENDIAN true TX_PRECODE_BYP true TX_PRECODE_LITTLEENDIAN false TX_LINE_RATE 25.78125 TX_PLL_TYPE\
+LCPLL TX_REFCLK_FREQUENCY 322.265625 TX_ACTUAL_REFCLK_FREQUENCY 322.265625000000 TX_FRACN_ENABLED false TX_FRACN_OVRD false TX_FRACN_NUMERATOR 0 TX_REFCLK_SOURCE R0 TX_DATA_ENCODING RAW TX_USER_DATA_WIDTH\
+80 TX_INT_DATA_WIDTH 80 TX_BUFFER_MODE 1 TX_BUFFER_BYPASS_MODE Fast_Sync TX_PIPM_ENABLE false TX_OUTCLK_SOURCE TXPROGDIVCLK TXPROGDIV_FREQ_ENABLE true TXPROGDIV_FREQ_SOURCE LCPLL TXPROGDIV_FREQ_VAL 644.531\
+TX_DIFF_SWING_EMPH_MODE CUSTOM TX_64B66B_SCRAMBLER false TX_64B66B_ENCODER false TX_64B66B_CRC false TX_RATE_GROUP A TX_LANE_DESKEW_HDMI_ENABLE false TX_BUFFER_RESET_ON_RATE_CHANGE ENABLE PRESET None RX_PAM_SEL\
+NRZ RX_HD_EN 0 RX_GRAY_BYP true RX_GRAY_LITTLEENDIAN true RX_PRECODE_BYP true RX_PRECODE_LITTLEENDIAN false INTERNAL_PRESET None RX_LINE_RATE 25.78125 RX_PLL_TYPE LCPLL RX_REFCLK_FREQUENCY 322.265625 RX_ACTUAL_REFCLK_FREQUENCY\
+322.265625000000 RX_FRACN_ENABLED false RX_FRACN_OVRD false RX_FRACN_NUMERATOR 0 RX_REFCLK_SOURCE R0 RX_DATA_DECODING RAW RX_USER_DATA_WIDTH 80 RX_INT_DATA_WIDTH 80 RX_BUFFER_MODE 1 RX_OUTCLK_SOURCE RXPROGDIVCLK\
+RXPROGDIV_FREQ_ENABLE true RXPROGDIV_FREQ_SOURCE LCPLL RXPROGDIV_FREQ_VAL 644.531 RXRECCLK_FREQ_ENABLE true RXRECCLK_FREQ_VAL 644.531 INS_LOSS_NYQ 20 RX_EQ_MODE AUTO RX_COUPLING AC RX_TERMINATION PROGRAMMABLE\
+RX_RATE_GROUP A RX_TERMINATION_PROG_VALUE 800 RX_PPM_OFFSET 0 RX_64B66B_DESCRAMBLER false RX_64B66B_DECODER false RX_64B66B_CRC false OOB_ENABLE false RX_COMMA_ALIGN_WORD 1 RX_COMMA_SHOW_REALIGN_ENABLE\
+true PCIE_ENABLE false RX_COMMA_P_ENABLE false RX_COMMA_M_ENABLE false RX_COMMA_DOUBLE_ENABLE false RX_COMMA_P_VAL 0101111100 RX_COMMA_M_VAL 1010000011 RX_COMMA_MASK 0000000000 RX_SLIDE_MODE OFF RX_SSC_PPM\
+0 RX_CB_NUM_SEQ 0 RX_CB_LEN_SEQ 1 RX_CB_MAX_SKEW 1 RX_CB_MAX_LEVEL 1 RX_CB_MASK 00000000 RX_CB_VAL 00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CB_K 00000000 RX_CB_DISP\
+00000000 RX_CB_MASK_0_0 false RX_CB_VAL_0_0 0000000000 RX_CB_K_0_0 false RX_CB_DISP_0_0 false RX_CB_MASK_0_1 false RX_CB_VAL_0_1 0000000000 RX_CB_K_0_1 false RX_CB_DISP_0_1 false RX_CB_MASK_0_2 false RX_CB_VAL_0_2\
+0000000000 RX_CB_K_0_2 false RX_CB_DISP_0_2 false RX_CB_MASK_0_3 false RX_CB_VAL_0_3 0000000000 RX_CB_K_0_3 false RX_CB_DISP_0_3 false RX_CB_MASK_1_0 false RX_CB_VAL_1_0 0000000000 RX_CB_K_1_0 false RX_CB_DISP_1_0\
+false RX_CB_MASK_1_1 false RX_CB_VAL_1_1 0000000000 RX_CB_K_1_1 false RX_CB_DISP_1_1 false RX_CB_MASK_1_2 false RX_CB_VAL_1_2 0000000000 RX_CB_K_1_2 false RX_CB_DISP_1_2 false RX_CB_MASK_1_3 false RX_CB_VAL_1_3\
+0000000000 RX_CB_K_1_3 false RX_CB_DISP_1_3 false RX_CC_NUM_SEQ 0 RX_CC_LEN_SEQ 1 RX_CC_PERIODICITY 5000 RX_CC_KEEP_IDLE DISABLE RX_CC_PRECEDENCE ENABLE RX_CC_REPEAT_WAIT 0 RX_CC_MASK 00000000 RX_CC_VAL\
+00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CC_K 00000000 RX_CC_DISP 00000000 RX_CC_MASK_0_0 false RX_CC_VAL_0_0 0000000000 RX_CC_K_0_0 false RX_CC_DISP_0_0 false\
+RX_CC_MASK_0_1 false RX_CC_VAL_0_1 0000000000 RX_CC_K_0_1 false RX_CC_DISP_0_1 false RX_CC_MASK_0_2 false RX_CC_VAL_0_2 0000000000 RX_CC_K_0_2 false RX_CC_DISP_0_2 false RX_CC_MASK_0_3 false RX_CC_VAL_0_3\
+0000000000 RX_CC_K_0_3 false RX_CC_DISP_0_3 false RX_CC_MASK_1_0 false RX_CC_VAL_1_0 0000000000 RX_CC_K_1_0 false RX_CC_DISP_1_0 false RX_CC_MASK_1_1 false RX_CC_VAL_1_1 0000000000 RX_CC_K_1_1 false RX_CC_DISP_1_1\
+false RX_CC_MASK_1_2 false RX_CC_VAL_1_2 0000000000 RX_CC_K_1_2 false RX_CC_DISP_1_2 false RX_CC_MASK_1_3 false RX_CC_VAL_1_3 0000000000 RX_CC_K_1_3 false RX_CC_DISP_1_3 false PCIE_USERCLK2_FREQ 250 PCIE_USERCLK_FREQ\
+250 RX_JTOL_FC 10 RX_JTOL_LF_SLOPE -20 RX_BUFFER_BYPASS_MODE Fast_Sync RX_BUFFER_BYPASS_MODE_LANE MULTI RX_BUFFER_RESET_ON_CB_CHANGE ENABLE RX_BUFFER_RESET_ON_COMMAALIGN DISABLE RX_BUFFER_RESET_ON_RATE_CHANGE\
+ENABLE RESET_SEQUENCE_INTERVAL 0 RX_COMMA_PRESET NONE RX_COMMA_VALID_ONLY 0 GT_TYPE GTY} \
+    CONFIG.PROT0_LR10_SETTINGS {NA NA} \
+    CONFIG.PROT0_LR11_SETTINGS {NA NA} \
+    CONFIG.PROT0_LR12_SETTINGS {NA NA} \
+    CONFIG.PROT0_LR13_SETTINGS {NA NA} \
+    CONFIG.PROT0_LR14_SETTINGS {NA NA} \
+    CONFIG.PROT0_LR15_SETTINGS {NA NA} \
+    CONFIG.PROT0_LR1_SETTINGS {GT_DIRECTION DUPLEX TX_PAM_SEL NRZ TX_HD_EN 0 TX_GRAY_BYP true TX_GRAY_LITTLEENDIAN true TX_PRECODE_BYP true TX_PRECODE_LITTLEENDIAN false TX_LINE_RATE 25.78125 TX_PLL_TYPE\
+LCPLL TX_REFCLK_FREQUENCY 322.265625 TX_ACTUAL_REFCLK_FREQUENCY 322.265625000000 TX_FRACN_ENABLED false TX_FRACN_OVRD false TX_FRACN_NUMERATOR 0 TX_REFCLK_SOURCE R0 TX_DATA_ENCODING RAW TX_USER_DATA_WIDTH\
+80 TX_INT_DATA_WIDTH 80 TX_BUFFER_MODE 1 TX_BUFFER_BYPASS_MODE Fast_Sync TX_PIPM_ENABLE false TX_OUTCLK_SOURCE TXPROGDIVCLK TXPROGDIV_FREQ_ENABLE true TXPROGDIV_FREQ_SOURCE LCPLL TXPROGDIV_FREQ_VAL 644.531\
+TX_DIFF_SWING_EMPH_MODE CUSTOM TX_64B66B_SCRAMBLER false TX_64B66B_ENCODER false TX_64B66B_CRC false TX_RATE_GROUP A TX_LANE_DESKEW_HDMI_ENABLE false TX_BUFFER_RESET_ON_RATE_CHANGE ENABLE PRESET None RX_PAM_SEL\
+NRZ RX_HD_EN 0 RX_GRAY_BYP true RX_GRAY_LITTLEENDIAN true RX_PRECODE_BYP true RX_PRECODE_LITTLEENDIAN false INTERNAL_PRESET None RX_LINE_RATE 25.78125 RX_PLL_TYPE LCPLL RX_REFCLK_FREQUENCY 322.265625 RX_ACTUAL_REFCLK_FREQUENCY\
+322.265625000000 RX_FRACN_ENABLED false RX_FRACN_OVRD false RX_FRACN_NUMERATOR 0 RX_REFCLK_SOURCE R0 RX_DATA_DECODING RAW RX_USER_DATA_WIDTH 80 RX_INT_DATA_WIDTH 80 RX_BUFFER_MODE 1 RX_OUTCLK_SOURCE RXPROGDIVCLK\
+RXPROGDIV_FREQ_ENABLE true RXPROGDIV_FREQ_SOURCE LCPLL RXPROGDIV_FREQ_VAL 644.531 RXRECCLK_FREQ_ENABLE true RXRECCLK_FREQ_VAL 644.531 INS_LOSS_NYQ 20 RX_EQ_MODE AUTO RX_COUPLING AC RX_TERMINATION PROGRAMMABLE\
+RX_RATE_GROUP A RX_TERMINATION_PROG_VALUE 800 RX_PPM_OFFSET 0 RX_64B66B_DESCRAMBLER false RX_64B66B_DECODER false RX_64B66B_CRC false OOB_ENABLE false RX_COMMA_ALIGN_WORD 1 RX_COMMA_SHOW_REALIGN_ENABLE\
+true PCIE_ENABLE false RX_COMMA_P_ENABLE false RX_COMMA_M_ENABLE false RX_COMMA_DOUBLE_ENABLE false RX_COMMA_P_VAL 0101111100 RX_COMMA_M_VAL 1010000011 RX_COMMA_MASK 0000000000 RX_SLIDE_MODE OFF RX_SSC_PPM\
+0 RX_CB_NUM_SEQ 0 RX_CB_LEN_SEQ 1 RX_CB_MAX_SKEW 1 RX_CB_MAX_LEVEL 1 RX_CB_MASK 00000000 RX_CB_VAL 00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CB_K 00000000 RX_CB_DISP\
+00000000 RX_CB_MASK_0_0 false RX_CB_VAL_0_0 0000000000 RX_CB_K_0_0 false RX_CB_DISP_0_0 false RX_CB_MASK_0_1 false RX_CB_VAL_0_1 0000000000 RX_CB_K_0_1 false RX_CB_DISP_0_1 false RX_CB_MASK_0_2 false RX_CB_VAL_0_2\
+0000000000 RX_CB_K_0_2 false RX_CB_DISP_0_2 false RX_CB_MASK_0_3 false RX_CB_VAL_0_3 0000000000 RX_CB_K_0_3 false RX_CB_DISP_0_3 false RX_CB_MASK_1_0 false RX_CB_VAL_1_0 0000000000 RX_CB_K_1_0 false RX_CB_DISP_1_0\
+false RX_CB_MASK_1_1 false RX_CB_VAL_1_1 0000000000 RX_CB_K_1_1 false RX_CB_DISP_1_1 false RX_CB_MASK_1_2 false RX_CB_VAL_1_2 0000000000 RX_CB_K_1_2 false RX_CB_DISP_1_2 false RX_CB_MASK_1_3 false RX_CB_VAL_1_3\
+0000000000 RX_CB_K_1_3 false RX_CB_DISP_1_3 false RX_CC_NUM_SEQ 0 RX_CC_LEN_SEQ 1 RX_CC_PERIODICITY 5000 RX_CC_KEEP_IDLE DISABLE RX_CC_PRECEDENCE ENABLE RX_CC_REPEAT_WAIT 0 RX_CC_MASK 00000000 RX_CC_VAL\
+00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CC_K 00000000 RX_CC_DISP 00000000 RX_CC_MASK_0_0 false RX_CC_VAL_0_0 0000000000 RX_CC_K_0_0 false RX_CC_DISP_0_0 false\
+RX_CC_MASK_0_1 false RX_CC_VAL_0_1 0000000000 RX_CC_K_0_1 false RX_CC_DISP_0_1 false RX_CC_MASK_0_2 false RX_CC_VAL_0_2 0000000000 RX_CC_K_0_2 false RX_CC_DISP_0_2 false RX_CC_MASK_0_3 false RX_CC_VAL_0_3\
+0000000000 RX_CC_K_0_3 false RX_CC_DISP_0_3 false RX_CC_MASK_1_0 false RX_CC_VAL_1_0 0000000000 RX_CC_K_1_0 false RX_CC_DISP_1_0 false RX_CC_MASK_1_1 false RX_CC_VAL_1_1 0000000000 RX_CC_K_1_1 false RX_CC_DISP_1_1\
+false RX_CC_MASK_1_2 false RX_CC_VAL_1_2 0000000000 RX_CC_K_1_2 false RX_CC_DISP_1_2 false RX_CC_MASK_1_3 false RX_CC_VAL_1_3 0000000000 RX_CC_K_1_3 false RX_CC_DISP_1_3 false PCIE_USERCLK2_FREQ 250 PCIE_USERCLK_FREQ\
+250 RX_JTOL_FC 10 RX_JTOL_LF_SLOPE -20 RX_BUFFER_BYPASS_MODE Fast_Sync RX_BUFFER_BYPASS_MODE_LANE MULTI RX_BUFFER_RESET_ON_CB_CHANGE ENABLE RX_BUFFER_RESET_ON_COMMAALIGN DISABLE RX_BUFFER_RESET_ON_RATE_CHANGE\
+ENABLE RESET_SEQUENCE_INTERVAL 0 RX_COMMA_PRESET NONE RX_COMMA_VALID_ONLY 0 GT_TYPE GTY} \
+    CONFIG.PROT0_LR2_SETTINGS {GT_DIRECTION DUPLEX TX_PAM_SEL NRZ TX_HD_EN 0 TX_GRAY_BYP true TX_GRAY_LITTLEENDIAN true TX_PRECODE_BYP true TX_PRECODE_LITTLEENDIAN false TX_LINE_RATE 25.78125 TX_PLL_TYPE\
+LCPLL TX_REFCLK_FREQUENCY 322.265625 TX_ACTUAL_REFCLK_FREQUENCY 322.265625000000 TX_FRACN_ENABLED false TX_FRACN_OVRD false TX_FRACN_NUMERATOR 0 TX_REFCLK_SOURCE R0 TX_DATA_ENCODING RAW TX_USER_DATA_WIDTH\
+80 TX_INT_DATA_WIDTH 80 TX_BUFFER_MODE 1 TX_BUFFER_BYPASS_MODE Fast_Sync TX_PIPM_ENABLE false TX_OUTCLK_SOURCE TXPROGDIVCLK TXPROGDIV_FREQ_ENABLE true TXPROGDIV_FREQ_SOURCE LCPLL TXPROGDIV_FREQ_VAL 644.531\
+TX_DIFF_SWING_EMPH_MODE CUSTOM TX_64B66B_SCRAMBLER false TX_64B66B_ENCODER false TX_64B66B_CRC false TX_RATE_GROUP A TX_LANE_DESKEW_HDMI_ENABLE false TX_BUFFER_RESET_ON_RATE_CHANGE ENABLE PRESET None RX_PAM_SEL\
+NRZ RX_HD_EN 0 RX_GRAY_BYP true RX_GRAY_LITTLEENDIAN true RX_PRECODE_BYP true RX_PRECODE_LITTLEENDIAN false INTERNAL_PRESET None RX_LINE_RATE 25.78125 RX_PLL_TYPE LCPLL RX_REFCLK_FREQUENCY 322.265625 RX_ACTUAL_REFCLK_FREQUENCY\
+322.265625000000 RX_FRACN_ENABLED false RX_FRACN_OVRD false RX_FRACN_NUMERATOR 0 RX_REFCLK_SOURCE R0 RX_DATA_DECODING RAW RX_USER_DATA_WIDTH 80 RX_INT_DATA_WIDTH 80 RX_BUFFER_MODE 1 RX_OUTCLK_SOURCE RXPROGDIVCLK\
+RXPROGDIV_FREQ_ENABLE true RXPROGDIV_FREQ_SOURCE LCPLL RXPROGDIV_FREQ_VAL 644.531 RXRECCLK_FREQ_ENABLE true RXRECCLK_FREQ_VAL 644.531 INS_LOSS_NYQ 20 RX_EQ_MODE AUTO RX_COUPLING AC RX_TERMINATION PROGRAMMABLE\
+RX_RATE_GROUP A RX_TERMINATION_PROG_VALUE 800 RX_PPM_OFFSET 0 RX_64B66B_DESCRAMBLER false RX_64B66B_DECODER false RX_64B66B_CRC false OOB_ENABLE false RX_COMMA_ALIGN_WORD 1 RX_COMMA_SHOW_REALIGN_ENABLE\
+true PCIE_ENABLE false RX_COMMA_P_ENABLE false RX_COMMA_M_ENABLE false RX_COMMA_DOUBLE_ENABLE false RX_COMMA_P_VAL 0101111100 RX_COMMA_M_VAL 1010000011 RX_COMMA_MASK 0000000000 RX_SLIDE_MODE OFF RX_SSC_PPM\
+0 RX_CB_NUM_SEQ 0 RX_CB_LEN_SEQ 1 RX_CB_MAX_SKEW 1 RX_CB_MAX_LEVEL 1 RX_CB_MASK 00000000 RX_CB_VAL 00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CB_K 00000000 RX_CB_DISP\
+00000000 RX_CB_MASK_0_0 false RX_CB_VAL_0_0 0000000000 RX_CB_K_0_0 false RX_CB_DISP_0_0 false RX_CB_MASK_0_1 false RX_CB_VAL_0_1 0000000000 RX_CB_K_0_1 false RX_CB_DISP_0_1 false RX_CB_MASK_0_2 false RX_CB_VAL_0_2\
+0000000000 RX_CB_K_0_2 false RX_CB_DISP_0_2 false RX_CB_MASK_0_3 false RX_CB_VAL_0_3 0000000000 RX_CB_K_0_3 false RX_CB_DISP_0_3 false RX_CB_MASK_1_0 false RX_CB_VAL_1_0 0000000000 RX_CB_K_1_0 false RX_CB_DISP_1_0\
+false RX_CB_MASK_1_1 false RX_CB_VAL_1_1 0000000000 RX_CB_K_1_1 false RX_CB_DISP_1_1 false RX_CB_MASK_1_2 false RX_CB_VAL_1_2 0000000000 RX_CB_K_1_2 false RX_CB_DISP_1_2 false RX_CB_MASK_1_3 false RX_CB_VAL_1_3\
+0000000000 RX_CB_K_1_3 false RX_CB_DISP_1_3 false RX_CC_NUM_SEQ 0 RX_CC_LEN_SEQ 1 RX_CC_PERIODICITY 5000 RX_CC_KEEP_IDLE DISABLE RX_CC_PRECEDENCE ENABLE RX_CC_REPEAT_WAIT 0 RX_CC_MASK 00000000 RX_CC_VAL\
+00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CC_K 00000000 RX_CC_DISP 00000000 RX_CC_MASK_0_0 false RX_CC_VAL_0_0 0000000000 RX_CC_K_0_0 false RX_CC_DISP_0_0 false\
+RX_CC_MASK_0_1 false RX_CC_VAL_0_1 0000000000 RX_CC_K_0_1 false RX_CC_DISP_0_1 false RX_CC_MASK_0_2 false RX_CC_VAL_0_2 0000000000 RX_CC_K_0_2 false RX_CC_DISP_0_2 false RX_CC_MASK_0_3 false RX_CC_VAL_0_3\
+0000000000 RX_CC_K_0_3 false RX_CC_DISP_0_3 false RX_CC_MASK_1_0 false RX_CC_VAL_1_0 0000000000 RX_CC_K_1_0 false RX_CC_DISP_1_0 false RX_CC_MASK_1_1 false RX_CC_VAL_1_1 0000000000 RX_CC_K_1_1 false RX_CC_DISP_1_1\
+false RX_CC_MASK_1_2 false RX_CC_VAL_1_2 0000000000 RX_CC_K_1_2 false RX_CC_DISP_1_2 false RX_CC_MASK_1_3 false RX_CC_VAL_1_3 0000000000 RX_CC_K_1_3 false RX_CC_DISP_1_3 false PCIE_USERCLK2_FREQ 250 PCIE_USERCLK_FREQ\
+250 RX_JTOL_FC 10 RX_JTOL_LF_SLOPE -20 RX_BUFFER_BYPASS_MODE Fast_Sync RX_BUFFER_BYPASS_MODE_LANE MULTI RX_BUFFER_RESET_ON_CB_CHANGE ENABLE RX_BUFFER_RESET_ON_COMMAALIGN DISABLE RX_BUFFER_RESET_ON_RATE_CHANGE\
+ENABLE RESET_SEQUENCE_INTERVAL 0 RX_COMMA_PRESET NONE RX_COMMA_VALID_ONLY 0 GT_TYPE GTY} \
+    CONFIG.PROT0_LR3_SETTINGS {NA NA} \
+    CONFIG.PROT0_LR4_SETTINGS {NA NA} \
+    CONFIG.PROT0_LR5_SETTINGS {NA NA} \
+    CONFIG.PROT0_LR6_SETTINGS {NA NA} \
+    CONFIG.PROT0_LR7_SETTINGS {NA NA} \
+    CONFIG.PROT0_LR8_SETTINGS {NA NA} \
+    CONFIG.PROT0_LR9_SETTINGS {NA NA} \
+    CONFIG.PROT0_NO_OF_LANES {1} \
+    CONFIG.PROT0_RX_MASTERCLK_SRC {RX0} \
+    CONFIG.PROT0_TX_MASTERCLK_SRC {TX0} \
+    CONFIG.PROT1_ENABLE {true} \
+    CONFIG.PROT1_GT_DIRECTION {DUPLEX} \
+    CONFIG.PROT1_LR0_SETTINGS {GT_DIRECTION DUPLEX TX_PAM_SEL NRZ TX_HD_EN 0 TX_GRAY_BYP true TX_GRAY_LITTLEENDIAN true TX_PRECODE_BYP true TX_PRECODE_LITTLEENDIAN false TX_LINE_RATE 25.78125 TX_PLL_TYPE\
+LCPLL TX_REFCLK_FREQUENCY 322.265625 TX_ACTUAL_REFCLK_FREQUENCY 322.265625000000 TX_FRACN_ENABLED false TX_FRACN_OVRD false TX_FRACN_NUMERATOR 0 TX_REFCLK_SOURCE R0 TX_DATA_ENCODING RAW TX_USER_DATA_WIDTH\
+80 TX_INT_DATA_WIDTH 80 TX_BUFFER_MODE 1 TX_BUFFER_BYPASS_MODE Fast_Sync TX_PIPM_ENABLE false TX_OUTCLK_SOURCE TXPROGDIVCLK TXPROGDIV_FREQ_ENABLE true TXPROGDIV_FREQ_SOURCE LCPLL TXPROGDIV_FREQ_VAL 644.531\
+TX_DIFF_SWING_EMPH_MODE CUSTOM TX_64B66B_SCRAMBLER false TX_64B66B_ENCODER false TX_64B66B_CRC false TX_RATE_GROUP A TX_LANE_DESKEW_HDMI_ENABLE false TX_BUFFER_RESET_ON_RATE_CHANGE ENABLE PRESET None RX_PAM_SEL\
+NRZ RX_HD_EN 0 RX_GRAY_BYP true RX_GRAY_LITTLEENDIAN true RX_PRECODE_BYP true RX_PRECODE_LITTLEENDIAN false INTERNAL_PRESET None RX_LINE_RATE 25.78125 RX_PLL_TYPE LCPLL RX_REFCLK_FREQUENCY 322.265625 RX_ACTUAL_REFCLK_FREQUENCY\
+322.265625000000 RX_FRACN_ENABLED false RX_FRACN_OVRD false RX_FRACN_NUMERATOR 0 RX_REFCLK_SOURCE R0 RX_DATA_DECODING RAW RX_USER_DATA_WIDTH 80 RX_INT_DATA_WIDTH 80 RX_BUFFER_MODE 1 RX_OUTCLK_SOURCE RXPROGDIVCLK\
+RXPROGDIV_FREQ_ENABLE true RXPROGDIV_FREQ_SOURCE LCPLL RXPROGDIV_FREQ_VAL 644.531 RXRECCLK_FREQ_ENABLE true RXRECCLK_FREQ_VAL 644.531 INS_LOSS_NYQ 20 RX_EQ_MODE AUTO RX_COUPLING AC RX_TERMINATION PROGRAMMABLE\
+RX_RATE_GROUP A RX_TERMINATION_PROG_VALUE 800 RX_PPM_OFFSET 0 RX_64B66B_DESCRAMBLER false RX_64B66B_DECODER false RX_64B66B_CRC false OOB_ENABLE false RX_COMMA_ALIGN_WORD 1 RX_COMMA_SHOW_REALIGN_ENABLE\
+true PCIE_ENABLE false RX_COMMA_P_ENABLE false RX_COMMA_M_ENABLE false RX_COMMA_DOUBLE_ENABLE false RX_COMMA_P_VAL 0101111100 RX_COMMA_M_VAL 1010000011 RX_COMMA_MASK 0000000000 RX_SLIDE_MODE OFF RX_SSC_PPM\
+0 RX_CB_NUM_SEQ 0 RX_CB_LEN_SEQ 1 RX_CB_MAX_SKEW 1 RX_CB_MAX_LEVEL 1 RX_CB_MASK 00000000 RX_CB_VAL 00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CB_K 00000000 RX_CB_DISP\
+00000000 RX_CB_MASK_0_0 false RX_CB_VAL_0_0 0000000000 RX_CB_K_0_0 false RX_CB_DISP_0_0 false RX_CB_MASK_0_1 false RX_CB_VAL_0_1 0000000000 RX_CB_K_0_1 false RX_CB_DISP_0_1 false RX_CB_MASK_0_2 false RX_CB_VAL_0_2\
+0000000000 RX_CB_K_0_2 false RX_CB_DISP_0_2 false RX_CB_MASK_0_3 false RX_CB_VAL_0_3 0000000000 RX_CB_K_0_3 false RX_CB_DISP_0_3 false RX_CB_MASK_1_0 false RX_CB_VAL_1_0 0000000000 RX_CB_K_1_0 false RX_CB_DISP_1_0\
+false RX_CB_MASK_1_1 false RX_CB_VAL_1_1 0000000000 RX_CB_K_1_1 false RX_CB_DISP_1_1 false RX_CB_MASK_1_2 false RX_CB_VAL_1_2 0000000000 RX_CB_K_1_2 false RX_CB_DISP_1_2 false RX_CB_MASK_1_3 false RX_CB_VAL_1_3\
+0000000000 RX_CB_K_1_3 false RX_CB_DISP_1_3 false RX_CC_NUM_SEQ 0 RX_CC_LEN_SEQ 1 RX_CC_PERIODICITY 5000 RX_CC_KEEP_IDLE DISABLE RX_CC_PRECEDENCE ENABLE RX_CC_REPEAT_WAIT 0 RX_CC_MASK 00000000 RX_CC_VAL\
+00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CC_K 00000000 RX_CC_DISP 00000000 RX_CC_MASK_0_0 false RX_CC_VAL_0_0 0000000000 RX_CC_K_0_0 false RX_CC_DISP_0_0 false\
+RX_CC_MASK_0_1 false RX_CC_VAL_0_1 0000000000 RX_CC_K_0_1 false RX_CC_DISP_0_1 false RX_CC_MASK_0_2 false RX_CC_VAL_0_2 0000000000 RX_CC_K_0_2 false RX_CC_DISP_0_2 false RX_CC_MASK_0_3 false RX_CC_VAL_0_3\
+0000000000 RX_CC_K_0_3 false RX_CC_DISP_0_3 false RX_CC_MASK_1_0 false RX_CC_VAL_1_0 0000000000 RX_CC_K_1_0 false RX_CC_DISP_1_0 false RX_CC_MASK_1_1 false RX_CC_VAL_1_1 0000000000 RX_CC_K_1_1 false RX_CC_DISP_1_1\
+false RX_CC_MASK_1_2 false RX_CC_VAL_1_2 0000000000 RX_CC_K_1_2 false RX_CC_DISP_1_2 false RX_CC_MASK_1_3 false RX_CC_VAL_1_3 0000000000 RX_CC_K_1_3 false RX_CC_DISP_1_3 false PCIE_USERCLK2_FREQ 250 PCIE_USERCLK_FREQ\
+250 RX_JTOL_FC 10 RX_JTOL_LF_SLOPE -20 RX_BUFFER_BYPASS_MODE Fast_Sync RX_BUFFER_BYPASS_MODE_LANE MULTI RX_BUFFER_RESET_ON_CB_CHANGE ENABLE RX_BUFFER_RESET_ON_COMMAALIGN DISABLE RX_BUFFER_RESET_ON_RATE_CHANGE\
+ENABLE RESET_SEQUENCE_INTERVAL 0 RX_COMMA_PRESET NONE RX_COMMA_VALID_ONLY 0 GT_TYPE GTY} \
+    CONFIG.PROT1_LR10_SETTINGS {NA NA} \
+    CONFIG.PROT1_LR11_SETTINGS {NA NA} \
+    CONFIG.PROT1_LR12_SETTINGS {NA NA} \
+    CONFIG.PROT1_LR13_SETTINGS {NA NA} \
+    CONFIG.PROT1_LR14_SETTINGS {NA NA} \
+    CONFIG.PROT1_LR15_SETTINGS {NA NA} \
+    CONFIG.PROT1_LR1_SETTINGS {GT_DIRECTION DUPLEX TX_PAM_SEL NRZ TX_HD_EN 0 TX_GRAY_BYP true TX_GRAY_LITTLEENDIAN true TX_PRECODE_BYP true TX_PRECODE_LITTLEENDIAN false TX_LINE_RATE 25.78125 TX_PLL_TYPE\
+LCPLL TX_REFCLK_FREQUENCY 322.265625 TX_ACTUAL_REFCLK_FREQUENCY 322.265625000000 TX_FRACN_ENABLED false TX_FRACN_OVRD false TX_FRACN_NUMERATOR 0 TX_REFCLK_SOURCE R0 TX_DATA_ENCODING RAW TX_USER_DATA_WIDTH\
+80 TX_INT_DATA_WIDTH 80 TX_BUFFER_MODE 1 TX_BUFFER_BYPASS_MODE Fast_Sync TX_PIPM_ENABLE false TX_OUTCLK_SOURCE TXPROGDIVCLK TXPROGDIV_FREQ_ENABLE true TXPROGDIV_FREQ_SOURCE LCPLL TXPROGDIV_FREQ_VAL 644.531\
+TX_DIFF_SWING_EMPH_MODE CUSTOM TX_64B66B_SCRAMBLER false TX_64B66B_ENCODER false TX_64B66B_CRC false TX_RATE_GROUP A TX_LANE_DESKEW_HDMI_ENABLE false TX_BUFFER_RESET_ON_RATE_CHANGE ENABLE PRESET None RX_PAM_SEL\
+NRZ RX_HD_EN 0 RX_GRAY_BYP true RX_GRAY_LITTLEENDIAN true RX_PRECODE_BYP true RX_PRECODE_LITTLEENDIAN false INTERNAL_PRESET None RX_LINE_RATE 25.78125 RX_PLL_TYPE LCPLL RX_REFCLK_FREQUENCY 322.265625 RX_ACTUAL_REFCLK_FREQUENCY\
+322.265625000000 RX_FRACN_ENABLED false RX_FRACN_OVRD false RX_FRACN_NUMERATOR 0 RX_REFCLK_SOURCE R0 RX_DATA_DECODING RAW RX_USER_DATA_WIDTH 80 RX_INT_DATA_WIDTH 80 RX_BUFFER_MODE 1 RX_OUTCLK_SOURCE RXPROGDIVCLK\
+RXPROGDIV_FREQ_ENABLE true RXPROGDIV_FREQ_SOURCE LCPLL RXPROGDIV_FREQ_VAL 644.531 RXRECCLK_FREQ_ENABLE true RXRECCLK_FREQ_VAL 644.531 INS_LOSS_NYQ 20 RX_EQ_MODE AUTO RX_COUPLING AC RX_TERMINATION PROGRAMMABLE\
+RX_RATE_GROUP A RX_TERMINATION_PROG_VALUE 800 RX_PPM_OFFSET 0 RX_64B66B_DESCRAMBLER false RX_64B66B_DECODER false RX_64B66B_CRC false OOB_ENABLE false RX_COMMA_ALIGN_WORD 1 RX_COMMA_SHOW_REALIGN_ENABLE\
+true PCIE_ENABLE false RX_COMMA_P_ENABLE false RX_COMMA_M_ENABLE false RX_COMMA_DOUBLE_ENABLE false RX_COMMA_P_VAL 0101111100 RX_COMMA_M_VAL 1010000011 RX_COMMA_MASK 0000000000 RX_SLIDE_MODE OFF RX_SSC_PPM\
+0 RX_CB_NUM_SEQ 0 RX_CB_LEN_SEQ 1 RX_CB_MAX_SKEW 1 RX_CB_MAX_LEVEL 1 RX_CB_MASK 00000000 RX_CB_VAL 00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CB_K 00000000 RX_CB_DISP\
+00000000 RX_CB_MASK_0_0 false RX_CB_VAL_0_0 0000000000 RX_CB_K_0_0 false RX_CB_DISP_0_0 false RX_CB_MASK_0_1 false RX_CB_VAL_0_1 0000000000 RX_CB_K_0_1 false RX_CB_DISP_0_1 false RX_CB_MASK_0_2 false RX_CB_VAL_0_2\
+0000000000 RX_CB_K_0_2 false RX_CB_DISP_0_2 false RX_CB_MASK_0_3 false RX_CB_VAL_0_3 0000000000 RX_CB_K_0_3 false RX_CB_DISP_0_3 false RX_CB_MASK_1_0 false RX_CB_VAL_1_0 0000000000 RX_CB_K_1_0 false RX_CB_DISP_1_0\
+false RX_CB_MASK_1_1 false RX_CB_VAL_1_1 0000000000 RX_CB_K_1_1 false RX_CB_DISP_1_1 false RX_CB_MASK_1_2 false RX_CB_VAL_1_2 0000000000 RX_CB_K_1_2 false RX_CB_DISP_1_2 false RX_CB_MASK_1_3 false RX_CB_VAL_1_3\
+0000000000 RX_CB_K_1_3 false RX_CB_DISP_1_3 false RX_CC_NUM_SEQ 0 RX_CC_LEN_SEQ 1 RX_CC_PERIODICITY 5000 RX_CC_KEEP_IDLE DISABLE RX_CC_PRECEDENCE ENABLE RX_CC_REPEAT_WAIT 0 RX_CC_MASK 00000000 RX_CC_VAL\
+00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CC_K 00000000 RX_CC_DISP 00000000 RX_CC_MASK_0_0 false RX_CC_VAL_0_0 0000000000 RX_CC_K_0_0 false RX_CC_DISP_0_0 false\
+RX_CC_MASK_0_1 false RX_CC_VAL_0_1 0000000000 RX_CC_K_0_1 false RX_CC_DISP_0_1 false RX_CC_MASK_0_2 false RX_CC_VAL_0_2 0000000000 RX_CC_K_0_2 false RX_CC_DISP_0_2 false RX_CC_MASK_0_3 false RX_CC_VAL_0_3\
+0000000000 RX_CC_K_0_3 false RX_CC_DISP_0_3 false RX_CC_MASK_1_0 false RX_CC_VAL_1_0 0000000000 RX_CC_K_1_0 false RX_CC_DISP_1_0 false RX_CC_MASK_1_1 false RX_CC_VAL_1_1 0000000000 RX_CC_K_1_1 false RX_CC_DISP_1_1\
+false RX_CC_MASK_1_2 false RX_CC_VAL_1_2 0000000000 RX_CC_K_1_2 false RX_CC_DISP_1_2 false RX_CC_MASK_1_3 false RX_CC_VAL_1_3 0000000000 RX_CC_K_1_3 false RX_CC_DISP_1_3 false PCIE_USERCLK2_FREQ 250 PCIE_USERCLK_FREQ\
+250 RX_JTOL_FC 10 RX_JTOL_LF_SLOPE -20 RX_BUFFER_BYPASS_MODE Fast_Sync RX_BUFFER_BYPASS_MODE_LANE MULTI RX_BUFFER_RESET_ON_CB_CHANGE ENABLE RX_BUFFER_RESET_ON_COMMAALIGN DISABLE RX_BUFFER_RESET_ON_RATE_CHANGE\
+ENABLE RESET_SEQUENCE_INTERVAL 0 RX_COMMA_PRESET NONE RX_COMMA_VALID_ONLY 0 GT_TYPE GTY} \
+    CONFIG.PROT1_LR2_SETTINGS {GT_DIRECTION DUPLEX TX_PAM_SEL NRZ TX_HD_EN 0 TX_GRAY_BYP true TX_GRAY_LITTLEENDIAN true TX_PRECODE_BYP true TX_PRECODE_LITTLEENDIAN false TX_LINE_RATE 25.78125 TX_PLL_TYPE\
+LCPLL TX_REFCLK_FREQUENCY 322.265625 TX_ACTUAL_REFCLK_FREQUENCY 322.265625000000 TX_FRACN_ENABLED false TX_FRACN_OVRD false TX_FRACN_NUMERATOR 0 TX_REFCLK_SOURCE R0 TX_DATA_ENCODING RAW TX_USER_DATA_WIDTH\
+80 TX_INT_DATA_WIDTH 80 TX_BUFFER_MODE 1 TX_BUFFER_BYPASS_MODE Fast_Sync TX_PIPM_ENABLE false TX_OUTCLK_SOURCE TXPROGDIVCLK TXPROGDIV_FREQ_ENABLE true TXPROGDIV_FREQ_SOURCE LCPLL TXPROGDIV_FREQ_VAL 644.531\
+TX_DIFF_SWING_EMPH_MODE CUSTOM TX_64B66B_SCRAMBLER false TX_64B66B_ENCODER false TX_64B66B_CRC false TX_RATE_GROUP A TX_LANE_DESKEW_HDMI_ENABLE false TX_BUFFER_RESET_ON_RATE_CHANGE ENABLE PRESET None RX_PAM_SEL\
+NRZ RX_HD_EN 0 RX_GRAY_BYP true RX_GRAY_LITTLEENDIAN true RX_PRECODE_BYP true RX_PRECODE_LITTLEENDIAN false INTERNAL_PRESET None RX_LINE_RATE 25.78125 RX_PLL_TYPE LCPLL RX_REFCLK_FREQUENCY 322.265625 RX_ACTUAL_REFCLK_FREQUENCY\
+322.265625000000 RX_FRACN_ENABLED false RX_FRACN_OVRD false RX_FRACN_NUMERATOR 0 RX_REFCLK_SOURCE R0 RX_DATA_DECODING RAW RX_USER_DATA_WIDTH 80 RX_INT_DATA_WIDTH 80 RX_BUFFER_MODE 1 RX_OUTCLK_SOURCE RXPROGDIVCLK\
+RXPROGDIV_FREQ_ENABLE true RXPROGDIV_FREQ_SOURCE LCPLL RXPROGDIV_FREQ_VAL 644.531 RXRECCLK_FREQ_ENABLE true RXRECCLK_FREQ_VAL 644.531 INS_LOSS_NYQ 20 RX_EQ_MODE AUTO RX_COUPLING AC RX_TERMINATION PROGRAMMABLE\
+RX_RATE_GROUP A RX_TERMINATION_PROG_VALUE 800 RX_PPM_OFFSET 0 RX_64B66B_DESCRAMBLER false RX_64B66B_DECODER false RX_64B66B_CRC false OOB_ENABLE false RX_COMMA_ALIGN_WORD 1 RX_COMMA_SHOW_REALIGN_ENABLE\
+true PCIE_ENABLE false RX_COMMA_P_ENABLE false RX_COMMA_M_ENABLE false RX_COMMA_DOUBLE_ENABLE false RX_COMMA_P_VAL 0101111100 RX_COMMA_M_VAL 1010000011 RX_COMMA_MASK 0000000000 RX_SLIDE_MODE OFF RX_SSC_PPM\
+0 RX_CB_NUM_SEQ 0 RX_CB_LEN_SEQ 1 RX_CB_MAX_SKEW 1 RX_CB_MAX_LEVEL 1 RX_CB_MASK 00000000 RX_CB_VAL 00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CB_K 00000000 RX_CB_DISP\
+00000000 RX_CB_MASK_0_0 false RX_CB_VAL_0_0 0000000000 RX_CB_K_0_0 false RX_CB_DISP_0_0 false RX_CB_MASK_0_1 false RX_CB_VAL_0_1 0000000000 RX_CB_K_0_1 false RX_CB_DISP_0_1 false RX_CB_MASK_0_2 false RX_CB_VAL_0_2\
+0000000000 RX_CB_K_0_2 false RX_CB_DISP_0_2 false RX_CB_MASK_0_3 false RX_CB_VAL_0_3 0000000000 RX_CB_K_0_3 false RX_CB_DISP_0_3 false RX_CB_MASK_1_0 false RX_CB_VAL_1_0 0000000000 RX_CB_K_1_0 false RX_CB_DISP_1_0\
+false RX_CB_MASK_1_1 false RX_CB_VAL_1_1 0000000000 RX_CB_K_1_1 false RX_CB_DISP_1_1 false RX_CB_MASK_1_2 false RX_CB_VAL_1_2 0000000000 RX_CB_K_1_2 false RX_CB_DISP_1_2 false RX_CB_MASK_1_3 false RX_CB_VAL_1_3\
+0000000000 RX_CB_K_1_3 false RX_CB_DISP_1_3 false RX_CC_NUM_SEQ 0 RX_CC_LEN_SEQ 1 RX_CC_PERIODICITY 5000 RX_CC_KEEP_IDLE DISABLE RX_CC_PRECEDENCE ENABLE RX_CC_REPEAT_WAIT 0 RX_CC_MASK 00000000 RX_CC_VAL\
+00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CC_K 00000000 RX_CC_DISP 00000000 RX_CC_MASK_0_0 false RX_CC_VAL_0_0 0000000000 RX_CC_K_0_0 false RX_CC_DISP_0_0 false\
+RX_CC_MASK_0_1 false RX_CC_VAL_0_1 0000000000 RX_CC_K_0_1 false RX_CC_DISP_0_1 false RX_CC_MASK_0_2 false RX_CC_VAL_0_2 0000000000 RX_CC_K_0_2 false RX_CC_DISP_0_2 false RX_CC_MASK_0_3 false RX_CC_VAL_0_3\
+0000000000 RX_CC_K_0_3 false RX_CC_DISP_0_3 false RX_CC_MASK_1_0 false RX_CC_VAL_1_0 0000000000 RX_CC_K_1_0 false RX_CC_DISP_1_0 false RX_CC_MASK_1_1 false RX_CC_VAL_1_1 0000000000 RX_CC_K_1_1 false RX_CC_DISP_1_1\
+false RX_CC_MASK_1_2 false RX_CC_VAL_1_2 0000000000 RX_CC_K_1_2 false RX_CC_DISP_1_2 false RX_CC_MASK_1_3 false RX_CC_VAL_1_3 0000000000 RX_CC_K_1_3 false RX_CC_DISP_1_3 false PCIE_USERCLK2_FREQ 250 PCIE_USERCLK_FREQ\
+250 RX_JTOL_FC 10 RX_JTOL_LF_SLOPE -20 RX_BUFFER_BYPASS_MODE Fast_Sync RX_BUFFER_BYPASS_MODE_LANE MULTI RX_BUFFER_RESET_ON_CB_CHANGE ENABLE RX_BUFFER_RESET_ON_COMMAALIGN DISABLE RX_BUFFER_RESET_ON_RATE_CHANGE\
+ENABLE RESET_SEQUENCE_INTERVAL 0 RX_COMMA_PRESET NONE RX_COMMA_VALID_ONLY 0 GT_TYPE GTY} \
+    CONFIG.PROT1_LR3_SETTINGS {NA NA} \
+    CONFIG.PROT1_LR4_SETTINGS {NA NA} \
+    CONFIG.PROT1_LR5_SETTINGS {NA NA} \
+    CONFIG.PROT1_LR6_SETTINGS {NA NA} \
+    CONFIG.PROT1_LR7_SETTINGS {NA NA} \
+    CONFIG.PROT1_LR8_SETTINGS {NA NA} \
+    CONFIG.PROT1_LR9_SETTINGS {NA NA} \
+    CONFIG.PROT1_NO_OF_LANES {1} \
+    CONFIG.PROT1_RX_MASTERCLK_SRC {RX1} \
+    CONFIG.PROT1_TX_MASTERCLK_SRC {TX1} \
+    CONFIG.PROT2_ENABLE {true} \
+    CONFIG.PROT2_GT_DIRECTION {DUPLEX} \
+    CONFIG.PROT2_LR0_SETTINGS {GT_DIRECTION DUPLEX TX_PAM_SEL NRZ TX_HD_EN 0 TX_GRAY_BYP true TX_GRAY_LITTLEENDIAN true TX_PRECODE_BYP true TX_PRECODE_LITTLEENDIAN false TX_LINE_RATE 25.78125 TX_PLL_TYPE\
+LCPLL TX_REFCLK_FREQUENCY 322.265625 TX_ACTUAL_REFCLK_FREQUENCY 322.265625000000 TX_FRACN_ENABLED false TX_FRACN_OVRD false TX_FRACN_NUMERATOR 0 TX_REFCLK_SOURCE R0 TX_DATA_ENCODING RAW TX_USER_DATA_WIDTH\
+80 TX_INT_DATA_WIDTH 80 TX_BUFFER_MODE 1 TX_BUFFER_BYPASS_MODE Fast_Sync TX_PIPM_ENABLE false TX_OUTCLK_SOURCE TXPROGDIVCLK TXPROGDIV_FREQ_ENABLE true TXPROGDIV_FREQ_SOURCE LCPLL TXPROGDIV_FREQ_VAL 644.531\
+TX_DIFF_SWING_EMPH_MODE CUSTOM TX_64B66B_SCRAMBLER false TX_64B66B_ENCODER false TX_64B66B_CRC false TX_RATE_GROUP A TX_LANE_DESKEW_HDMI_ENABLE false TX_BUFFER_RESET_ON_RATE_CHANGE ENABLE PRESET None RX_PAM_SEL\
+NRZ RX_HD_EN 0 RX_GRAY_BYP true RX_GRAY_LITTLEENDIAN true RX_PRECODE_BYP true RX_PRECODE_LITTLEENDIAN false INTERNAL_PRESET None RX_LINE_RATE 25.78125 RX_PLL_TYPE LCPLL RX_REFCLK_FREQUENCY 322.265625 RX_ACTUAL_REFCLK_FREQUENCY\
+322.265625000000 RX_FRACN_ENABLED false RX_FRACN_OVRD false RX_FRACN_NUMERATOR 0 RX_REFCLK_SOURCE R0 RX_DATA_DECODING RAW RX_USER_DATA_WIDTH 80 RX_INT_DATA_WIDTH 80 RX_BUFFER_MODE 1 RX_OUTCLK_SOURCE RXPROGDIVCLK\
+RXPROGDIV_FREQ_ENABLE true RXPROGDIV_FREQ_SOURCE LCPLL RXPROGDIV_FREQ_VAL 644.531 RXRECCLK_FREQ_ENABLE true RXRECCLK_FREQ_VAL 644.531 INS_LOSS_NYQ 20 RX_EQ_MODE AUTO RX_COUPLING AC RX_TERMINATION PROGRAMMABLE\
+RX_RATE_GROUP A RX_TERMINATION_PROG_VALUE 800 RX_PPM_OFFSET 0 RX_64B66B_DESCRAMBLER false RX_64B66B_DECODER false RX_64B66B_CRC false OOB_ENABLE false RX_COMMA_ALIGN_WORD 1 RX_COMMA_SHOW_REALIGN_ENABLE\
+true PCIE_ENABLE false RX_COMMA_P_ENABLE false RX_COMMA_M_ENABLE false RX_COMMA_DOUBLE_ENABLE false RX_COMMA_P_VAL 0101111100 RX_COMMA_M_VAL 1010000011 RX_COMMA_MASK 0000000000 RX_SLIDE_MODE OFF RX_SSC_PPM\
+0 RX_CB_NUM_SEQ 0 RX_CB_LEN_SEQ 1 RX_CB_MAX_SKEW 1 RX_CB_MAX_LEVEL 1 RX_CB_MASK 00000000 RX_CB_VAL 00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CB_K 00000000 RX_CB_DISP\
+00000000 RX_CB_MASK_0_0 false RX_CB_VAL_0_0 0000000000 RX_CB_K_0_0 false RX_CB_DISP_0_0 false RX_CB_MASK_0_1 false RX_CB_VAL_0_1 0000000000 RX_CB_K_0_1 false RX_CB_DISP_0_1 false RX_CB_MASK_0_2 false RX_CB_VAL_0_2\
+0000000000 RX_CB_K_0_2 false RX_CB_DISP_0_2 false RX_CB_MASK_0_3 false RX_CB_VAL_0_3 0000000000 RX_CB_K_0_3 false RX_CB_DISP_0_3 false RX_CB_MASK_1_0 false RX_CB_VAL_1_0 0000000000 RX_CB_K_1_0 false RX_CB_DISP_1_0\
+false RX_CB_MASK_1_1 false RX_CB_VAL_1_1 0000000000 RX_CB_K_1_1 false RX_CB_DISP_1_1 false RX_CB_MASK_1_2 false RX_CB_VAL_1_2 0000000000 RX_CB_K_1_2 false RX_CB_DISP_1_2 false RX_CB_MASK_1_3 false RX_CB_VAL_1_3\
+0000000000 RX_CB_K_1_3 false RX_CB_DISP_1_3 false RX_CC_NUM_SEQ 0 RX_CC_LEN_SEQ 1 RX_CC_PERIODICITY 5000 RX_CC_KEEP_IDLE DISABLE RX_CC_PRECEDENCE ENABLE RX_CC_REPEAT_WAIT 0 RX_CC_MASK 00000000 RX_CC_VAL\
+00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CC_K 00000000 RX_CC_DISP 00000000 RX_CC_MASK_0_0 false RX_CC_VAL_0_0 0000000000 RX_CC_K_0_0 false RX_CC_DISP_0_0 false\
+RX_CC_MASK_0_1 false RX_CC_VAL_0_1 0000000000 RX_CC_K_0_1 false RX_CC_DISP_0_1 false RX_CC_MASK_0_2 false RX_CC_VAL_0_2 0000000000 RX_CC_K_0_2 false RX_CC_DISP_0_2 false RX_CC_MASK_0_3 false RX_CC_VAL_0_3\
+0000000000 RX_CC_K_0_3 false RX_CC_DISP_0_3 false RX_CC_MASK_1_0 false RX_CC_VAL_1_0 0000000000 RX_CC_K_1_0 false RX_CC_DISP_1_0 false RX_CC_MASK_1_1 false RX_CC_VAL_1_1 0000000000 RX_CC_K_1_1 false RX_CC_DISP_1_1\
+false RX_CC_MASK_1_2 false RX_CC_VAL_1_2 0000000000 RX_CC_K_1_2 false RX_CC_DISP_1_2 false RX_CC_MASK_1_3 false RX_CC_VAL_1_3 0000000000 RX_CC_K_1_3 false RX_CC_DISP_1_3 false PCIE_USERCLK2_FREQ 250 PCIE_USERCLK_FREQ\
+250 RX_JTOL_FC 10 RX_JTOL_LF_SLOPE -20 RX_BUFFER_BYPASS_MODE Fast_Sync RX_BUFFER_BYPASS_MODE_LANE MULTI RX_BUFFER_RESET_ON_CB_CHANGE ENABLE RX_BUFFER_RESET_ON_COMMAALIGN DISABLE RX_BUFFER_RESET_ON_RATE_CHANGE\
+ENABLE RESET_SEQUENCE_INTERVAL 0 RX_COMMA_PRESET NONE RX_COMMA_VALID_ONLY 0 GT_TYPE GTY} \
+    CONFIG.PROT2_LR10_SETTINGS {NA NA} \
+    CONFIG.PROT2_LR11_SETTINGS {NA NA} \
+    CONFIG.PROT2_LR12_SETTINGS {NA NA} \
+    CONFIG.PROT2_LR13_SETTINGS {NA NA} \
+    CONFIG.PROT2_LR14_SETTINGS {NA NA} \
+    CONFIG.PROT2_LR15_SETTINGS {NA NA} \
+    CONFIG.PROT2_LR1_SETTINGS {GT_DIRECTION DUPLEX TX_PAM_SEL NRZ TX_HD_EN 0 TX_GRAY_BYP true TX_GRAY_LITTLEENDIAN true TX_PRECODE_BYP true TX_PRECODE_LITTLEENDIAN false TX_LINE_RATE 25.78125 TX_PLL_TYPE\
+LCPLL TX_REFCLK_FREQUENCY 322.265625 TX_ACTUAL_REFCLK_FREQUENCY 322.265625000000 TX_FRACN_ENABLED false TX_FRACN_OVRD false TX_FRACN_NUMERATOR 0 TX_REFCLK_SOURCE R0 TX_DATA_ENCODING RAW TX_USER_DATA_WIDTH\
+80 TX_INT_DATA_WIDTH 80 TX_BUFFER_MODE 1 TX_BUFFER_BYPASS_MODE Fast_Sync TX_PIPM_ENABLE false TX_OUTCLK_SOURCE TXPROGDIVCLK TXPROGDIV_FREQ_ENABLE true TXPROGDIV_FREQ_SOURCE LCPLL TXPROGDIV_FREQ_VAL 644.531\
+TX_DIFF_SWING_EMPH_MODE CUSTOM TX_64B66B_SCRAMBLER false TX_64B66B_ENCODER false TX_64B66B_CRC false TX_RATE_GROUP A TX_LANE_DESKEW_HDMI_ENABLE false TX_BUFFER_RESET_ON_RATE_CHANGE ENABLE PRESET None RX_PAM_SEL\
+NRZ RX_HD_EN 0 RX_GRAY_BYP true RX_GRAY_LITTLEENDIAN true RX_PRECODE_BYP true RX_PRECODE_LITTLEENDIAN false INTERNAL_PRESET None RX_LINE_RATE 25.78125 RX_PLL_TYPE LCPLL RX_REFCLK_FREQUENCY 322.265625 RX_ACTUAL_REFCLK_FREQUENCY\
+322.265625000000 RX_FRACN_ENABLED false RX_FRACN_OVRD false RX_FRACN_NUMERATOR 0 RX_REFCLK_SOURCE R0 RX_DATA_DECODING RAW RX_USER_DATA_WIDTH 80 RX_INT_DATA_WIDTH 80 RX_BUFFER_MODE 1 RX_OUTCLK_SOURCE RXPROGDIVCLK\
+RXPROGDIV_FREQ_ENABLE true RXPROGDIV_FREQ_SOURCE LCPLL RXPROGDIV_FREQ_VAL 644.531 RXRECCLK_FREQ_ENABLE true RXRECCLK_FREQ_VAL 644.531 INS_LOSS_NYQ 20 RX_EQ_MODE AUTO RX_COUPLING AC RX_TERMINATION PROGRAMMABLE\
+RX_RATE_GROUP A RX_TERMINATION_PROG_VALUE 800 RX_PPM_OFFSET 0 RX_64B66B_DESCRAMBLER false RX_64B66B_DECODER false RX_64B66B_CRC false OOB_ENABLE false RX_COMMA_ALIGN_WORD 1 RX_COMMA_SHOW_REALIGN_ENABLE\
+true PCIE_ENABLE false RX_COMMA_P_ENABLE false RX_COMMA_M_ENABLE false RX_COMMA_DOUBLE_ENABLE false RX_COMMA_P_VAL 0101111100 RX_COMMA_M_VAL 1010000011 RX_COMMA_MASK 0000000000 RX_SLIDE_MODE OFF RX_SSC_PPM\
+0 RX_CB_NUM_SEQ 0 RX_CB_LEN_SEQ 1 RX_CB_MAX_SKEW 1 RX_CB_MAX_LEVEL 1 RX_CB_MASK 00000000 RX_CB_VAL 00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CB_K 00000000 RX_CB_DISP\
+00000000 RX_CB_MASK_0_0 false RX_CB_VAL_0_0 0000000000 RX_CB_K_0_0 false RX_CB_DISP_0_0 false RX_CB_MASK_0_1 false RX_CB_VAL_0_1 0000000000 RX_CB_K_0_1 false RX_CB_DISP_0_1 false RX_CB_MASK_0_2 false RX_CB_VAL_0_2\
+0000000000 RX_CB_K_0_2 false RX_CB_DISP_0_2 false RX_CB_MASK_0_3 false RX_CB_VAL_0_3 0000000000 RX_CB_K_0_3 false RX_CB_DISP_0_3 false RX_CB_MASK_1_0 false RX_CB_VAL_1_0 0000000000 RX_CB_K_1_0 false RX_CB_DISP_1_0\
+false RX_CB_MASK_1_1 false RX_CB_VAL_1_1 0000000000 RX_CB_K_1_1 false RX_CB_DISP_1_1 false RX_CB_MASK_1_2 false RX_CB_VAL_1_2 0000000000 RX_CB_K_1_2 false RX_CB_DISP_1_2 false RX_CB_MASK_1_3 false RX_CB_VAL_1_3\
+0000000000 RX_CB_K_1_3 false RX_CB_DISP_1_3 false RX_CC_NUM_SEQ 0 RX_CC_LEN_SEQ 1 RX_CC_PERIODICITY 5000 RX_CC_KEEP_IDLE DISABLE RX_CC_PRECEDENCE ENABLE RX_CC_REPEAT_WAIT 0 RX_CC_MASK 00000000 RX_CC_VAL\
+00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CC_K 00000000 RX_CC_DISP 00000000 RX_CC_MASK_0_0 false RX_CC_VAL_0_0 0000000000 RX_CC_K_0_0 false RX_CC_DISP_0_0 false\
+RX_CC_MASK_0_1 false RX_CC_VAL_0_1 0000000000 RX_CC_K_0_1 false RX_CC_DISP_0_1 false RX_CC_MASK_0_2 false RX_CC_VAL_0_2 0000000000 RX_CC_K_0_2 false RX_CC_DISP_0_2 false RX_CC_MASK_0_3 false RX_CC_VAL_0_3\
+0000000000 RX_CC_K_0_3 false RX_CC_DISP_0_3 false RX_CC_MASK_1_0 false RX_CC_VAL_1_0 0000000000 RX_CC_K_1_0 false RX_CC_DISP_1_0 false RX_CC_MASK_1_1 false RX_CC_VAL_1_1 0000000000 RX_CC_K_1_1 false RX_CC_DISP_1_1\
+false RX_CC_MASK_1_2 false RX_CC_VAL_1_2 0000000000 RX_CC_K_1_2 false RX_CC_DISP_1_2 false RX_CC_MASK_1_3 false RX_CC_VAL_1_3 0000000000 RX_CC_K_1_3 false RX_CC_DISP_1_3 false PCIE_USERCLK2_FREQ 250 PCIE_USERCLK_FREQ\
+250 RX_JTOL_FC 10 RX_JTOL_LF_SLOPE -20 RX_BUFFER_BYPASS_MODE Fast_Sync RX_BUFFER_BYPASS_MODE_LANE MULTI RX_BUFFER_RESET_ON_CB_CHANGE ENABLE RX_BUFFER_RESET_ON_COMMAALIGN DISABLE RX_BUFFER_RESET_ON_RATE_CHANGE\
+ENABLE RESET_SEQUENCE_INTERVAL 0 RX_COMMA_PRESET NONE RX_COMMA_VALID_ONLY 0 GT_TYPE GTY} \
+    CONFIG.PROT2_LR2_SETTINGS {GT_DIRECTION DUPLEX TX_PAM_SEL NRZ TX_HD_EN 0 TX_GRAY_BYP true TX_GRAY_LITTLEENDIAN true TX_PRECODE_BYP true TX_PRECODE_LITTLEENDIAN false TX_LINE_RATE 25.78125 TX_PLL_TYPE\
+LCPLL TX_REFCLK_FREQUENCY 322.265625 TX_ACTUAL_REFCLK_FREQUENCY 322.265625000000 TX_FRACN_ENABLED false TX_FRACN_OVRD false TX_FRACN_NUMERATOR 0 TX_REFCLK_SOURCE R0 TX_DATA_ENCODING RAW TX_USER_DATA_WIDTH\
+80 TX_INT_DATA_WIDTH 80 TX_BUFFER_MODE 1 TX_BUFFER_BYPASS_MODE Fast_Sync TX_PIPM_ENABLE false TX_OUTCLK_SOURCE TXPROGDIVCLK TXPROGDIV_FREQ_ENABLE true TXPROGDIV_FREQ_SOURCE LCPLL TXPROGDIV_FREQ_VAL 644.531\
+TX_DIFF_SWING_EMPH_MODE CUSTOM TX_64B66B_SCRAMBLER false TX_64B66B_ENCODER false TX_64B66B_CRC false TX_RATE_GROUP A TX_LANE_DESKEW_HDMI_ENABLE false TX_BUFFER_RESET_ON_RATE_CHANGE ENABLE PRESET None RX_PAM_SEL\
+NRZ RX_HD_EN 0 RX_GRAY_BYP true RX_GRAY_LITTLEENDIAN true RX_PRECODE_BYP true RX_PRECODE_LITTLEENDIAN false INTERNAL_PRESET None RX_LINE_RATE 25.78125 RX_PLL_TYPE LCPLL RX_REFCLK_FREQUENCY 322.265625 RX_ACTUAL_REFCLK_FREQUENCY\
+322.265625000000 RX_FRACN_ENABLED false RX_FRACN_OVRD false RX_FRACN_NUMERATOR 0 RX_REFCLK_SOURCE R0 RX_DATA_DECODING RAW RX_USER_DATA_WIDTH 80 RX_INT_DATA_WIDTH 80 RX_BUFFER_MODE 1 RX_OUTCLK_SOURCE RXPROGDIVCLK\
+RXPROGDIV_FREQ_ENABLE true RXPROGDIV_FREQ_SOURCE LCPLL RXPROGDIV_FREQ_VAL 644.531 RXRECCLK_FREQ_ENABLE true RXRECCLK_FREQ_VAL 644.531 INS_LOSS_NYQ 20 RX_EQ_MODE AUTO RX_COUPLING AC RX_TERMINATION PROGRAMMABLE\
+RX_RATE_GROUP A RX_TERMINATION_PROG_VALUE 800 RX_PPM_OFFSET 0 RX_64B66B_DESCRAMBLER false RX_64B66B_DECODER false RX_64B66B_CRC false OOB_ENABLE false RX_COMMA_ALIGN_WORD 1 RX_COMMA_SHOW_REALIGN_ENABLE\
+true PCIE_ENABLE false RX_COMMA_P_ENABLE false RX_COMMA_M_ENABLE false RX_COMMA_DOUBLE_ENABLE false RX_COMMA_P_VAL 0101111100 RX_COMMA_M_VAL 1010000011 RX_COMMA_MASK 0000000000 RX_SLIDE_MODE OFF RX_SSC_PPM\
+0 RX_CB_NUM_SEQ 0 RX_CB_LEN_SEQ 1 RX_CB_MAX_SKEW 1 RX_CB_MAX_LEVEL 1 RX_CB_MASK 00000000 RX_CB_VAL 00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CB_K 00000000 RX_CB_DISP\
+00000000 RX_CB_MASK_0_0 false RX_CB_VAL_0_0 0000000000 RX_CB_K_0_0 false RX_CB_DISP_0_0 false RX_CB_MASK_0_1 false RX_CB_VAL_0_1 0000000000 RX_CB_K_0_1 false RX_CB_DISP_0_1 false RX_CB_MASK_0_2 false RX_CB_VAL_0_2\
+0000000000 RX_CB_K_0_2 false RX_CB_DISP_0_2 false RX_CB_MASK_0_3 false RX_CB_VAL_0_3 0000000000 RX_CB_K_0_3 false RX_CB_DISP_0_3 false RX_CB_MASK_1_0 false RX_CB_VAL_1_0 0000000000 RX_CB_K_1_0 false RX_CB_DISP_1_0\
+false RX_CB_MASK_1_1 false RX_CB_VAL_1_1 0000000000 RX_CB_K_1_1 false RX_CB_DISP_1_1 false RX_CB_MASK_1_2 false RX_CB_VAL_1_2 0000000000 RX_CB_K_1_2 false RX_CB_DISP_1_2 false RX_CB_MASK_1_3 false RX_CB_VAL_1_3\
+0000000000 RX_CB_K_1_3 false RX_CB_DISP_1_3 false RX_CC_NUM_SEQ 0 RX_CC_LEN_SEQ 1 RX_CC_PERIODICITY 5000 RX_CC_KEEP_IDLE DISABLE RX_CC_PRECEDENCE ENABLE RX_CC_REPEAT_WAIT 0 RX_CC_MASK 00000000 RX_CC_VAL\
+00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CC_K 00000000 RX_CC_DISP 00000000 RX_CC_MASK_0_0 false RX_CC_VAL_0_0 0000000000 RX_CC_K_0_0 false RX_CC_DISP_0_0 false\
+RX_CC_MASK_0_1 false RX_CC_VAL_0_1 0000000000 RX_CC_K_0_1 false RX_CC_DISP_0_1 false RX_CC_MASK_0_2 false RX_CC_VAL_0_2 0000000000 RX_CC_K_0_2 false RX_CC_DISP_0_2 false RX_CC_MASK_0_3 false RX_CC_VAL_0_3\
+0000000000 RX_CC_K_0_3 false RX_CC_DISP_0_3 false RX_CC_MASK_1_0 false RX_CC_VAL_1_0 0000000000 RX_CC_K_1_0 false RX_CC_DISP_1_0 false RX_CC_MASK_1_1 false RX_CC_VAL_1_1 0000000000 RX_CC_K_1_1 false RX_CC_DISP_1_1\
+false RX_CC_MASK_1_2 false RX_CC_VAL_1_2 0000000000 RX_CC_K_1_2 false RX_CC_DISP_1_2 false RX_CC_MASK_1_3 false RX_CC_VAL_1_3 0000000000 RX_CC_K_1_3 false RX_CC_DISP_1_3 false PCIE_USERCLK2_FREQ 250 PCIE_USERCLK_FREQ\
+250 RX_JTOL_FC 10 RX_JTOL_LF_SLOPE -20 RX_BUFFER_BYPASS_MODE Fast_Sync RX_BUFFER_BYPASS_MODE_LANE MULTI RX_BUFFER_RESET_ON_CB_CHANGE ENABLE RX_BUFFER_RESET_ON_COMMAALIGN DISABLE RX_BUFFER_RESET_ON_RATE_CHANGE\
+ENABLE RESET_SEQUENCE_INTERVAL 0 RX_COMMA_PRESET NONE RX_COMMA_VALID_ONLY 0 GT_TYPE GTY} \
+    CONFIG.PROT2_LR3_SETTINGS {NA NA} \
+    CONFIG.PROT2_LR4_SETTINGS {NA NA} \
+    CONFIG.PROT2_LR5_SETTINGS {NA NA} \
+    CONFIG.PROT2_LR6_SETTINGS {NA NA} \
+    CONFIG.PROT2_LR7_SETTINGS {NA NA} \
+    CONFIG.PROT2_LR8_SETTINGS {NA NA} \
+    CONFIG.PROT2_LR9_SETTINGS {NA NA} \
+    CONFIG.PROT2_NO_OF_LANES {1} \
+    CONFIG.PROT2_RX_MASTERCLK_SRC {RX2} \
+    CONFIG.PROT2_TX_MASTERCLK_SRC {TX2} \
+    CONFIG.PROT3_ENABLE {true} \
+    CONFIG.PROT3_GT_DIRECTION {DUPLEX} \
+    CONFIG.PROT3_LR0_SETTINGS {GT_DIRECTION DUPLEX TX_PAM_SEL NRZ TX_HD_EN 0 TX_GRAY_BYP true TX_GRAY_LITTLEENDIAN true TX_PRECODE_BYP true TX_PRECODE_LITTLEENDIAN false TX_LINE_RATE 25.78125 TX_PLL_TYPE\
+LCPLL TX_REFCLK_FREQUENCY 322.265625 TX_ACTUAL_REFCLK_FREQUENCY 322.265625000000 TX_FRACN_ENABLED false TX_FRACN_OVRD false TX_FRACN_NUMERATOR 0 TX_REFCLK_SOURCE R0 TX_DATA_ENCODING RAW TX_USER_DATA_WIDTH\
+80 TX_INT_DATA_WIDTH 80 TX_BUFFER_MODE 1 TX_BUFFER_BYPASS_MODE Fast_Sync TX_PIPM_ENABLE false TX_OUTCLK_SOURCE TXPROGDIVCLK TXPROGDIV_FREQ_ENABLE true TXPROGDIV_FREQ_SOURCE LCPLL TXPROGDIV_FREQ_VAL 644.531\
+TX_DIFF_SWING_EMPH_MODE CUSTOM TX_64B66B_SCRAMBLER false TX_64B66B_ENCODER false TX_64B66B_CRC false TX_RATE_GROUP A TX_LANE_DESKEW_HDMI_ENABLE false TX_BUFFER_RESET_ON_RATE_CHANGE ENABLE PRESET None RX_PAM_SEL\
+NRZ RX_HD_EN 0 RX_GRAY_BYP true RX_GRAY_LITTLEENDIAN true RX_PRECODE_BYP true RX_PRECODE_LITTLEENDIAN false INTERNAL_PRESET None RX_LINE_RATE 25.78125 RX_PLL_TYPE LCPLL RX_REFCLK_FREQUENCY 322.265625 RX_ACTUAL_REFCLK_FREQUENCY\
+322.265625000000 RX_FRACN_ENABLED false RX_FRACN_OVRD false RX_FRACN_NUMERATOR 0 RX_REFCLK_SOURCE R0 RX_DATA_DECODING RAW RX_USER_DATA_WIDTH 80 RX_INT_DATA_WIDTH 80 RX_BUFFER_MODE 1 RX_OUTCLK_SOURCE RXPROGDIVCLK\
+RXPROGDIV_FREQ_ENABLE true RXPROGDIV_FREQ_SOURCE LCPLL RXPROGDIV_FREQ_VAL 644.531 RXRECCLK_FREQ_ENABLE true RXRECCLK_FREQ_VAL 644.531 INS_LOSS_NYQ 20 RX_EQ_MODE AUTO RX_COUPLING AC RX_TERMINATION PROGRAMMABLE\
+RX_RATE_GROUP A RX_TERMINATION_PROG_VALUE 800 RX_PPM_OFFSET 0 RX_64B66B_DESCRAMBLER false RX_64B66B_DECODER false RX_64B66B_CRC false OOB_ENABLE false RX_COMMA_ALIGN_WORD 1 RX_COMMA_SHOW_REALIGN_ENABLE\
+true PCIE_ENABLE false RX_COMMA_P_ENABLE false RX_COMMA_M_ENABLE false RX_COMMA_DOUBLE_ENABLE false RX_COMMA_P_VAL 0101111100 RX_COMMA_M_VAL 1010000011 RX_COMMA_MASK 0000000000 RX_SLIDE_MODE OFF RX_SSC_PPM\
+0 RX_CB_NUM_SEQ 0 RX_CB_LEN_SEQ 1 RX_CB_MAX_SKEW 1 RX_CB_MAX_LEVEL 1 RX_CB_MASK 00000000 RX_CB_VAL 00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CB_K 00000000 RX_CB_DISP\
+00000000 RX_CB_MASK_0_0 false RX_CB_VAL_0_0 0000000000 RX_CB_K_0_0 false RX_CB_DISP_0_0 false RX_CB_MASK_0_1 false RX_CB_VAL_0_1 0000000000 RX_CB_K_0_1 false RX_CB_DISP_0_1 false RX_CB_MASK_0_2 false RX_CB_VAL_0_2\
+0000000000 RX_CB_K_0_2 false RX_CB_DISP_0_2 false RX_CB_MASK_0_3 false RX_CB_VAL_0_3 0000000000 RX_CB_K_0_3 false RX_CB_DISP_0_3 false RX_CB_MASK_1_0 false RX_CB_VAL_1_0 0000000000 RX_CB_K_1_0 false RX_CB_DISP_1_0\
+false RX_CB_MASK_1_1 false RX_CB_VAL_1_1 0000000000 RX_CB_K_1_1 false RX_CB_DISP_1_1 false RX_CB_MASK_1_2 false RX_CB_VAL_1_2 0000000000 RX_CB_K_1_2 false RX_CB_DISP_1_2 false RX_CB_MASK_1_3 false RX_CB_VAL_1_3\
+0000000000 RX_CB_K_1_3 false RX_CB_DISP_1_3 false RX_CC_NUM_SEQ 0 RX_CC_LEN_SEQ 1 RX_CC_PERIODICITY 5000 RX_CC_KEEP_IDLE DISABLE RX_CC_PRECEDENCE ENABLE RX_CC_REPEAT_WAIT 0 RX_CC_MASK 00000000 RX_CC_VAL\
+00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CC_K 00000000 RX_CC_DISP 00000000 RX_CC_MASK_0_0 false RX_CC_VAL_0_0 0000000000 RX_CC_K_0_0 false RX_CC_DISP_0_0 false\
+RX_CC_MASK_0_1 false RX_CC_VAL_0_1 0000000000 RX_CC_K_0_1 false RX_CC_DISP_0_1 false RX_CC_MASK_0_2 false RX_CC_VAL_0_2 0000000000 RX_CC_K_0_2 false RX_CC_DISP_0_2 false RX_CC_MASK_0_3 false RX_CC_VAL_0_3\
+0000000000 RX_CC_K_0_3 false RX_CC_DISP_0_3 false RX_CC_MASK_1_0 false RX_CC_VAL_1_0 0000000000 RX_CC_K_1_0 false RX_CC_DISP_1_0 false RX_CC_MASK_1_1 false RX_CC_VAL_1_1 0000000000 RX_CC_K_1_1 false RX_CC_DISP_1_1\
+false RX_CC_MASK_1_2 false RX_CC_VAL_1_2 0000000000 RX_CC_K_1_2 false RX_CC_DISP_1_2 false RX_CC_MASK_1_3 false RX_CC_VAL_1_3 0000000000 RX_CC_K_1_3 false RX_CC_DISP_1_3 false PCIE_USERCLK2_FREQ 250 PCIE_USERCLK_FREQ\
+250 RX_JTOL_FC 10 RX_JTOL_LF_SLOPE -20 RX_BUFFER_BYPASS_MODE Fast_Sync RX_BUFFER_BYPASS_MODE_LANE MULTI RX_BUFFER_RESET_ON_CB_CHANGE ENABLE RX_BUFFER_RESET_ON_COMMAALIGN DISABLE RX_BUFFER_RESET_ON_RATE_CHANGE\
+ENABLE RESET_SEQUENCE_INTERVAL 0 RX_COMMA_PRESET NONE RX_COMMA_VALID_ONLY 0 GT_TYPE GTY} \
+    CONFIG.PROT3_LR10_SETTINGS {NA NA} \
+    CONFIG.PROT3_LR11_SETTINGS {NA NA} \
+    CONFIG.PROT3_LR12_SETTINGS {NA NA} \
+    CONFIG.PROT3_LR13_SETTINGS {NA NA} \
+    CONFIG.PROT3_LR14_SETTINGS {NA NA} \
+    CONFIG.PROT3_LR15_SETTINGS {NA NA} \
+    CONFIG.PROT3_LR1_SETTINGS {GT_DIRECTION DUPLEX TX_PAM_SEL NRZ TX_HD_EN 0 TX_GRAY_BYP true TX_GRAY_LITTLEENDIAN true TX_PRECODE_BYP true TX_PRECODE_LITTLEENDIAN false TX_LINE_RATE 25.78125 TX_PLL_TYPE\
+LCPLL TX_REFCLK_FREQUENCY 322.265625 TX_ACTUAL_REFCLK_FREQUENCY 322.265625000000 TX_FRACN_ENABLED false TX_FRACN_OVRD false TX_FRACN_NUMERATOR 0 TX_REFCLK_SOURCE R0 TX_DATA_ENCODING RAW TX_USER_DATA_WIDTH\
+80 TX_INT_DATA_WIDTH 80 TX_BUFFER_MODE 1 TX_BUFFER_BYPASS_MODE Fast_Sync TX_PIPM_ENABLE false TX_OUTCLK_SOURCE TXPROGDIVCLK TXPROGDIV_FREQ_ENABLE true TXPROGDIV_FREQ_SOURCE LCPLL TXPROGDIV_FREQ_VAL 644.531\
+TX_DIFF_SWING_EMPH_MODE CUSTOM TX_64B66B_SCRAMBLER false TX_64B66B_ENCODER false TX_64B66B_CRC false TX_RATE_GROUP A TX_LANE_DESKEW_HDMI_ENABLE false TX_BUFFER_RESET_ON_RATE_CHANGE ENABLE PRESET None RX_PAM_SEL\
+NRZ RX_HD_EN 0 RX_GRAY_BYP true RX_GRAY_LITTLEENDIAN true RX_PRECODE_BYP true RX_PRECODE_LITTLEENDIAN false INTERNAL_PRESET None RX_LINE_RATE 25.78125 RX_PLL_TYPE LCPLL RX_REFCLK_FREQUENCY 322.265625 RX_ACTUAL_REFCLK_FREQUENCY\
+322.265625000000 RX_FRACN_ENABLED false RX_FRACN_OVRD false RX_FRACN_NUMERATOR 0 RX_REFCLK_SOURCE R0 RX_DATA_DECODING RAW RX_USER_DATA_WIDTH 80 RX_INT_DATA_WIDTH 80 RX_BUFFER_MODE 1 RX_OUTCLK_SOURCE RXPROGDIVCLK\
+RXPROGDIV_FREQ_ENABLE true RXPROGDIV_FREQ_SOURCE LCPLL RXPROGDIV_FREQ_VAL 644.531 RXRECCLK_FREQ_ENABLE true RXRECCLK_FREQ_VAL 644.531 INS_LOSS_NYQ 20 RX_EQ_MODE AUTO RX_COUPLING AC RX_TERMINATION PROGRAMMABLE\
+RX_RATE_GROUP A RX_TERMINATION_PROG_VALUE 800 RX_PPM_OFFSET 0 RX_64B66B_DESCRAMBLER false RX_64B66B_DECODER false RX_64B66B_CRC false OOB_ENABLE false RX_COMMA_ALIGN_WORD 1 RX_COMMA_SHOW_REALIGN_ENABLE\
+true PCIE_ENABLE false RX_COMMA_P_ENABLE false RX_COMMA_M_ENABLE false RX_COMMA_DOUBLE_ENABLE false RX_COMMA_P_VAL 0101111100 RX_COMMA_M_VAL 1010000011 RX_COMMA_MASK 0000000000 RX_SLIDE_MODE OFF RX_SSC_PPM\
+0 RX_CB_NUM_SEQ 0 RX_CB_LEN_SEQ 1 RX_CB_MAX_SKEW 1 RX_CB_MAX_LEVEL 1 RX_CB_MASK 00000000 RX_CB_VAL 00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CB_K 00000000 RX_CB_DISP\
+00000000 RX_CB_MASK_0_0 false RX_CB_VAL_0_0 0000000000 RX_CB_K_0_0 false RX_CB_DISP_0_0 false RX_CB_MASK_0_1 false RX_CB_VAL_0_1 0000000000 RX_CB_K_0_1 false RX_CB_DISP_0_1 false RX_CB_MASK_0_2 false RX_CB_VAL_0_2\
+0000000000 RX_CB_K_0_2 false RX_CB_DISP_0_2 false RX_CB_MASK_0_3 false RX_CB_VAL_0_3 0000000000 RX_CB_K_0_3 false RX_CB_DISP_0_3 false RX_CB_MASK_1_0 false RX_CB_VAL_1_0 0000000000 RX_CB_K_1_0 false RX_CB_DISP_1_0\
+false RX_CB_MASK_1_1 false RX_CB_VAL_1_1 0000000000 RX_CB_K_1_1 false RX_CB_DISP_1_1 false RX_CB_MASK_1_2 false RX_CB_VAL_1_2 0000000000 RX_CB_K_1_2 false RX_CB_DISP_1_2 false RX_CB_MASK_1_3 false RX_CB_VAL_1_3\
+0000000000 RX_CB_K_1_3 false RX_CB_DISP_1_3 false RX_CC_NUM_SEQ 0 RX_CC_LEN_SEQ 1 RX_CC_PERIODICITY 5000 RX_CC_KEEP_IDLE DISABLE RX_CC_PRECEDENCE ENABLE RX_CC_REPEAT_WAIT 0 RX_CC_MASK 00000000 RX_CC_VAL\
+00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CC_K 00000000 RX_CC_DISP 00000000 RX_CC_MASK_0_0 false RX_CC_VAL_0_0 0000000000 RX_CC_K_0_0 false RX_CC_DISP_0_0 false\
+RX_CC_MASK_0_1 false RX_CC_VAL_0_1 0000000000 RX_CC_K_0_1 false RX_CC_DISP_0_1 false RX_CC_MASK_0_2 false RX_CC_VAL_0_2 0000000000 RX_CC_K_0_2 false RX_CC_DISP_0_2 false RX_CC_MASK_0_3 false RX_CC_VAL_0_3\
+0000000000 RX_CC_K_0_3 false RX_CC_DISP_0_3 false RX_CC_MASK_1_0 false RX_CC_VAL_1_0 0000000000 RX_CC_K_1_0 false RX_CC_DISP_1_0 false RX_CC_MASK_1_1 false RX_CC_VAL_1_1 0000000000 RX_CC_K_1_1 false RX_CC_DISP_1_1\
+false RX_CC_MASK_1_2 false RX_CC_VAL_1_2 0000000000 RX_CC_K_1_2 false RX_CC_DISP_1_2 false RX_CC_MASK_1_3 false RX_CC_VAL_1_3 0000000000 RX_CC_K_1_3 false RX_CC_DISP_1_3 false PCIE_USERCLK2_FREQ 250 PCIE_USERCLK_FREQ\
+250 RX_JTOL_FC 10 RX_JTOL_LF_SLOPE -20 RX_BUFFER_BYPASS_MODE Fast_Sync RX_BUFFER_BYPASS_MODE_LANE MULTI RX_BUFFER_RESET_ON_CB_CHANGE ENABLE RX_BUFFER_RESET_ON_COMMAALIGN DISABLE RX_BUFFER_RESET_ON_RATE_CHANGE\
+ENABLE RESET_SEQUENCE_INTERVAL 0 RX_COMMA_PRESET NONE RX_COMMA_VALID_ONLY 0 GT_TYPE GTY} \
+    CONFIG.PROT3_LR2_SETTINGS {GT_DIRECTION DUPLEX TX_PAM_SEL NRZ TX_HD_EN 0 TX_GRAY_BYP true TX_GRAY_LITTLEENDIAN true TX_PRECODE_BYP true TX_PRECODE_LITTLEENDIAN false TX_LINE_RATE 25.78125 TX_PLL_TYPE\
+LCPLL TX_REFCLK_FREQUENCY 322.265625 TX_ACTUAL_REFCLK_FREQUENCY 322.265625000000 TX_FRACN_ENABLED false TX_FRACN_OVRD false TX_FRACN_NUMERATOR 0 TX_REFCLK_SOURCE R0 TX_DATA_ENCODING RAW TX_USER_DATA_WIDTH\
+80 TX_INT_DATA_WIDTH 80 TX_BUFFER_MODE 1 TX_BUFFER_BYPASS_MODE Fast_Sync TX_PIPM_ENABLE false TX_OUTCLK_SOURCE TXPROGDIVCLK TXPROGDIV_FREQ_ENABLE true TXPROGDIV_FREQ_SOURCE LCPLL TXPROGDIV_FREQ_VAL 644.531\
+TX_DIFF_SWING_EMPH_MODE CUSTOM TX_64B66B_SCRAMBLER false TX_64B66B_ENCODER false TX_64B66B_CRC false TX_RATE_GROUP A TX_LANE_DESKEW_HDMI_ENABLE false TX_BUFFER_RESET_ON_RATE_CHANGE ENABLE PRESET None RX_PAM_SEL\
+NRZ RX_HD_EN 0 RX_GRAY_BYP true RX_GRAY_LITTLEENDIAN true RX_PRECODE_BYP true RX_PRECODE_LITTLEENDIAN false INTERNAL_PRESET None RX_LINE_RATE 25.78125 RX_PLL_TYPE LCPLL RX_REFCLK_FREQUENCY 322.265625 RX_ACTUAL_REFCLK_FREQUENCY\
+322.265625000000 RX_FRACN_ENABLED false RX_FRACN_OVRD false RX_FRACN_NUMERATOR 0 RX_REFCLK_SOURCE R0 RX_DATA_DECODING RAW RX_USER_DATA_WIDTH 80 RX_INT_DATA_WIDTH 80 RX_BUFFER_MODE 1 RX_OUTCLK_SOURCE RXPROGDIVCLK\
+RXPROGDIV_FREQ_ENABLE true RXPROGDIV_FREQ_SOURCE LCPLL RXPROGDIV_FREQ_VAL 644.531 RXRECCLK_FREQ_ENABLE true RXRECCLK_FREQ_VAL 644.531 INS_LOSS_NYQ 20 RX_EQ_MODE AUTO RX_COUPLING AC RX_TERMINATION PROGRAMMABLE\
+RX_RATE_GROUP A RX_TERMINATION_PROG_VALUE 800 RX_PPM_OFFSET 0 RX_64B66B_DESCRAMBLER false RX_64B66B_DECODER false RX_64B66B_CRC false OOB_ENABLE false RX_COMMA_ALIGN_WORD 1 RX_COMMA_SHOW_REALIGN_ENABLE\
+true PCIE_ENABLE false RX_COMMA_P_ENABLE false RX_COMMA_M_ENABLE false RX_COMMA_DOUBLE_ENABLE false RX_COMMA_P_VAL 0101111100 RX_COMMA_M_VAL 1010000011 RX_COMMA_MASK 0000000000 RX_SLIDE_MODE OFF RX_SSC_PPM\
+0 RX_CB_NUM_SEQ 0 RX_CB_LEN_SEQ 1 RX_CB_MAX_SKEW 1 RX_CB_MAX_LEVEL 1 RX_CB_MASK 00000000 RX_CB_VAL 00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CB_K 00000000 RX_CB_DISP\
+00000000 RX_CB_MASK_0_0 false RX_CB_VAL_0_0 0000000000 RX_CB_K_0_0 false RX_CB_DISP_0_0 false RX_CB_MASK_0_1 false RX_CB_VAL_0_1 0000000000 RX_CB_K_0_1 false RX_CB_DISP_0_1 false RX_CB_MASK_0_2 false RX_CB_VAL_0_2\
+0000000000 RX_CB_K_0_2 false RX_CB_DISP_0_2 false RX_CB_MASK_0_3 false RX_CB_VAL_0_3 0000000000 RX_CB_K_0_3 false RX_CB_DISP_0_3 false RX_CB_MASK_1_0 false RX_CB_VAL_1_0 0000000000 RX_CB_K_1_0 false RX_CB_DISP_1_0\
+false RX_CB_MASK_1_1 false RX_CB_VAL_1_1 0000000000 RX_CB_K_1_1 false RX_CB_DISP_1_1 false RX_CB_MASK_1_2 false RX_CB_VAL_1_2 0000000000 RX_CB_K_1_2 false RX_CB_DISP_1_2 false RX_CB_MASK_1_3 false RX_CB_VAL_1_3\
+0000000000 RX_CB_K_1_3 false RX_CB_DISP_1_3 false RX_CC_NUM_SEQ 0 RX_CC_LEN_SEQ 1 RX_CC_PERIODICITY 5000 RX_CC_KEEP_IDLE DISABLE RX_CC_PRECEDENCE ENABLE RX_CC_REPEAT_WAIT 0 RX_CC_MASK 00000000 RX_CC_VAL\
+00000000000000000000000000000000000000000000000000000000000000000000000000000000 RX_CC_K 00000000 RX_CC_DISP 00000000 RX_CC_MASK_0_0 false RX_CC_VAL_0_0 0000000000 RX_CC_K_0_0 false RX_CC_DISP_0_0 false\
+RX_CC_MASK_0_1 false RX_CC_VAL_0_1 0000000000 RX_CC_K_0_1 false RX_CC_DISP_0_1 false RX_CC_MASK_0_2 false RX_CC_VAL_0_2 0000000000 RX_CC_K_0_2 false RX_CC_DISP_0_2 false RX_CC_MASK_0_3 false RX_CC_VAL_0_3\
+0000000000 RX_CC_K_0_3 false RX_CC_DISP_0_3 false RX_CC_MASK_1_0 false RX_CC_VAL_1_0 0000000000 RX_CC_K_1_0 false RX_CC_DISP_1_0 false RX_CC_MASK_1_1 false RX_CC_VAL_1_1 0000000000 RX_CC_K_1_1 false RX_CC_DISP_1_1\
+false RX_CC_MASK_1_2 false RX_CC_VAL_1_2 0000000000 RX_CC_K_1_2 false RX_CC_DISP_1_2 false RX_CC_MASK_1_3 false RX_CC_VAL_1_3 0000000000 RX_CC_K_1_3 false RX_CC_DISP_1_3 false PCIE_USERCLK2_FREQ 250 PCIE_USERCLK_FREQ\
+250 RX_JTOL_FC 10 RX_JTOL_LF_SLOPE -20 RX_BUFFER_BYPASS_MODE Fast_Sync RX_BUFFER_BYPASS_MODE_LANE MULTI RX_BUFFER_RESET_ON_CB_CHANGE ENABLE RX_BUFFER_RESET_ON_COMMAALIGN DISABLE RX_BUFFER_RESET_ON_RATE_CHANGE\
+ENABLE RESET_SEQUENCE_INTERVAL 0 RX_COMMA_PRESET NONE RX_COMMA_VALID_ONLY 0 GT_TYPE GTY} \
+    CONFIG.PROT3_LR3_SETTINGS {NA NA} \
+    CONFIG.PROT3_LR4_SETTINGS {NA NA} \
+    CONFIG.PROT3_LR5_SETTINGS {NA NA} \
+    CONFIG.PROT3_LR6_SETTINGS {NA NA} \
+    CONFIG.PROT3_LR7_SETTINGS {NA NA} \
+    CONFIG.PROT3_LR8_SETTINGS {NA NA} \
+    CONFIG.PROT3_LR9_SETTINGS {NA NA} \
+    CONFIG.PROT3_NO_OF_LANES {1} \
+    CONFIG.PROT3_RX_MASTERCLK_SRC {RX3} \
+    CONFIG.PROT3_TX_MASTERCLK_SRC {TX3} \
+    CONFIG.QUAD_USAGE {TX_QUAD_CH {TXQuad_0_/mrmac_0_gt_wrapper/gt_quad_base {/mrmac_0_gt_wrapper/gt_quad_base vck190_mrmac_4x25g_mrmac_0_core_0_0.IP_CH0,vck190_mrmac_4x25g_mrmac_0_core_0_1.IP_CH1,vck190_mrmac_4x25g_mrmac_0_core_0_2.IP_CH2,vck190_mrmac_4x25g_mrmac_0_core_0_3.IP_CH3\
+MSTRCLK 1,1,1,1 IS_CURRENT_QUAD 1}} RX_QUAD_CH {RXQuad_0_/mrmac_0_gt_wrapper/gt_quad_base {/mrmac_0_gt_wrapper/gt_quad_base vck190_mrmac_4x25g_mrmac_0_core_0_0.IP_CH0,vck190_mrmac_4x25g_mrmac_0_core_0_1.IP_CH1,vck190_mrmac_4x25g_mrmac_0_core_0_2.IP_CH2,vck190_mrmac_4x25g_mrmac_0_core_0_3.IP_CH3\
+MSTRCLK 1,1,1,1 IS_CURRENT_QUAD 1}}} \
+    CONFIG.REFCLK_LIST {/gt_ref_clk_p /gt_ref_clk_p} \
+    CONFIG.REFCLK_STRING {HSCLK0_LCPLLGTREFCLK0 refclk_PROT0_R0_PROT1_R0_322.265625_MHz_unique1 HSCLK1_LCPLLGTREFCLK0 refclk_PROT2_R0_PROT3_R0_322.265625_MHz_unique1} \
+    CONFIG.RX0_LANE_SEL {PROT0} \
+    CONFIG.RX1_LANE_SEL {PROT1} \
+    CONFIG.RX2_LANE_SEL {PROT2} \
+    CONFIG.RX3_LANE_SEL {PROT3} \
+    CONFIG.TX0_LANE_SEL {PROT0} \
+    CONFIG.TX1_LANE_SEL {PROT1} \
+    CONFIG.TX2_LANE_SEL {PROT2} \
+    CONFIG.TX3_LANE_SEL {PROT3} \
+  ] $gt_quad_base
+
+  set_property -dict [list \
+    CONFIG.APB3_CLK_FREQUENCY.VALUE_MODE {auto} \
+    CONFIG.CHANNEL_ORDERING.VALUE_MODE {auto} \
+    CONFIG.GT_TYPE.VALUE_MODE {auto} \
+    CONFIG.PROT0_ENABLE.VALUE_MODE {auto} \
+    CONFIG.PROT0_GT_DIRECTION.VALUE_MODE {auto} \
+    CONFIG.PROT0_LR0_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT0_LR10_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT0_LR11_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT0_LR12_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT0_LR13_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT0_LR14_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT0_LR15_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT0_LR1_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT0_LR2_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT0_LR3_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT0_LR4_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT0_LR5_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT0_LR6_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT0_LR7_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT0_LR8_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT0_LR9_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT0_NO_OF_LANES.VALUE_MODE {auto} \
+    CONFIG.PROT0_RX_MASTERCLK_SRC.VALUE_MODE {auto} \
+    CONFIG.PROT0_TX_MASTERCLK_SRC.VALUE_MODE {auto} \
+    CONFIG.PROT1_ENABLE.VALUE_MODE {auto} \
+    CONFIG.PROT1_GT_DIRECTION.VALUE_MODE {auto} \
+    CONFIG.PROT1_LR0_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT1_LR10_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT1_LR11_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT1_LR12_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT1_LR13_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT1_LR14_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT1_LR15_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT1_LR1_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT1_LR2_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT1_LR3_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT1_LR4_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT1_LR5_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT1_LR6_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT1_LR7_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT1_LR8_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT1_LR9_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT1_NO_OF_LANES.VALUE_MODE {auto} \
+    CONFIG.PROT1_RX_MASTERCLK_SRC.VALUE_MODE {auto} \
+    CONFIG.PROT1_TX_MASTERCLK_SRC.VALUE_MODE {auto} \
+    CONFIG.PROT2_ENABLE.VALUE_MODE {auto} \
+    CONFIG.PROT2_GT_DIRECTION.VALUE_MODE {auto} \
+    CONFIG.PROT2_LR0_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT2_LR10_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT2_LR11_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT2_LR12_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT2_LR13_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT2_LR14_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT2_LR15_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT2_LR1_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT2_LR2_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT2_LR3_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT2_LR4_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT2_LR5_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT2_LR6_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT2_LR7_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT2_LR8_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT2_LR9_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT2_NO_OF_LANES.VALUE_MODE {auto} \
+    CONFIG.PROT2_RX_MASTERCLK_SRC.VALUE_MODE {auto} \
+    CONFIG.PROT2_TX_MASTERCLK_SRC.VALUE_MODE {auto} \
+    CONFIG.PROT3_ENABLE.VALUE_MODE {auto} \
+    CONFIG.PROT3_GT_DIRECTION.VALUE_MODE {auto} \
+    CONFIG.PROT3_LR0_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT3_LR10_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT3_LR11_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT3_LR12_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT3_LR13_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT3_LR14_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT3_LR15_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT3_LR1_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT3_LR2_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT3_LR3_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT3_LR4_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT3_LR5_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT3_LR6_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT3_LR7_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT3_LR8_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT3_LR9_SETTINGS.VALUE_MODE {auto} \
+    CONFIG.PROT3_NO_OF_LANES.VALUE_MODE {auto} \
+    CONFIG.PROT3_RX_MASTERCLK_SRC.VALUE_MODE {auto} \
+    CONFIG.PROT3_TX_MASTERCLK_SRC.VALUE_MODE {auto} \
+    CONFIG.QUAD_USAGE.VALUE_MODE {auto} \
+    CONFIG.RX0_LANE_SEL.VALUE_MODE {auto} \
+    CONFIG.RX1_LANE_SEL.VALUE_MODE {auto} \
+    CONFIG.RX2_LANE_SEL.VALUE_MODE {auto} \
+    CONFIG.RX3_LANE_SEL.VALUE_MODE {auto} \
+    CONFIG.TX0_LANE_SEL.VALUE_MODE {auto} \
+    CONFIG.TX1_LANE_SEL.VALUE_MODE {auto} \
+    CONFIG.TX2_LANE_SEL.VALUE_MODE {auto} \
+    CONFIG.TX3_LANE_SEL.VALUE_MODE {auto} \
+  ] $gt_quad_base
+
+
   # Create interface connections
   connect_bd_intf_net -intf_net Conn1 [get_bd_intf_pins AXI4_LITE_0] [get_bd_intf_pins axi_apb_bridge_0/AXI4_LITE]
   connect_bd_intf_net -intf_net Conn3 [get_bd_intf_pins S00_AXI_0] [get_bd_intf_pins smartconnect_0/S00_AXI]
   connect_bd_intf_net -intf_net axi_apb_bridge_0_APB_M [get_bd_intf_pins axi_apb_bridge_0/APB_M] [get_bd_intf_pins gt_quad_base/APB3_INTF]
-  connect_bd_intf_net -intf_net gt_quad_base_GT_Serial [get_bd_intf_pins GT_Serial] [get_bd_intf_pins gt_quad_base/GT_Serial]
   connect_bd_intf_net -intf_net mrmac_0_core_gt_rx_serdes_interface_0 [get_bd_intf_pins RX0_GT_IP_Interface] [get_bd_intf_pins gt_quad_base/RX0_GT_IP_Interface]
   connect_bd_intf_net -intf_net mrmac_0_core_gt_rx_serdes_interface_1 [get_bd_intf_pins RX1_GT_IP_Interface] [get_bd_intf_pins gt_quad_base/RX1_GT_IP_Interface]
   connect_bd_intf_net -intf_net mrmac_0_core_gt_rx_serdes_interface_2 [get_bd_intf_pins RX2_GT_IP_Interface] [get_bd_intf_pins gt_quad_base/RX2_GT_IP_Interface]
@@ -1404,7 +2178,7 @@ MSTRCLK 1,1,1,1 IS_CURRENT_QUAD 1}}} \
   connect_bd_net -net Net [get_bd_pins bufg_gt_div_val/dout] [get_bd_pins bufg_gt_0_rx_outclk_div2_ch1/gt_bufgtdiv] [get_bd_pins bufg_gt_0_rx_outclk_div2_ch2/gt_bufgtdiv] [get_bd_pins bufg_gt_0_rx_outclk_div2_ch3/gt_bufgtdiv] [get_bd_pins bufg_gt_0_rx_outclk_div2_ch0/gt_bufgtdiv] [get_bd_pins bufg_gt_0_tx_outclk_div2_ch0/gt_bufgtdiv] [get_bd_pins bufg_gt_0_tx_outclk_div2_ch1/gt_bufgtdiv]
   connect_bd_net -net RX_MST_DP_RESET_1 [get_bd_pins RX_MST_DP_RESET_0] [get_bd_pins xlslice_rx_mst_dp_rst_1/Din] [get_bd_pins xlslice_rx_mst_dp_rst_2/Din] [get_bd_pins xlslice_rx_mst_dp_rst_3/Din] [get_bd_pins xlslice_rx_mst_dp_rst_0/Din]
   connect_bd_net -net TX_MST_DP_RESET_1 [get_bd_pins TX_MST_DP_RESET_0] [get_bd_pins xlslice_tx_mst_dp_rst_1/Din] [get_bd_pins xlslice_tx_mst_dp_rst_2/Din] [get_bd_pins xlslice_tx_mst_dp_rst_3/Din] [get_bd_pins xlslice_tx_mst_dp_rst_0/Din]
-  connect_bd_net -net apb3clk_quad_1 [get_bd_pins apb3clk_quad] [get_bd_pins gt_quad_base/apb3clk] [get_bd_pins axi_apb_bridge_0/s_axi_aclk] [get_bd_pins axi_gpio_gt_rate_reset_ctl_0/s_axi_aclk] [get_bd_pins axi_gpio_gt_rate_reset_ctl_1/s_axi_aclk] [get_bd_pins axi_gpio_gt_rate_reset_ctl_2/s_axi_aclk] [get_bd_pins axi_gpio_gt_rate_reset_ctl_3/s_axi_aclk] [get_bd_pins axi_gpio_gt_reset_mask/s_axi_aclk] [get_bd_pins smartconnect_0/aclk]
+  connect_bd_net -net apb3clk_quad_1 [get_bd_pins apb3clk_quad] [get_bd_pins axi_apb_bridge_0/s_axi_aclk] [get_bd_pins axi_gpio_gt_rate_reset_ctl_0/s_axi_aclk] [get_bd_pins axi_gpio_gt_rate_reset_ctl_1/s_axi_aclk] [get_bd_pins axi_gpio_gt_rate_reset_ctl_2/s_axi_aclk] [get_bd_pins axi_gpio_gt_rate_reset_ctl_3/s_axi_aclk] [get_bd_pins axi_gpio_gt_reset_mask/s_axi_aclk] [get_bd_pins smartconnect_0/aclk] [get_bd_pins gt_quad_base/apb3clk]
   connect_bd_net -net aresetn_1 [get_bd_pins aresetn_0] [get_bd_pins smartconnect_0/aresetn]
   connect_bd_net -net axi_gpio_gt_rate_reset_ctl_0_gpio2_io_o [get_bd_pins axi_gpio_gt_rate_reset_ctl_0/gpio2_io_o] [get_bd_pins xlslice_gt_reset_all_0/Din] [get_bd_pins xlslice_gt_reset_rx_datapath_0/Din] [get_bd_pins xlslice_gt_reset_tx_datapath_0/Din]
   connect_bd_net -net axi_gpio_gt_rate_reset_ctl_0_gpio_io_o [get_bd_pins axi_gpio_gt_rate_reset_ctl_0/gpio_io_o] [get_bd_pins gt_rate_ctl_ch0_tx_rx/Din]
@@ -1414,13 +2188,17 @@ MSTRCLK 1,1,1,1 IS_CURRENT_QUAD 1}}} \
   connect_bd_net -net axi_gpio_gt_rate_reset_ctl_2_gpio_io_o [get_bd_pins axi_gpio_gt_rate_reset_ctl_2/gpio_io_o] [get_bd_pins gt_rate_ctl_ch2_tx_rx/Din]
   connect_bd_net -net axi_gpio_gt_rate_reset_ctl_3_gpio2_io_o [get_bd_pins axi_gpio_gt_rate_reset_ctl_3/gpio2_io_o] [get_bd_pins xlslice_gt_reset_all_3/Din] [get_bd_pins xlslice_gt_reset_rx_datapath_3/Din] [get_bd_pins xlslice_gt_reset_tx_datapath_3/Din]
   connect_bd_net -net axi_gpio_gt_rate_reset_ctl_3_gpio_io_o [get_bd_pins axi_gpio_gt_rate_reset_ctl_3/gpio_io_o] [get_bd_pins gt_rate_ctl_ch3_tx_rx/Din]
-  connect_bd_net -net bufgt_gt_rxoutclk1_rx_usr_clk1_0 [get_bd_pins conct_rx_usr_clk/dout] [get_bd_pins rx_usr_clk2]
-  connect_bd_net -net bufgt_gt_rxoutclk_rx_usr_clk1_0 [get_bd_pins bufgt_gt_rxoutclk/rx_usr_clk1_0] [get_bd_pins rx_usr_clk1_0]
-  connect_bd_net -net bufgt_gt_txoutclk1_rx_usr_clk1_0 [get_bd_pins bufgt_gt_txoutclk1/rx_usr_clk1_0] [get_bd_pins tx_usr_clk_0]
+  connect_bd_net -net bufg_gt_0_usrclk [get_bd_pins bufg_gt_0/usrclk] [get_bd_pins xlconcat_1/In0] [get_bd_pins xlconcat_1/In1]
+  connect_bd_net -net bufg_gt_1_usrclk [get_bd_pins bufg_gt_1/usrclk] [get_bd_pins xlconcat_1/In2] [get_bd_pins xlconcat_1/In3]
+  connect_bd_net -net bufg_gt_2_usrclk [get_bd_pins bufg_gt_2/usrclk] [get_bd_pins xlconcat_2/In0]
+  connect_bd_net -net bufg_gt_3_usrclk [get_bd_pins bufg_gt_3/usrclk] [get_bd_pins xlconcat_2/In1]
+  connect_bd_net -net bufg_gt_4_usrclk [get_bd_pins bufg_gt_4/usrclk] [get_bd_pins xlconcat_2/In2]
+  connect_bd_net -net bufg_gt_5_usrclk [get_bd_pins bufg_gt_5/usrclk] [get_bd_pins xlconcat_2/In3]
+  connect_bd_net -net bufgt_gt_rxoutclk1_rx_usr_clk1_0 [get_bd_pins conct_rx_usr_clk/dout] [get_bd_pins rx_alt_serdes_clk_new]
   connect_bd_net -net ch3_txrate_1 [get_bd_pins gt_rate_ctl_ch3_tx_rx/Dout] [get_bd_pins gt_quad_base/ch3_txrate] [get_bd_pins gt_quad_base/ch3_rxrate]
   connect_bd_net -net conct_rx_mst_reset_done_out1_dout [get_bd_pins conct_tx_mst_reset_done_out/dout] [get_bd_pins xlconcat_0/In1]
   connect_bd_net -net conct_rx_mst_reset_done_out_dout [get_bd_pins conct_rx_mst_reset_done_out/dout] [get_bd_pins xlconcat_0/In0]
-  connect_bd_net -net conct_tx_usr_clk_dout [get_bd_pins conct_tx_usr_clk/dout] [get_bd_pins tx_usr_clk_1]
+  connect_bd_net -net conct_tx_usr_clk_dout [get_bd_pins conct_tx_usr_clk/dout] [get_bd_pins tx_alt_serdes_clk_new]
   connect_bd_net -net everything_else_Dout1 [get_bd_pins xlslice_rx_mst_reset_0/Dout] [get_bd_pins gt_quad_base/ch0_rxmstreset]
   connect_bd_net -net everything_else_Dout2 [get_bd_pins xlslice_rx_mst_reset_1/Dout] [get_bd_pins gt_quad_base/ch1_rxmstreset]
   connect_bd_net -net everything_else_Dout3 [get_bd_pins xlslice_rx_mst_reset_2/Dout] [get_bd_pins gt_quad_base/ch2_rxmstreset]
@@ -1454,24 +2232,24 @@ MSTRCLK 1,1,1,1 IS_CURRENT_QUAD 1}}} \
   connect_bd_net -net everything_else_gt_reset_rx_datapath [get_bd_pins xlconcat_gt_rest_rx_datapath/dout] [get_bd_pins gt_reset_rx_datapath_0]
   connect_bd_net -net everything_else_gt_reset_tx_datapath [get_bd_pins xlconcat_gt_rest_tx_datapath/dout] [get_bd_pins gt_reset_tx_datapath_0]
   connect_bd_net -net gt_quad_base_ch0_rxmstresetdone [get_bd_pins gt_quad_base/ch0_rxmstresetdone] [get_bd_pins ch0_rxmstresetdone_1] [get_bd_pins conct_rx_mst_reset_done_out/In0]
-  connect_bd_net -net gt_quad_base_ch0_rxoutclk [get_bd_pins gt_quad_base/ch0_rxoutclk] [get_bd_pins bufgt_gt_rxoutclk/outclk] [get_bd_pins bufg_gt_0_rx_outclk_div2_ch0/outclk]
+  connect_bd_net -net gt_quad_base_ch0_rxoutclk [get_bd_pins gt_quad_base/ch0_rxoutclk] [get_bd_pins bufg_gt_0_rx_outclk_div2_ch0/outclk] [get_bd_pins bufg_gt_2/outclk]
   connect_bd_net -net gt_quad_base_ch0_rxpmaresetdone [get_bd_pins gt_quad_base/ch0_rxpmaresetdone] [get_bd_pins ch0_rxpmaresetdone_0]
   connect_bd_net -net gt_quad_base_ch0_txmstresetdone [get_bd_pins gt_quad_base/ch0_txmstresetdone] [get_bd_pins ch0_txmstresetdone_0] [get_bd_pins conct_tx_mst_reset_done_out/In0]
-  connect_bd_net -net gt_quad_base_ch0_txoutclk [get_bd_pins gt_quad_base/ch0_txoutclk] [get_bd_pins bufgt_gt_txoutclk1/outclk] [get_bd_pins bufg_gt_0_tx_outclk_div2_ch0/outclk]
+  connect_bd_net -net gt_quad_base_ch0_txoutclk [get_bd_pins gt_quad_base/ch0_txoutclk] [get_bd_pins bufg_gt_0_tx_outclk_div2_ch0/outclk] [get_bd_pins bufg_gt_0/outclk]
   connect_bd_net -net gt_quad_base_ch0_txpmaresetdone [get_bd_pins gt_quad_base/ch0_txpmaresetdone] [get_bd_pins ch0_txpmaresetdone_0]
   connect_bd_net -net gt_quad_base_ch1_rxmstresetdone [get_bd_pins gt_quad_base/ch1_rxmstresetdone] [get_bd_pins ch1_rxmstresetdone_1] [get_bd_pins conct_rx_mst_reset_done_out/In1]
-  connect_bd_net -net gt_quad_base_ch1_rxoutclk [get_bd_pins gt_quad_base/ch1_rxoutclk] [get_bd_pins bufgt_gt_rxoutclk/outclk1] [get_bd_pins bufg_gt_0_rx_outclk_div2_ch1/outclk]
+  connect_bd_net -net gt_quad_base_ch1_rxoutclk [get_bd_pins gt_quad_base/ch1_rxoutclk] [get_bd_pins bufg_gt_0_rx_outclk_div2_ch1/outclk] [get_bd_pins bufg_gt_3/outclk]
   connect_bd_net -net gt_quad_base_ch1_rxpmaresetdone [get_bd_pins gt_quad_base/ch1_rxpmaresetdone] [get_bd_pins ch1_rxpmaresetdone_0]
   connect_bd_net -net gt_quad_base_ch1_txmstresetdone [get_bd_pins gt_quad_base/ch1_txmstresetdone] [get_bd_pins ch1_txmstresetdone_0] [get_bd_pins conct_tx_mst_reset_done_out/In1]
   connect_bd_net -net gt_quad_base_ch1_txpmaresetdone [get_bd_pins gt_quad_base/ch1_txpmaresetdone] [get_bd_pins ch1_txpmaresetdone_0]
   connect_bd_net -net gt_quad_base_ch2_rxmstresetdone [get_bd_pins gt_quad_base/ch2_rxmstresetdone] [get_bd_pins ch2_rxmstresetdone_2] [get_bd_pins conct_rx_mst_reset_done_out/In2]
-  connect_bd_net -net gt_quad_base_ch2_rxoutclk [get_bd_pins gt_quad_base/ch2_rxoutclk] [get_bd_pins bufgt_gt_rxoutclk/outclk2] [get_bd_pins bufg_gt_0_rx_outclk_div2_ch2/outclk]
+  connect_bd_net -net gt_quad_base_ch2_rxoutclk [get_bd_pins gt_quad_base/ch2_rxoutclk] [get_bd_pins bufg_gt_0_rx_outclk_div2_ch2/outclk] [get_bd_pins bufg_gt_4/outclk]
   connect_bd_net -net gt_quad_base_ch2_rxpmaresetdone [get_bd_pins gt_quad_base/ch2_rxpmaresetdone] [get_bd_pins ch2_rxpmaresetdone_0]
   connect_bd_net -net gt_quad_base_ch2_txmstresetdone [get_bd_pins gt_quad_base/ch2_txmstresetdone] [get_bd_pins ch2_txmstresetdone_0] [get_bd_pins conct_tx_mst_reset_done_out/In2]
-  connect_bd_net -net gt_quad_base_ch2_txoutclk [get_bd_pins gt_quad_base/ch2_txoutclk] [get_bd_pins bufgt_gt_txoutclk1/outclk1] [get_bd_pins bufg_gt_0_tx_outclk_div2_ch1/outclk]
+  connect_bd_net -net gt_quad_base_ch2_txoutclk [get_bd_pins gt_quad_base/ch2_txoutclk] [get_bd_pins bufg_gt_0_tx_outclk_div2_ch1/outclk] [get_bd_pins bufg_gt_1/outclk]
   connect_bd_net -net gt_quad_base_ch2_txpmaresetdone [get_bd_pins gt_quad_base/ch2_txpmaresetdone] [get_bd_pins ch2_txpmaresetdone_0]
   connect_bd_net -net gt_quad_base_ch3_rxmstresetdone [get_bd_pins gt_quad_base/ch3_rxmstresetdone] [get_bd_pins ch3_rxmstresetdone_1] [get_bd_pins conct_rx_mst_reset_done_out/In3]
-  connect_bd_net -net gt_quad_base_ch3_rxoutclk [get_bd_pins gt_quad_base/ch3_rxoutclk] [get_bd_pins bufgt_gt_rxoutclk/outclk3] [get_bd_pins bufg_gt_0_rx_outclk_div2_ch3/outclk]
+  connect_bd_net -net gt_quad_base_ch3_rxoutclk [get_bd_pins gt_quad_base/ch3_rxoutclk] [get_bd_pins bufg_gt_0_rx_outclk_div2_ch3/outclk] [get_bd_pins bufg_gt_5/outclk]
   connect_bd_net -net gt_quad_base_ch3_rxpmaresetdone [get_bd_pins gt_quad_base/ch3_rxpmaresetdone] [get_bd_pins ch3_rxpmaresetdone_0]
   connect_bd_net -net gt_quad_base_ch3_txmstresetdone [get_bd_pins gt_quad_base/ch3_txmstresetdone] [get_bd_pins ch3_txmstresetdone_0] [get_bd_pins conct_tx_mst_reset_done_out/In3]
   connect_bd_net -net gt_quad_base_ch3_txpmaresetdone [get_bd_pins gt_quad_base/ch3_txpmaresetdone] [get_bd_pins ch3_txpmaresetdone_0]
@@ -1481,20 +2259,23 @@ MSTRCLK 1,1,1,1 IS_CURRENT_QUAD 1}}} \
   connect_bd_net -net gt_quad_base_txp [get_bd_pins gt_quad_base/txp] [get_bd_pins gt_txp_out_0]
   connect_bd_net -net gt_rxn_in_0_1 [get_bd_pins gt_rxn_in_0] [get_bd_pins gt_quad_base/rxn]
   connect_bd_net -net gt_rxp_in_0_1 [get_bd_pins gt_rxp_in_0] [get_bd_pins gt_quad_base/rxp]
-  connect_bd_net -net mbufg_gt_0_2_MBUFG_GT_O1 [get_bd_pins bufg_gt_0_tx_outclk_div2_ch1/usrclk] [get_bd_pins gt_quad_base/ch2_txusrclk] [get_bd_pins conct_tx_usr_clk/In2] [get_bd_pins conct_tx_usr_clk/In3] [get_bd_pins gt_quad_base/ch3_txusrclk]
-  connect_bd_net -net mbufg_gt_0_MBUFG_GT_O1 [get_bd_pins bufg_gt_0_tx_outclk_div2_ch0/usrclk] [get_bd_pins gt_quad_base/ch0_txusrclk] [get_bd_pins conct_tx_usr_clk/In0] [get_bd_pins conct_tx_usr_clk/In1] [get_bd_pins gt_quad_base/ch1_txusrclk]
-  connect_bd_net -net mbufg_gt_1_1_MBUFG_GT_O1 [get_bd_pins bufg_gt_0_rx_outclk_div2_ch1/usrclk] [get_bd_pins gt_quad_base/ch1_rxusrclk] [get_bd_pins conct_rx_usr_clk/In1]
-  connect_bd_net -net mbufg_gt_1_2_MBUFG_GT_O1 [get_bd_pins bufg_gt_0_rx_outclk_div2_ch2/usrclk] [get_bd_pins gt_quad_base/ch2_rxusrclk] [get_bd_pins conct_rx_usr_clk/In2]
-  connect_bd_net -net mbufg_gt_1_3_MBUFG_GT_O1 [get_bd_pins bufg_gt_0_rx_outclk_div2_ch3/usrclk] [get_bd_pins gt_quad_base/ch3_rxusrclk] [get_bd_pins conct_rx_usr_clk/In3]
-  connect_bd_net -net mbufg_gt_1_MBUFG_GT_O1 [get_bd_pins bufg_gt_0_rx_outclk_div2_ch0/usrclk] [get_bd_pins gt_quad_base/ch0_rxusrclk] [get_bd_pins conct_rx_usr_clk/In0]
+  connect_bd_net -net mbufg_gt_0_2_MBUFG_GT_O1 [get_bd_pins bufg_gt_0_tx_outclk_div2_ch1/usrclk] [get_bd_pins conct_tx_usr_clk/In2] [get_bd_pins conct_tx_usr_clk/In3] [get_bd_pins gt_quad_base/ch2_txusrclk] [get_bd_pins gt_quad_base/ch3_txusrclk]
+  connect_bd_net -net mbufg_gt_0_MBUFG_GT_O1 [get_bd_pins bufg_gt_0_tx_outclk_div2_ch0/usrclk] [get_bd_pins conct_tx_usr_clk/In0] [get_bd_pins conct_tx_usr_clk/In1] [get_bd_pins gt_quad_base/ch0_txusrclk] [get_bd_pins gt_quad_base/ch1_txusrclk]
+  connect_bd_net -net mbufg_gt_1_1_MBUFG_GT_O1 [get_bd_pins bufg_gt_0_rx_outclk_div2_ch1/usrclk] [get_bd_pins conct_rx_usr_clk/In1] [get_bd_pins gt_quad_base/ch1_rxusrclk]
+  connect_bd_net -net mbufg_gt_1_2_MBUFG_GT_O1 [get_bd_pins bufg_gt_0_rx_outclk_div2_ch2/usrclk] [get_bd_pins conct_rx_usr_clk/In2] [get_bd_pins gt_quad_base/ch2_rxusrclk]
+  connect_bd_net -net mbufg_gt_1_3_MBUFG_GT_O1 [get_bd_pins bufg_gt_0_rx_outclk_div2_ch3/usrclk] [get_bd_pins conct_rx_usr_clk/In3] [get_bd_pins gt_quad_base/ch3_rxusrclk]
+  connect_bd_net -net mbufg_gt_1_MBUFG_GT_O1 [get_bd_pins bufg_gt_0_rx_outclk_div2_ch0/usrclk] [get_bd_pins conct_rx_usr_clk/In0] [get_bd_pins gt_quad_base/ch0_rxusrclk]
   connect_bd_net -net rx_mst_reset_in_1 [get_bd_pins rx_mst_reset_in_0] [get_bd_pins xlslice_rx_mst_reset_1/Din] [get_bd_pins xlslice_rx_mst_reset_2/Din] [get_bd_pins xlslice_rx_mst_reset_3/Din] [get_bd_pins xlslice_rx_mst_reset_0/Din]
   connect_bd_net -net rx_userrdy_in_1 [get_bd_pins rx_userrdy_in_0] [get_bd_pins xlslice_rx_userrdy_1/Din] [get_bd_pins xlslice_rx_userrdy_2/Din] [get_bd_pins xlslice_rx_userrdy_3/Din] [get_bd_pins xlslice_rx_userrdy_0/Din]
-  connect_bd_net -net s_axi_aresetn_1 [get_bd_pins s_axi_aresetn] [get_bd_pins gt_quad_base/apb3presetn] [get_bd_pins axi_apb_bridge_0/s_axi_aresetn] [get_bd_pins axi_gpio_gt_rate_reset_ctl_0/s_axi_aresetn] [get_bd_pins axi_gpio_gt_rate_reset_ctl_1/s_axi_aresetn] [get_bd_pins axi_gpio_gt_rate_reset_ctl_2/s_axi_aresetn] [get_bd_pins axi_gpio_gt_rate_reset_ctl_3/s_axi_aresetn] [get_bd_pins axi_gpio_gt_reset_mask/s_axi_aresetn]
+  connect_bd_net -net s_axi_aresetn_1 [get_bd_pins s_axi_aresetn] [get_bd_pins axi_apb_bridge_0/s_axi_aresetn] [get_bd_pins axi_gpio_gt_rate_reset_ctl_0/s_axi_aresetn] [get_bd_pins axi_gpio_gt_rate_reset_ctl_1/s_axi_aresetn] [get_bd_pins axi_gpio_gt_rate_reset_ctl_2/s_axi_aresetn] [get_bd_pins axi_gpio_gt_rate_reset_ctl_3/s_axi_aresetn] [get_bd_pins axi_gpio_gt_reset_mask/s_axi_aresetn] [get_bd_pins gt_quad_base/apb3presetn]
   connect_bd_net -net tx_mst_reset_in_1 [get_bd_pins tx_mst_reset_in_0] [get_bd_pins xlslice_tx_mst_reset_1/Din] [get_bd_pins xlslice_tx_mst_reset_2/Din] [get_bd_pins xlslice_tx_mst_reset_3/Din] [get_bd_pins xlslice_tx_mst_reset_0/Din]
   connect_bd_net -net tx_userrdy_in_1 [get_bd_pins tx_userrdy_in_0] [get_bd_pins xlslice_tx_userrdy_1/Din] [get_bd_pins xlslice_tx_userrdy_2/Din] [get_bd_pins xlslice_tx_userrdy_3/Din] [get_bd_pins xlslice_tx_userrdy_0/Din]
   connect_bd_net -net util_ds_buf_0_IBUF_OUT [get_bd_pins util_ds_buf_0/IBUF_OUT] [get_bd_pins gt_quad_base/GT_REFCLK0] [get_bd_pins gt_quad_base/GT_REFCLK1]
   connect_bd_net -net xlconcat_0_dout [get_bd_pins xlconcat_0/dout] [get_bd_pins axi_gpio_gt_reset_mask/gpio2_io_i]
+  connect_bd_net -net xlconcat_1_dout [get_bd_pins xlconcat_1/dout] [get_bd_pins tx_core_clk_new]
+  connect_bd_net -net xlconcat_2_dout [get_bd_pins xlconcat_2/dout] [get_bd_pins rx_core_clk_serdes_clk_new]
   connect_bd_net -net xlconstant_0_dout [get_bd_pins xlconstant_0/dout] [get_bd_pins mrmac_obuf_ds_gte5_0/OBUFDS_GTE5_CEB]
+  connect_bd_net -net xlconstant_1_dout [get_bd_pins xlconstant_1/dout] [get_bd_pins bufg_gt_0/gt_bufgtdiv] [get_bd_pins bufg_gt_1/gt_bufgtdiv] [get_bd_pins bufg_gt_2/gt_bufgtdiv] [get_bd_pins bufg_gt_4/gt_bufgtdiv] [get_bd_pins bufg_gt_5/gt_bufgtdiv] [get_bd_pins bufg_gt_3/gt_bufgtdiv]
   connect_bd_net -net xlslice_gt_reset_all_0_Dout [get_bd_pins xlslice_gt_reset_all_0/Dout] [get_bd_pins xlconcat_gt_rest_all/In0]
   connect_bd_net -net xlslice_gt_reset_all_1_Dout [get_bd_pins xlslice_gt_reset_all_1/Dout] [get_bd_pins xlconcat_gt_rest_all/In1]
   connect_bd_net -net xlslice_gt_reset_all_2_Dout [get_bd_pins xlslice_gt_reset_all_2/Dout] [get_bd_pins xlconcat_gt_rest_all/In2]
@@ -1507,328 +2288,6 @@ MSTRCLK 1,1,1,1 IS_CURRENT_QUAD 1}}} \
   connect_bd_net -net xlslice_gt_reset_tx_datapath_1_Dout [get_bd_pins xlslice_gt_reset_tx_datapath_1/Dout] [get_bd_pins xlconcat_gt_rest_tx_datapath/In1]
   connect_bd_net -net xlslice_gt_reset_tx_datapath_2_Dout [get_bd_pins xlslice_gt_reset_tx_datapath_2/Dout] [get_bd_pins xlconcat_gt_rest_tx_datapath/In2]
   connect_bd_net -net xlslice_gt_reset_tx_datapath_3_Dout [get_bd_pins xlslice_gt_reset_tx_datapath_3/Dout] [get_bd_pins xlconcat_gt_rest_tx_datapath/In3]
-
-  # Restore current instance
-  current_bd_instance $oldCurInst
-}
-
-# Hierarchical cell: Four_MCDMA
-proc create_hier_cell_Four_MCDMA { parentCell nameHier } {
-
-  variable script_folder
-
-  if { $parentCell eq "" || $nameHier eq "" } {
-     catch {common::send_gid_msg -ssname BD::TCL -id 2092 -severity "ERROR" "create_hier_cell_Four_MCDMA() - Empty argument(s)!"}
-     return
-  }
-
-  # Get object for parentCell
-  set parentObj [get_bd_cells $parentCell]
-  if { $parentObj == "" } {
-     catch {common::send_gid_msg -ssname BD::TCL -id 2090 -severity "ERROR" "Unable to find parent cell <$parentCell>!"}
-     return
-  }
-
-  # Make sure parentObj is hier blk
-  set parentType [get_property TYPE $parentObj]
-  if { $parentType ne "hier" } {
-     catch {common::send_gid_msg -ssname BD::TCL -id 2091 -severity "ERROR" "Parent <$parentObj> has TYPE = <$parentType>. Expected to be <hier>."}
-     return
-  }
-
-  # Save current instance; Restore later
-  set oldCurInst [current_bd_instance .]
-
-  # Set parent object as current
-  current_bd_instance $parentObj
-
-  # Create cell and set as current instance
-  set hier_obj [create_bd_cell -type hier $nameHier]
-  current_bd_instance $hier_obj
-
-  # Create interface pins
-  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M_AXI_SG_0
-
-  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M_AXI_MM2S_0
-
-  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M_AXI_S2MM_0
-
-  create_bd_intf_pin -mode Slave -vlnv xilinx.com:interface:aximm_rtl:1.0 S_AXI_LITE_0
-
-  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M_AXI_SG_1
-
-  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M_AXI_MM2S_1
-
-  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M_AXI_S2MM_1
-
-  create_bd_intf_pin -mode Slave -vlnv xilinx.com:interface:aximm_rtl:1.0 S_AXI_LITE_1
-
-  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M_AXI_SG_2
-
-  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M_AXI_MM2S_2
-
-  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M_AXI_S2MM_2
-
-  create_bd_intf_pin -mode Slave -vlnv xilinx.com:interface:aximm_rtl:1.0 S_AXI_LITE_2
-
-  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M_AXI_SG_3
-
-  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M_AXI_MM2S_3
-
-  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M_AXI_S2MM_3
-
-  create_bd_intf_pin -mode Slave -vlnv xilinx.com:interface:aximm_rtl:1.0 S_AXI_LITE_3
-
-
-  # Create pins
-  create_bd_pin -dir I -from 10 -to 0 s_axis_tkeep_0
-  create_bd_pin -dir I -type rst s_axi_aresetn
-  create_bd_pin -dir I -type clk s_axi_aclk
-  create_bd_pin -dir I rx_tlast
-  create_bd_pin -dir I rx_tvalid
-  create_bd_pin -dir I -from 63 -to 0 s_axis_tdata_0
-  create_bd_pin -dir O -type intr mm2s_ch1_introut_0
-  create_bd_pin -dir O -type intr s2mm_ch1_introut_0
-  create_bd_pin -dir O -from 63 -to 0 m_axis_tdata_0
-  create_bd_pin -dir O -from 7 -to 0 tx_tkeep
-  create_bd_pin -dir O tx_tlast
-  create_bd_pin -dir O tx_tvalid
-  create_bd_pin -dir I m_axis_tready_1
-  create_bd_pin -dir I -from 10 -to 0 s_axis_tkeep_1
-  create_bd_pin -dir I rx_axis_tlast_1
-  create_bd_pin -dir I rx_axis_tvalid_1
-  create_bd_pin -dir I -from 63 -to 0 s_axis_tdata_1
-  create_bd_pin -dir O -type intr mm2s_ch1_introut_1
-  create_bd_pin -dir O -type intr s2mm_ch1_introut_1
-  create_bd_pin -dir O -from 63 -to 0 m_axis_tdata_1
-  create_bd_pin -dir O -from 7 -to 0 tx_tkeep1
-  create_bd_pin -dir O tx_tlast1
-  create_bd_pin -dir O tx_tvalid1
-  create_bd_pin -dir I tx_axis_tready_1
-  create_bd_pin -dir I -from 10 -to 0 s_axis_tkeep_2
-  create_bd_pin -dir I rx_axis_tlast_2
-  create_bd_pin -dir I rx_axis_tvalid_2
-  create_bd_pin -dir I -from 63 -to 0 s_axis_tdata_2
-  create_bd_pin -dir O -type intr mm2s_ch1_introut_2
-  create_bd_pin -dir O -type intr s2mm_ch1_introut_2
-  create_bd_pin -dir O -from 63 -to 0 m_axis_tdata_2
-  create_bd_pin -dir O -from 7 -to 0 tx_tkeep2
-  create_bd_pin -dir O tx_tlast2
-  create_bd_pin -dir O tx_tvalid2
-  create_bd_pin -dir I tx_axis_tready_2
-  create_bd_pin -dir I -from 10 -to 0 s_axis_tkeep_3
-  create_bd_pin -dir I rx_axis_tlast_3
-  create_bd_pin -dir I rx_axis_tvalid_3
-  create_bd_pin -dir I -from 63 -to 0 s_axis_tdata_3
-  create_bd_pin -dir O -type intr mm2s_ch1_introut_3
-  create_bd_pin -dir O -type intr s2mm_ch1_introut_3
-  create_bd_pin -dir O -from 63 -to 0 m_axis_tdata_3
-  create_bd_pin -dir O -from 7 -to 0 tx_tkeep3
-  create_bd_pin -dir O tx_tlast3
-  create_bd_pin -dir O tx_tvalid3
-  create_bd_pin -dir I tx_axis_tready_3
-
-  # Create instance: axi_mcdma_0, and set properties
-  set axi_mcdma_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_mcdma:1.1 axi_mcdma_0 ]
-  set_property -dict [list \
-    CONFIG.c_include_mm2s_dre {1} \
-    CONFIG.c_include_s2mm_dre {1} \
-    CONFIG.c_m_axi_mm2s_data_width {64} \
-    CONFIG.c_m_axi_s2mm_data_width {64} \
-    CONFIG.c_m_axis_mm2s_tdata_width {64} \
-    CONFIG.c_mm2s_burst_size {256} \
-    CONFIG.c_s2mm_burst_size {256} \
-    CONFIG.c_sg_include_stscntrl_strm {0} \
-  ] $axi_mcdma_0
-
-
-  # Create instance: axis_data_fifo_0, and set properties
-  set axis_data_fifo_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_data_fifo:2.0 axis_data_fifo_0 ]
-  set_property -dict [list \
-    CONFIG.FIFO_DEPTH {4096} \
-    CONFIG.FIFO_MODE {2} \
-    CONFIG.TDATA_NUM_BYTES {8} \
-  ] $axis_data_fifo_0
-
-
-  # Create instance: axis_data_fifo_1, and set properties
-  set axis_data_fifo_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_data_fifo:2.0 axis_data_fifo_1 ]
-  set_property -dict [list \
-    CONFIG.FIFO_DEPTH {4096} \
-    CONFIG.FIFO_MODE {2} \
-    CONFIG.HAS_TKEEP {1} \
-    CONFIG.TDATA_NUM_BYTES {8} \
-  ] $axis_data_fifo_1
-
-
-  # Create instance: axi_mcdma_1, and set properties
-  set axi_mcdma_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_mcdma:1.1 axi_mcdma_1 ]
-  set_property -dict [list \
-    CONFIG.c_include_mm2s_dre {1} \
-    CONFIG.c_include_s2mm_dre {1} \
-    CONFIG.c_m_axi_mm2s_data_width {64} \
-    CONFIG.c_m_axi_s2mm_data_width {64} \
-    CONFIG.c_m_axis_mm2s_tdata_width {64} \
-    CONFIG.c_mm2s_burst_size {256} \
-    CONFIG.c_s2mm_burst_size {256} \
-    CONFIG.c_sg_include_stscntrl_strm {0} \
-  ] $axi_mcdma_1
-
-
-  # Create instance: axis_data_fifo_2, and set properties
-  set axis_data_fifo_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_data_fifo:2.0 axis_data_fifo_2 ]
-  set_property -dict [list \
-    CONFIG.FIFO_DEPTH {4096} \
-    CONFIG.FIFO_MODE {2} \
-    CONFIG.TDATA_NUM_BYTES {8} \
-  ] $axis_data_fifo_2
-
-
-  # Create instance: axis_data_fifo_3, and set properties
-  set axis_data_fifo_3 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_data_fifo:2.0 axis_data_fifo_3 ]
-  set_property -dict [list \
-    CONFIG.FIFO_DEPTH {4096} \
-    CONFIG.FIFO_MODE {2} \
-    CONFIG.HAS_TKEEP {1} \
-    CONFIG.TDATA_NUM_BYTES {8} \
-  ] $axis_data_fifo_3
-
-
-  # Create instance: axi_mcdma_2, and set properties
-  set axi_mcdma_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_mcdma:1.1 axi_mcdma_2 ]
-  set_property -dict [list \
-    CONFIG.c_include_mm2s_dre {1} \
-    CONFIG.c_include_s2mm_dre {1} \
-    CONFIG.c_m_axi_mm2s_data_width {64} \
-    CONFIG.c_m_axi_s2mm_data_width {64} \
-    CONFIG.c_m_axis_mm2s_tdata_width {64} \
-    CONFIG.c_mm2s_burst_size {256} \
-    CONFIG.c_s2mm_burst_size {256} \
-    CONFIG.c_sg_include_stscntrl_strm {0} \
-  ] $axi_mcdma_2
-
-
-  # Create instance: axis_data_fifo_4, and set properties
-  set axis_data_fifo_4 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_data_fifo:2.0 axis_data_fifo_4 ]
-  set_property -dict [list \
-    CONFIG.FIFO_DEPTH {4096} \
-    CONFIG.FIFO_MODE {2} \
-    CONFIG.TDATA_NUM_BYTES {8} \
-  ] $axis_data_fifo_4
-
-
-  # Create instance: axis_data_fifo_5, and set properties
-  set axis_data_fifo_5 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_data_fifo:2.0 axis_data_fifo_5 ]
-  set_property -dict [list \
-    CONFIG.FIFO_DEPTH {4096} \
-    CONFIG.FIFO_MODE {2} \
-    CONFIG.HAS_TKEEP {1} \
-    CONFIG.TDATA_NUM_BYTES {8} \
-  ] $axis_data_fifo_5
-
-
-  # Create instance: axi_mcdma_3, and set properties
-  set axi_mcdma_3 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_mcdma:1.1 axi_mcdma_3 ]
-  set_property -dict [list \
-    CONFIG.c_include_mm2s_dre {1} \
-    CONFIG.c_include_s2mm_dre {1} \
-    CONFIG.c_m_axi_mm2s_data_width {64} \
-    CONFIG.c_m_axi_s2mm_data_width {64} \
-    CONFIG.c_m_axis_mm2s_tdata_width {64} \
-    CONFIG.c_mm2s_burst_size {256} \
-    CONFIG.c_s2mm_burst_size {256} \
-    CONFIG.c_sg_include_stscntrl_strm {0} \
-  ] $axi_mcdma_3
-
-
-  # Create instance: axis_data_fifo_6, and set properties
-  set axis_data_fifo_6 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_data_fifo:2.0 axis_data_fifo_6 ]
-  set_property -dict [list \
-    CONFIG.FIFO_DEPTH {4096} \
-    CONFIG.FIFO_MODE {2} \
-    CONFIG.TDATA_NUM_BYTES {8} \
-  ] $axis_data_fifo_6
-
-
-  # Create instance: axis_data_fifo_7, and set properties
-  set axis_data_fifo_7 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_data_fifo:2.0 axis_data_fifo_7 ]
-  set_property -dict [list \
-    CONFIG.FIFO_DEPTH {4096} \
-    CONFIG.FIFO_MODE {2} \
-    CONFIG.HAS_TKEEP {1} \
-    CONFIG.TDATA_NUM_BYTES {8} \
-  ] $axis_data_fifo_7
-
-
-  # Create interface connections
-  connect_bd_intf_net -intf_net MCDMA1_M_AXI_MM2S_0 [get_bd_intf_pins M_AXI_MM2S_1] [get_bd_intf_pins axi_mcdma_0/M_AXI_MM2S]
-  connect_bd_intf_net -intf_net MCDMA1_M_AXI_S2MM_0 [get_bd_intf_pins M_AXI_S2MM_1] [get_bd_intf_pins axi_mcdma_0/M_AXI_S2MM]
-  connect_bd_intf_net -intf_net MCDMA1_M_AXI_SG_0 [get_bd_intf_pins M_AXI_SG_1] [get_bd_intf_pins axi_mcdma_0/M_AXI_SG]
-  connect_bd_intf_net -intf_net MCDMA2_M_AXI_MM2S_0 [get_bd_intf_pins M_AXI_MM2S_2] [get_bd_intf_pins axi_mcdma_1/M_AXI_MM2S]
-  connect_bd_intf_net -intf_net MCDMA2_M_AXI_S2MM_0 [get_bd_intf_pins M_AXI_S2MM_2] [get_bd_intf_pins axi_mcdma_1/M_AXI_S2MM]
-  connect_bd_intf_net -intf_net MCDMA2_M_AXI_SG_0 [get_bd_intf_pins M_AXI_SG_2] [get_bd_intf_pins axi_mcdma_1/M_AXI_SG]
-  connect_bd_intf_net -intf_net MCDMA3_M_AXI_MM2S_0 [get_bd_intf_pins M_AXI_MM2S_3] [get_bd_intf_pins axi_mcdma_3/M_AXI_MM2S]
-  connect_bd_intf_net -intf_net MCDMA3_M_AXI_S2MM_0 [get_bd_intf_pins M_AXI_S2MM_3] [get_bd_intf_pins axi_mcdma_3/M_AXI_S2MM]
-  connect_bd_intf_net -intf_net MCDMA3_M_AXI_SG_0 [get_bd_intf_pins M_AXI_SG_3] [get_bd_intf_pins axi_mcdma_3/M_AXI_SG]
-  connect_bd_intf_net -intf_net MCDMA_M_AXI_MM2S_0 [get_bd_intf_pins M_AXI_MM2S_0] [get_bd_intf_pins axi_mcdma_2/M_AXI_MM2S]
-  connect_bd_intf_net -intf_net MCDMA_M_AXI_S2MM_0 [get_bd_intf_pins M_AXI_S2MM_0] [get_bd_intf_pins axi_mcdma_2/M_AXI_S2MM]
-  connect_bd_intf_net -intf_net MCDMA_M_AXI_SG_0 [get_bd_intf_pins M_AXI_SG_0] [get_bd_intf_pins axi_mcdma_2/M_AXI_SG]
-  connect_bd_intf_net -intf_net S_AXI_LITE_0_1 [get_bd_intf_pins S_AXI_LITE_1] [get_bd_intf_pins axi_mcdma_0/S_AXI_LITE]
-  connect_bd_intf_net -intf_net S_AXI_LITE_0_2 [get_bd_intf_pins S_AXI_LITE_2] [get_bd_intf_pins axi_mcdma_1/S_AXI_LITE]
-  connect_bd_intf_net -intf_net axi_mcdma_0_M_AXIS_MM2S [get_bd_intf_pins axi_mcdma_0/M_AXIS_MM2S] [get_bd_intf_pins axis_data_fifo_1/S_AXIS]
-  connect_bd_intf_net -intf_net axi_mcdma_0_M_AXIS_MM2S_1 [get_bd_intf_pins axi_mcdma_1/M_AXIS_MM2S] [get_bd_intf_pins axis_data_fifo_3/S_AXIS]
-  connect_bd_intf_net -intf_net axi_mcdma_0_M_AXIS_MM2S_2 [get_bd_intf_pins axi_mcdma_2/M_AXIS_MM2S] [get_bd_intf_pins axis_data_fifo_5/S_AXIS]
-  connect_bd_intf_net -intf_net axi_mcdma_0_M_AXIS_MM2S_3 [get_bd_intf_pins axi_mcdma_3/M_AXIS_MM2S] [get_bd_intf_pins axis_data_fifo_7/S_AXIS]
-  connect_bd_intf_net -intf_net axis_data_fifo_0_M_AXIS [get_bd_intf_pins axis_data_fifo_0/M_AXIS] [get_bd_intf_pins axi_mcdma_0/S_AXIS_S2MM]
-  connect_bd_intf_net -intf_net axis_data_fifo_0_M_AXIS_1 [get_bd_intf_pins axis_data_fifo_2/M_AXIS] [get_bd_intf_pins axi_mcdma_1/S_AXIS_S2MM]
-  connect_bd_intf_net -intf_net axis_data_fifo_0_M_AXIS_2 [get_bd_intf_pins axis_data_fifo_4/M_AXIS] [get_bd_intf_pins axi_mcdma_2/S_AXIS_S2MM]
-  connect_bd_intf_net -intf_net axis_data_fifo_0_M_AXIS_3 [get_bd_intf_pins axis_data_fifo_6/M_AXIS] [get_bd_intf_pins axi_mcdma_3/S_AXIS_S2MM]
-  connect_bd_intf_net -intf_net smartconnect_0_M01_AXI [get_bd_intf_pins S_AXI_LITE_0] [get_bd_intf_pins axi_mcdma_2/S_AXI_LITE]
-  connect_bd_intf_net -intf_net smartconnect_0_M04_AXI [get_bd_intf_pins S_AXI_LITE_3] [get_bd_intf_pins axi_mcdma_3/S_AXI_LITE]
-
-  # Create port connections
-  connect_bd_net -net MCDMA1_m_axis_tdata_0 [get_bd_pins axis_data_fifo_1/m_axis_tdata] [get_bd_pins m_axis_tdata_1]
-  connect_bd_net -net MCDMA1_mm2s_ch1_introut_0 [get_bd_pins axi_mcdma_0/mm2s_ch1_introut] [get_bd_pins mm2s_ch1_introut_1]
-  connect_bd_net -net MCDMA1_s2mm_ch1_introut_0 [get_bd_pins axi_mcdma_0/s2mm_ch1_introut] [get_bd_pins s2mm_ch1_introut_1]
-  connect_bd_net -net MCDMA1_tx_tkeep [get_bd_pins axis_data_fifo_1/m_axis_tkeep] [get_bd_pins tx_tkeep1]
-  connect_bd_net -net MCDMA1_tx_tlast [get_bd_pins axis_data_fifo_1/m_axis_tlast] [get_bd_pins tx_tlast1]
-  connect_bd_net -net MCDMA1_tx_tvalid [get_bd_pins axis_data_fifo_1/m_axis_tvalid] [get_bd_pins tx_tvalid1]
-  connect_bd_net -net MCDMA2_m_axis_tdata_0 [get_bd_pins axis_data_fifo_3/m_axis_tdata] [get_bd_pins m_axis_tdata_2]
-  connect_bd_net -net MCDMA2_mm2s_ch1_introut_0 [get_bd_pins axi_mcdma_1/mm2s_ch1_introut] [get_bd_pins mm2s_ch1_introut_2]
-  connect_bd_net -net MCDMA2_s2mm_ch1_introut_0 [get_bd_pins axi_mcdma_1/s2mm_ch1_introut] [get_bd_pins s2mm_ch1_introut_2]
-  connect_bd_net -net MCDMA2_tx_tkeep [get_bd_pins axis_data_fifo_3/m_axis_tkeep] [get_bd_pins tx_tkeep2]
-  connect_bd_net -net MCDMA2_tx_tlast [get_bd_pins axis_data_fifo_3/m_axis_tlast] [get_bd_pins tx_tlast2]
-  connect_bd_net -net MCDMA2_tx_tvalid [get_bd_pins axis_data_fifo_3/m_axis_tvalid] [get_bd_pins tx_tvalid2]
-  connect_bd_net -net MCDMA3_m_axis_tdata_0 [get_bd_pins axis_data_fifo_7/m_axis_tdata] [get_bd_pins m_axis_tdata_3]
-  connect_bd_net -net MCDMA3_mm2s_ch1_introut_0 [get_bd_pins axi_mcdma_3/mm2s_ch1_introut] [get_bd_pins mm2s_ch1_introut_3]
-  connect_bd_net -net MCDMA3_s2mm_ch1_introut_0 [get_bd_pins axi_mcdma_3/s2mm_ch1_introut] [get_bd_pins s2mm_ch1_introut_3]
-  connect_bd_net -net MCDMA3_tx_tkeep [get_bd_pins axis_data_fifo_7/m_axis_tkeep] [get_bd_pins tx_tkeep3]
-  connect_bd_net -net MCDMA3_tx_tlast [get_bd_pins axis_data_fifo_7/m_axis_tlast] [get_bd_pins tx_tlast3]
-  connect_bd_net -net MCDMA3_tx_tvalid [get_bd_pins axis_data_fifo_7/m_axis_tvalid] [get_bd_pins tx_tvalid3]
-  connect_bd_net -net MCDMA_m_axis_tdata_0 [get_bd_pins axis_data_fifo_5/m_axis_tdata] [get_bd_pins m_axis_tdata_0]
-  connect_bd_net -net MCDMA_mm2s_ch1_introut_0 [get_bd_pins axi_mcdma_2/mm2s_ch1_introut] [get_bd_pins mm2s_ch1_introut_0]
-  connect_bd_net -net MCDMA_s2mm_ch1_introut_0 [get_bd_pins axi_mcdma_2/s2mm_ch1_introut] [get_bd_pins s2mm_ch1_introut_0]
-  connect_bd_net -net MCDMA_tx_tkeep [get_bd_pins axis_data_fifo_5/m_axis_tkeep] [get_bd_pins tx_tkeep]
-  connect_bd_net -net MCDMA_tx_tlast [get_bd_pins axis_data_fifo_5/m_axis_tlast] [get_bd_pins tx_tlast]
-  connect_bd_net -net MCDMA_tx_tvalid [get_bd_pins axis_data_fifo_5/m_axis_tvalid] [get_bd_pins tx_tvalid]
-  connect_bd_net -net m_axis_tready_1_1 [get_bd_pins m_axis_tready_1] [get_bd_pins axis_data_fifo_5/m_axis_tready]
-  connect_bd_net -net mrmac_0_core_rx_axis_tdata0 [get_bd_pins s_axis_tdata_0] [get_bd_pins axis_data_fifo_4/s_axis_tdata]
-  connect_bd_net -net mrmac_0_core_rx_axis_tdata2 [get_bd_pins s_axis_tdata_1] [get_bd_pins axis_data_fifo_0/s_axis_tdata]
-  connect_bd_net -net mrmac_0_core_rx_axis_tlast_0 [get_bd_pins rx_tlast] [get_bd_pins axis_data_fifo_4/s_axis_tlast]
-  connect_bd_net -net mrmac_0_core_rx_axis_tlast_1 [get_bd_pins rx_axis_tlast_1] [get_bd_pins axis_data_fifo_0/s_axis_tlast]
-  connect_bd_net -net mrmac_0_core_rx_axis_tlast_2 [get_bd_pins rx_axis_tlast_2] [get_bd_pins axis_data_fifo_2/s_axis_tlast]
-  connect_bd_net -net mrmac_0_core_rx_axis_tlast_3 [get_bd_pins rx_axis_tlast_3] [get_bd_pins axis_data_fifo_6/s_axis_tlast]
-  connect_bd_net -net mrmac_0_core_rx_axis_tvalid_0 [get_bd_pins rx_tvalid] [get_bd_pins axis_data_fifo_4/s_axis_tvalid]
-  connect_bd_net -net mrmac_0_core_rx_axis_tvalid_1 [get_bd_pins rx_axis_tvalid_1] [get_bd_pins axis_data_fifo_0/s_axis_tvalid]
-  connect_bd_net -net mrmac_0_core_rx_axis_tvalid_2 [get_bd_pins rx_axis_tvalid_2] [get_bd_pins axis_data_fifo_2/s_axis_tvalid]
-  connect_bd_net -net mrmac_0_core_rx_axis_tvalid_3 [get_bd_pins rx_axis_tvalid_3] [get_bd_pins axis_data_fifo_6/s_axis_tvalid]
-  connect_bd_net -net mrmac_0_core_tx_axis_tready_1 [get_bd_pins tx_axis_tready_1] [get_bd_pins axis_data_fifo_1/m_axis_tready]
-  connect_bd_net -net mrmac_0_core_tx_axis_tready_2 [get_bd_pins tx_axis_tready_2] [get_bd_pins axis_data_fifo_3/m_axis_tready]
-  connect_bd_net -net mrmac_0_core_tx_axis_tready_3 [get_bd_pins tx_axis_tready_3] [get_bd_pins axis_data_fifo_7/m_axis_tready]
-  connect_bd_net -net s_axi_aclk_1 [get_bd_pins s_axi_aclk] [get_bd_pins axis_data_fifo_0/s_axis_aclk] [get_bd_pins axis_data_fifo_1/s_axis_aclk] [get_bd_pins axi_mcdma_0/s_axi_lite_aclk] [get_bd_pins axi_mcdma_0/s_axi_aclk] [get_bd_pins axis_data_fifo_2/s_axis_aclk] [get_bd_pins axis_data_fifo_3/s_axis_aclk] [get_bd_pins axi_mcdma_1/s_axi_lite_aclk] [get_bd_pins axi_mcdma_1/s_axi_aclk] [get_bd_pins axis_data_fifo_4/s_axis_aclk] [get_bd_pins axis_data_fifo_5/s_axis_aclk] [get_bd_pins axi_mcdma_2/s_axi_lite_aclk] [get_bd_pins axi_mcdma_2/s_axi_aclk] [get_bd_pins axis_data_fifo_6/s_axis_aclk] [get_bd_pins axis_data_fifo_7/s_axis_aclk] [get_bd_pins axi_mcdma_3/s_axi_lite_aclk] [get_bd_pins axi_mcdma_3/s_axi_aclk]
-  connect_bd_net -net s_axi_aresetn_1 [get_bd_pins s_axi_aresetn] [get_bd_pins axis_data_fifo_0/s_axis_aresetn] [get_bd_pins axis_data_fifo_1/s_axis_aresetn] [get_bd_pins axi_mcdma_0/axi_resetn] [get_bd_pins axis_data_fifo_2/s_axis_aresetn] [get_bd_pins axis_data_fifo_3/s_axis_aresetn] [get_bd_pins axi_mcdma_1/axi_resetn] [get_bd_pins axis_data_fifo_4/s_axis_aresetn] [get_bd_pins axis_data_fifo_5/s_axis_aresetn] [get_bd_pins axi_mcdma_2/axi_resetn] [get_bd_pins axis_data_fifo_6/s_axis_aresetn] [get_bd_pins axis_data_fifo_7/s_axis_aresetn] [get_bd_pins axi_mcdma_3/axi_resetn]
-  connect_bd_net -net s_axis_tdata_0_1 [get_bd_pins s_axis_tdata_2] [get_bd_pins axis_data_fifo_2/s_axis_tdata]
-  connect_bd_net -net s_axis_tdata_0_2 [get_bd_pins s_axis_tdata_3] [get_bd_pins axis_data_fifo_6/s_axis_tdata]
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -1868,8 +2327,6 @@ proc create_root_design { parentCell } {
 
 
   # Create interface ports
-  set GT_Serial [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:gt_rtl:1.0 GT_Serial ]
-
   set ch0_lpddr4_c0 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:lpddr4_rtl:1.0 ch0_lpddr4_c0 ]
 
   set ch1_lpddr4_c0 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:lpddr4_rtl:1.0 ch1_lpddr4_c0 ]
@@ -1908,7 +2365,7 @@ proc create_root_design { parentCell } {
     CONFIG.FEC_SLICE2_CFG_C0 {FEC Disabled (Bypass)} \
     CONFIG.FEC_SLICE3_CFG_C0 {FEC Disabled (Bypass)} \
     CONFIG.GT_PIPELINE_STAGES {0} \
-    CONFIG.GT_REF_CLK_FREQ_C0 {156.25} \
+    CONFIG.GT_REF_CLK_FREQ_C0 {322.265625} \
     CONFIG.GT_TYPE_C0 {GTY} \
     CONFIG.MAC_PORT0_ENABLE_TIME_STAMPING_C0 {0} \
     CONFIG.MAC_PORT0_PREEMPTION_C0 {0} \
@@ -2057,114 +2514,114 @@ proc create_root_design { parentCell } {
 
   set_property -dict [ list \
    CONFIG.REGION {0} \
-   CONFIG.CONNECTIONS {MC_0 {read_bw {100} write_bw {100} read_avg_burst {4} write_avg_burst {4}}} \
+   CONFIG.CONNECTIONS {MC_0 {read_bw {1250} write_bw {1250} read_avg_burst {4} write_avg_burst {4}}} \
    CONFIG.NOC_PARAMS {} \
    CONFIG.CATEGORY {ps_cci} \
  ] [get_bd_intf_pins /axi_noc_0/S00_AXI]
 
   set_property -dict [ list \
    CONFIG.REGION {0} \
-   CONFIG.CONNECTIONS {MC_0 {read_bw {100} write_bw {100} read_avg_burst {4} write_avg_burst {4}}} \
+   CONFIG.CONNECTIONS {MC_0 {read_bw {1250} write_bw {1250} read_avg_burst {4} write_avg_burst {4}}} \
    CONFIG.NOC_PARAMS {} \
    CONFIG.CATEGORY {ps_cci} \
  ] [get_bd_intf_pins /axi_noc_0/S01_AXI]
 
   set_property -dict [ list \
    CONFIG.REGION {0} \
-   CONFIG.CONNECTIONS {MC_0 {read_bw {100} write_bw {100} read_avg_burst {4} write_avg_burst {4}}} \
+   CONFIG.CONNECTIONS {MC_0 {read_bw {1250} write_bw {1250} read_avg_burst {4} write_avg_burst {4}}} \
    CONFIG.NOC_PARAMS {} \
    CONFIG.CATEGORY {ps_cci} \
  ] [get_bd_intf_pins /axi_noc_0/S02_AXI]
 
   set_property -dict [ list \
    CONFIG.REGION {0} \
-   CONFIG.CONNECTIONS {MC_0 {read_bw {100} write_bw {100} read_avg_burst {4} write_avg_burst {4}}} \
+   CONFIG.CONNECTIONS {MC_0 {read_bw {1250} write_bw {1250} read_avg_burst {4} write_avg_burst {4}}} \
    CONFIG.NOC_PARAMS {} \
    CONFIG.CATEGORY {ps_cci} \
  ] [get_bd_intf_pins /axi_noc_0/S03_AXI]
 
   set_property -dict [ list \
    CONFIG.REGION {0} \
-   CONFIG.CONNECTIONS {MC_0 {read_bw {100} write_bw {100} read_avg_burst {4} write_avg_burst {4}}} \
+   CONFIG.CONNECTIONS {MC_0 {read_bw {1250} write_bw {1250} read_avg_burst {4} write_avg_burst {4}}} \
    CONFIG.NOC_PARAMS {} \
    CONFIG.CATEGORY {ps_rpu} \
  ] [get_bd_intf_pins /axi_noc_0/S04_AXI]
 
   set_property -dict [ list \
    CONFIG.REGION {0} \
-   CONFIG.CONNECTIONS {MC_0 {read_bw {100} write_bw {100} read_avg_burst {4} write_avg_burst {4}}} \
+   CONFIG.CONNECTIONS {MC_0 {read_bw {50} write_bw {50} read_avg_burst {4} write_avg_burst {4}}} \
    CONFIG.NOC_PARAMS {} \
    CONFIG.CATEGORY {ps_pmc} \
  ] [get_bd_intf_pins /axi_noc_0/S05_AXI]
 
   set_property -dict [ list \
-   CONFIG.CONNECTIONS {MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}}} \
+   CONFIG.CONNECTIONS {MC_3 {read_bw {750} write_bw {750} read_avg_burst {4} write_avg_burst {4}}} \
    CONFIG.NOC_PARAMS {} \
    CONFIG.CATEGORY {pl} \
  ] [get_bd_intf_pins /axi_noc_0/S06_AXI]
 
   set_property -dict [ list \
-   CONFIG.CONNECTIONS {MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}}} \
+   CONFIG.CONNECTIONS {MC_1 {read_bw {3200} write_bw {50} read_avg_burst {4} write_avg_burst {4}}} \
    CONFIG.NOC_PARAMS {} \
    CONFIG.CATEGORY {pl} \
  ] [get_bd_intf_pins /axi_noc_0/S07_AXI]
 
   set_property -dict [ list \
-   CONFIG.CONNECTIONS {MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}}} \
+   CONFIG.CONNECTIONS {MC_1 {read_bw {50} write_bw {3200} read_avg_burst {4} write_avg_burst {4}}} \
    CONFIG.NOC_PARAMS {} \
    CONFIG.CATEGORY {pl} \
  ] [get_bd_intf_pins /axi_noc_0/S08_AXI]
 
   set_property -dict [ list \
-   CONFIG.CONNECTIONS {MC_2 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}}} \
+   CONFIG.CONNECTIONS {MC_3 {read_bw {750} write_bw {750} read_avg_burst {4} write_avg_burst {4}}} \
    CONFIG.NOC_PARAMS {} \
    CONFIG.CATEGORY {pl} \
  ] [get_bd_intf_pins /axi_noc_0/S09_AXI]
 
   set_property -dict [ list \
-   CONFIG.CONNECTIONS {MC_2 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}}} \
+   CONFIG.CONNECTIONS {MC_2 {read_bw {3200} write_bw {50} read_avg_burst {4} write_avg_burst {4}}} \
    CONFIG.NOC_PARAMS {} \
    CONFIG.CATEGORY {pl} \
  ] [get_bd_intf_pins /axi_noc_0/S10_AXI]
 
   set_property -dict [ list \
-   CONFIG.CONNECTIONS {MC_2 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}}} \
+   CONFIG.CONNECTIONS {MC_2 {read_bw {50} write_bw {3200} read_avg_burst {4} write_avg_burst {4}}} \
    CONFIG.NOC_PARAMS {} \
    CONFIG.CATEGORY {pl} \
  ] [get_bd_intf_pins /axi_noc_0/S11_AXI]
 
   set_property -dict [ list \
-   CONFIG.CONNECTIONS {MC_3 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}}} \
+   CONFIG.CONNECTIONS {MC_3 {read_bw {750} write_bw {750} read_avg_burst {4} write_avg_burst {4}}} \
    CONFIG.NOC_PARAMS {} \
    CONFIG.CATEGORY {pl} \
  ] [get_bd_intf_pins /axi_noc_0/S12_AXI]
 
   set_property -dict [ list \
-   CONFIG.CONNECTIONS {MC_3 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}}} \
+   CONFIG.CONNECTIONS {MC_1 {read_bw {3200} write_bw {50} read_avg_burst {4} write_avg_burst {4}}} \
    CONFIG.NOC_PARAMS {} \
    CONFIG.CATEGORY {pl} \
  ] [get_bd_intf_pins /axi_noc_0/S13_AXI]
 
   set_property -dict [ list \
-   CONFIG.CONNECTIONS {MC_3 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}}} \
+   CONFIG.CONNECTIONS {MC_1 {read_bw {50} write_bw {3200} read_avg_burst {4} write_avg_burst {4}}} \
    CONFIG.NOC_PARAMS {} \
    CONFIG.CATEGORY {pl} \
  ] [get_bd_intf_pins /axi_noc_0/S14_AXI]
 
   set_property -dict [ list \
-   CONFIG.CONNECTIONS {MC_2 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}}} \
+   CONFIG.CONNECTIONS {MC_3 {read_bw {750} write_bw {750} read_avg_burst {4} write_avg_burst {4}}} \
    CONFIG.NOC_PARAMS {} \
    CONFIG.CATEGORY {pl} \
  ] [get_bd_intf_pins /axi_noc_0/S15_AXI]
 
   set_property -dict [ list \
-   CONFIG.CONNECTIONS {MC_2 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}}} \
+   CONFIG.CONNECTIONS {MC_2 {read_bw {3200} write_bw {50} read_avg_burst {4} write_avg_burst {4}}} \
    CONFIG.NOC_PARAMS {} \
    CONFIG.CATEGORY {pl} \
  ] [get_bd_intf_pins /axi_noc_0/S16_AXI]
 
   set_property -dict [ list \
-   CONFIG.CONNECTIONS {MC_2 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}}} \
+   CONFIG.CONNECTIONS {MC_2 {read_bw {50} write_bw {3200} read_avg_burst {4} write_avg_burst {4}}} \
    CONFIG.NOC_PARAMS {} \
    CONFIG.CATEGORY {pl} \
  ] [get_bd_intf_pins /axi_noc_0/S17_AXI]
@@ -2194,46 +2651,20 @@ proc create_root_design { parentCell } {
  ] [get_bd_pins /axi_noc_0/aclk5]
 
   set_property -dict [ list \
-   CONFIG.ASSOCIATED_BUSIF {S06_AXI:S07_AXI:S08_AXI:S09_AXI:S10_AXI:S11_AXI:S12_AXI:S13_AXI:S14_AXI:S15_AXI:S16_AXI:S17_AXI} \
+   CONFIG.ASSOCIATED_BUSIF {S06_AXI:S09_AXI:S12_AXI:S15_AXI} \
  ] [get_bd_pins /axi_noc_0/aclk6]
 
   set_property -dict [ list \
-   CONFIG.ASSOCIATED_BUSIF {} \
+   CONFIG.ASSOCIATED_BUSIF {S07_AXI:S08_AXI:S10_AXI:S11_AXI:S13_AXI:S14_AXI:S16_AXI:S17_AXI} \
  ] [get_bd_pins /axi_noc_0/aclk7]
 
   # Create instance: smartconnect_0, and set properties
   set smartconnect_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect:1.0 smartconnect_0 ]
   set_property -dict [list \
+    CONFIG.NUM_CLKS {1} \
     CONFIG.NUM_MI {7} \
     CONFIG.NUM_SI {1} \
   ] $smartconnect_0
-
-
-  # Create instance: util_vector_logic_0, and set properties
-  set util_vector_logic_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_vector_logic:2.0 util_vector_logic_0 ]
-  set_property -dict [list \
-    CONFIG.C_OPERATION {not} \
-    CONFIG.C_SIZE {4} \
-  ] $util_vector_logic_0
-
-
-  # Create instance: util_vector_logic_1, and set properties
-  set util_vector_logic_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_vector_logic:2.0 util_vector_logic_1 ]
-  set_property -dict [list \
-    CONFIG.C_OPERATION {not} \
-    CONFIG.C_SIZE {3} \
-  ] $util_vector_logic_1
-
-
-  # Create instance: Four_MCDMA
-  create_hier_cell_Four_MCDMA [current_bd_instance .] Four_MCDMA
-
-  # Create instance: proc_sys_reset_0, and set properties
-  set proc_sys_reset_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 proc_sys_reset_0 ]
-  set_property -dict [list \
-    CONFIG.C_AUX_RESET_HIGH {0} \
-    CONFIG.C_NUM_BUS_RST {4} \
-  ] $proc_sys_reset_0
 
 
   # Create instance: xlconstant_0, and set properties
@@ -2252,80 +2683,73 @@ proc create_root_design { parentCell } {
   ] $xlconstant_1
 
 
-  # Create instance: xlconcat_0, and set properties
-  set xlconcat_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_0 ]
-  set_property CONFIG.NUM_PORTS {4} $xlconcat_0
-
-
-  # Create instance: xlconcat_1, and set properties
-  set xlconcat_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_1 ]
-  set_property CONFIG.NUM_PORTS {4} $xlconcat_1
-
-
-  # Create instance: xlconcat_2, and set properties
-  set xlconcat_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_2 ]
-  set_property CONFIG.NUM_PORTS {4} $xlconcat_2
-
-
-  # Create instance: clk_wizard_0, and set properties
-  set clk_wizard_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wizard:1.0 clk_wizard_0 ]
-  set_property -dict [list \
-    CONFIG.CLKOUT_DRIVES {BUFG,BUFG,BUFG,BUFG,BUFG,BUFG,BUFG} \
-    CONFIG.CLKOUT_DYN_PS {None,None,None,None,None,None,None} \
-    CONFIG.CLKOUT_GROUPING {Auto,Auto,Auto,Auto,Auto,Auto,Auto} \
-    CONFIG.CLKOUT_MATCHED_ROUTING {false,false,false,false,false,false,false} \
-    CONFIG.CLKOUT_PORT {clk_out1,clk_out2,clk_out3,clk_out4,clk_out5,clk_out6,clk_out7} \
-    CONFIG.CLKOUT_REQUESTED_DUTY_CYCLE {50.000,50.000,50.000,50.000,50.000,50.000,50.000} \
-    CONFIG.CLKOUT_REQUESTED_OUT_FREQUENCY {390.625,100.000,100.000,100.000,100.000,100.000,100.000} \
-    CONFIG.CLKOUT_REQUESTED_PHASE {0.000,0.000,0.000,0.000,0.000,0.000,0.000} \
-    CONFIG.CLKOUT_USED {true,false,false,false,false,false,false} \
-  ] $clk_wizard_0
-
-
-  # Create instance: xlconcat_3, and set properties
-  set xlconcat_3 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_3 ]
-  set_property CONFIG.NUM_PORTS {4} $xlconcat_3
-
-
-  # Create instance: xlconcat_4, and set properties
-  set xlconcat_4 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_4 ]
-  set_property CONFIG.NUM_PORTS {4} $xlconcat_4
-
-
-  # Create instance: xlconcat_5, and set properties
-  set xlconcat_5 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_5 ]
-  set_property CONFIG.NUM_PORTS {4} $xlconcat_5
-
-
-  # Create instance: xlconcat_6, and set properties
-  set xlconcat_6 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_6 ]
-  set_property CONFIG.NUM_PORTS {4} $xlconcat_6
-
-
   # Create instance: mrmac_0_gt_wrapper
   create_hier_cell_mrmac_0_gt_wrapper [current_bd_instance .] mrmac_0_gt_wrapper
 
+  # Create instance: clk_rst_wrapper
+  create_hier_cell_clk_rst_wrapper [current_bd_instance .] clk_rst_wrapper
+
+  # Create instance: usr_rdy_reset
+  create_hier_cell_usr_rdy_reset [current_bd_instance .] usr_rdy_reset
+
+  # Create instance: MCDMA0
+  create_hier_cell_MCDMA0 [current_bd_instance .] MCDMA0
+
+  # Create instance: MCDMA1
+  create_hier_cell_MCDMA1 [current_bd_instance .] MCDMA1
+
+  # Create instance: MCDMA2
+  create_hier_cell_MCDMA2 [current_bd_instance .] MCDMA2
+
+  # Create instance: MCDMA3
+  create_hier_cell_MCDMA3 [current_bd_instance .] MCDMA3
+
+  # Create instance: xlconstant_2, and set properties
+  set xlconstant_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 xlconstant_2 ]
+  set_property CONFIG.CONST_VAL {0} $xlconstant_2
+
+
+  # Create instance: xlconstant_3, and set properties
+  set xlconstant_3 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 xlconstant_3 ]
+  set_property -dict [list \
+    CONFIG.CONST_VAL {0} \
+    CONFIG.CONST_WIDTH {8} \
+  ] $xlconstant_3
+
+
+  # Create instance: xlconstant_4, and set properties
+  set xlconstant_4 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 xlconstant_4 ]
+  set_property CONFIG.CONST_VAL {0} $xlconstant_4
+
+
+  # Create instance: xlconstant_5, and set properties
+  set xlconstant_5 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 xlconstant_5 ]
+  set_property -dict [list \
+    CONFIG.CONST_VAL {0} \
+    CONFIG.CONST_WIDTH {66} \
+  ] $xlconstant_5
+
+
   # Create interface connections
   connect_bd_intf_net -intf_net AXI4_LITE_0_1 [get_bd_intf_pins mrmac_0_gt_wrapper/AXI4_LITE_0] [get_bd_intf_pins smartconnect_0/M05_AXI]
-  connect_bd_intf_net -intf_net MCDMA1_M_AXI_MM2S_0 [get_bd_intf_pins axi_noc_0/S10_AXI] [get_bd_intf_pins Four_MCDMA/M_AXI_MM2S_1]
-  connect_bd_intf_net -intf_net MCDMA1_M_AXI_S2MM_0 [get_bd_intf_pins Four_MCDMA/M_AXI_S2MM_1] [get_bd_intf_pins axi_noc_0/S11_AXI]
-  connect_bd_intf_net -intf_net MCDMA1_M_AXI_SG_0 [get_bd_intf_pins Four_MCDMA/M_AXI_SG_1] [get_bd_intf_pins axi_noc_0/S09_AXI]
-  connect_bd_intf_net -intf_net MCDMA2_M_AXI_MM2S_0 [get_bd_intf_pins axi_noc_0/S13_AXI] [get_bd_intf_pins Four_MCDMA/M_AXI_MM2S_2]
-  connect_bd_intf_net -intf_net MCDMA2_M_AXI_S2MM_0 [get_bd_intf_pins axi_noc_0/S14_AXI] [get_bd_intf_pins Four_MCDMA/M_AXI_S2MM_2]
-  connect_bd_intf_net -intf_net MCDMA2_M_AXI_SG_0 [get_bd_intf_pins axi_noc_0/S12_AXI] [get_bd_intf_pins Four_MCDMA/M_AXI_SG_2]
-  connect_bd_intf_net -intf_net MCDMA3_M_AXI_MM2S_0 [get_bd_intf_pins Four_MCDMA/M_AXI_MM2S_3] [get_bd_intf_pins axi_noc_0/S16_AXI]
-  connect_bd_intf_net -intf_net MCDMA3_M_AXI_S2MM_0 [get_bd_intf_pins Four_MCDMA/M_AXI_S2MM_3] [get_bd_intf_pins axi_noc_0/S17_AXI]
-  connect_bd_intf_net -intf_net MCDMA3_M_AXI_SG_0 [get_bd_intf_pins Four_MCDMA/M_AXI_SG_3] [get_bd_intf_pins axi_noc_0/S15_AXI]
-  connect_bd_intf_net -intf_net MCDMA_M_AXI_MM2S_0 [get_bd_intf_pins Four_MCDMA/M_AXI_MM2S_0] [get_bd_intf_pins axi_noc_0/S07_AXI]
-  connect_bd_intf_net -intf_net MCDMA_M_AXI_S2MM_0 [get_bd_intf_pins Four_MCDMA/M_AXI_S2MM_0] [get_bd_intf_pins axi_noc_0/S08_AXI]
-  connect_bd_intf_net -intf_net MCDMA_M_AXI_SG_0 [get_bd_intf_pins Four_MCDMA/M_AXI_SG_0] [get_bd_intf_pins axi_noc_0/S06_AXI]
-  connect_bd_intf_net -intf_net S_AXI_LITE_0_1 [get_bd_intf_pins Four_MCDMA/S_AXI_LITE_1] [get_bd_intf_pins smartconnect_0/M02_AXI]
-  connect_bd_intf_net -intf_net S_AXI_LITE_0_2 [get_bd_intf_pins smartconnect_0/M03_AXI] [get_bd_intf_pins Four_MCDMA/S_AXI_LITE_2]
+  connect_bd_intf_net -intf_net MCDMA1_M_AXI_MM2S_0 [get_bd_intf_pins axi_noc_0/S10_AXI] [get_bd_intf_pins MCDMA1/M_AXI_MM2S_1]
+  connect_bd_intf_net -intf_net MCDMA1_M_AXI_S2MM_0 [get_bd_intf_pins MCDMA1/M_AXI_S2MM_1] [get_bd_intf_pins axi_noc_0/S11_AXI]
+  connect_bd_intf_net -intf_net MCDMA1_M_AXI_SG_0 [get_bd_intf_pins MCDMA1/M_AXI_SG_1] [get_bd_intf_pins axi_noc_0/S09_AXI]
+  connect_bd_intf_net -intf_net MCDMA2_M_AXI_MM2S_0 [get_bd_intf_pins axi_noc_0/S13_AXI] [get_bd_intf_pins MCDMA2/M_AXI_MM2S_2]
+  connect_bd_intf_net -intf_net MCDMA2_M_AXI_S2MM_0 [get_bd_intf_pins axi_noc_0/S14_AXI] [get_bd_intf_pins MCDMA2/M_AXI_S2MM_2]
+  connect_bd_intf_net -intf_net MCDMA2_M_AXI_SG_0 [get_bd_intf_pins axi_noc_0/S12_AXI] [get_bd_intf_pins MCDMA2/M_AXI_SG_2]
+  connect_bd_intf_net -intf_net MCDMA3_M_AXI_MM2S_0 [get_bd_intf_pins MCDMA3/M_AXI_MM2S_3] [get_bd_intf_pins axi_noc_0/S16_AXI]
+  connect_bd_intf_net -intf_net MCDMA3_M_AXI_S2MM_0 [get_bd_intf_pins MCDMA3/M_AXI_S2MM_3] [get_bd_intf_pins axi_noc_0/S17_AXI]
+  connect_bd_intf_net -intf_net MCDMA3_M_AXI_SG_0 [get_bd_intf_pins MCDMA3/M_AXI_SG_3] [get_bd_intf_pins axi_noc_0/S15_AXI]
+  connect_bd_intf_net -intf_net MCDMA_M_AXI_MM2S_0 [get_bd_intf_pins MCDMA0/M_AXI_MM2S_0] [get_bd_intf_pins axi_noc_0/S07_AXI]
+  connect_bd_intf_net -intf_net MCDMA_M_AXI_S2MM_0 [get_bd_intf_pins MCDMA0/M_AXI_S2MM_0] [get_bd_intf_pins axi_noc_0/S08_AXI]
+  connect_bd_intf_net -intf_net MCDMA_M_AXI_SG_0 [get_bd_intf_pins MCDMA0/M_AXI_SG_0] [get_bd_intf_pins axi_noc_0/S06_AXI]
+  connect_bd_intf_net -intf_net S_AXI_LITE_0_1 [get_bd_intf_pins MCDMA1/S_AXI_LITE_1] [get_bd_intf_pins smartconnect_0/M02_AXI]
+  connect_bd_intf_net -intf_net S_AXI_LITE_0_2 [get_bd_intf_pins smartconnect_0/M03_AXI] [get_bd_intf_pins MCDMA2/S_AXI_LITE_2]
   connect_bd_intf_net -intf_net axi_noc_0_CH0_LPDDR4_0 [get_bd_intf_ports ch0_lpddr4_c0] [get_bd_intf_pins axi_noc_0/CH0_LPDDR4_0]
   connect_bd_intf_net -intf_net axi_noc_0_CH0_LPDDR4_1 [get_bd_intf_ports ch0_lpddr4_c1] [get_bd_intf_pins axi_noc_0/CH0_LPDDR4_1]
   connect_bd_intf_net -intf_net axi_noc_0_CH1_LPDDR4_0 [get_bd_intf_ports ch1_lpddr4_c0] [get_bd_intf_pins axi_noc_0/CH1_LPDDR4_0]
   connect_bd_intf_net -intf_net axi_noc_0_CH1_LPDDR4_1 [get_bd_intf_ports ch1_lpddr4_c1] [get_bd_intf_pins axi_noc_0/CH1_LPDDR4_1]
-  connect_bd_intf_net -intf_net gt_quad_base_GT_Serial [get_bd_intf_pins mrmac_0_gt_wrapper/GT_Serial] [get_bd_intf_ports GT_Serial]
   connect_bd_intf_net -intf_net lpddr4_sma_clk1_1 [get_bd_intf_ports lpddr4_sma_clk1] [get_bd_intf_pins axi_noc_0/sys_clk0]
   connect_bd_intf_net -intf_net lpddr4_sma_clk2_1 [get_bd_intf_ports lpddr4_sma_clk2] [get_bd_intf_pins axi_noc_0/sys_clk1]
   connect_bd_intf_net -intf_net mrmac_0_core_gt_rx_serdes_interface_0 [get_bd_intf_pins mrmac_0_core/gt_rx_serdes_interface_0] [get_bd_intf_pins mrmac_0_gt_wrapper/RX0_GT_IP_Interface]
@@ -2337,8 +2761,8 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net mrmac_0_core_gt_tx_serdes_interface_2 [get_bd_intf_pins mrmac_0_core/gt_tx_serdes_interface_2] [get_bd_intf_pins mrmac_0_gt_wrapper/TX2_GT_IP_Interface]
   connect_bd_intf_net -intf_net mrmac_0_core_gt_tx_serdes_interface_3 [get_bd_intf_pins mrmac_0_core/gt_tx_serdes_interface_3] [get_bd_intf_pins mrmac_0_gt_wrapper/TX3_GT_IP_Interface]
   connect_bd_intf_net -intf_net smartconnect_0_M00_AXI [get_bd_intf_pins smartconnect_0/M00_AXI] [get_bd_intf_pins mrmac_0_core/s_axi]
-  connect_bd_intf_net -intf_net smartconnect_0_M01_AXI [get_bd_intf_pins smartconnect_0/M01_AXI] [get_bd_intf_pins Four_MCDMA/S_AXI_LITE_0]
-  connect_bd_intf_net -intf_net smartconnect_0_M04_AXI [get_bd_intf_pins smartconnect_0/M04_AXI] [get_bd_intf_pins Four_MCDMA/S_AXI_LITE_3]
+  connect_bd_intf_net -intf_net smartconnect_0_M01_AXI [get_bd_intf_pins smartconnect_0/M01_AXI] [get_bd_intf_pins MCDMA0/S_AXI_LITE_0]
+  connect_bd_intf_net -intf_net smartconnect_0_M04_AXI [get_bd_intf_pins smartconnect_0/M04_AXI] [get_bd_intf_pins MCDMA3/S_AXI_LITE_3]
   connect_bd_intf_net -intf_net smartconnect_0_M06_AXI [get_bd_intf_pins smartconnect_0/M06_AXI] [get_bd_intf_pins mrmac_0_gt_wrapper/S00_AXI_0]
   connect_bd_intf_net -intf_net versal_cips_0_FPD_CCI_NOC_0 [get_bd_intf_pins versal_cips_0/FPD_CCI_NOC_0] [get_bd_intf_pins axi_noc_0/S00_AXI]
   connect_bd_intf_net -intf_net versal_cips_0_FPD_CCI_NOC_1 [get_bd_intf_pins versal_cips_0/FPD_CCI_NOC_1] [get_bd_intf_pins axi_noc_0/S01_AXI]
@@ -2351,84 +2775,87 @@ proc create_root_design { parentCell } {
   # Create port connections
   connect_bd_net -net CLK_IN_D_clk_n_0_1 [get_bd_ports gt_ref_clk_n] [get_bd_pins mrmac_0_gt_wrapper/IBUF_DS_N_0]
   connect_bd_net -net CLK_IN_D_clk_p_0_1 [get_bd_ports gt_ref_clk_p] [get_bd_pins mrmac_0_gt_wrapper/IBUF_DS_P_0]
-  connect_bd_net -net MCDMA1_m_axis_tdata_0 [get_bd_pins Four_MCDMA/m_axis_tdata_1] [get_bd_pins mrmac_0_core/tx_axis_tdata2]
-  connect_bd_net -net MCDMA1_mm2s_ch1_introut_0 [get_bd_pins Four_MCDMA/mm2s_ch1_introut_1] [get_bd_pins versal_cips_0/pl_ps_irq2]
-  connect_bd_net -net MCDMA1_s2mm_ch1_introut_0 [get_bd_pins Four_MCDMA/s2mm_ch1_introut_1] [get_bd_pins versal_cips_0/pl_ps_irq3]
-  connect_bd_net -net MCDMA1_tx_tkeep [get_bd_pins Four_MCDMA/tx_tkeep1] [get_bd_pins mrmac_0_core/tx_axis_tkeep_user2]
-  connect_bd_net -net MCDMA1_tx_tlast [get_bd_pins Four_MCDMA/tx_tlast1] [get_bd_pins mrmac_0_core/tx_axis_tlast_1]
-  connect_bd_net -net MCDMA1_tx_tvalid [get_bd_pins Four_MCDMA/tx_tvalid1] [get_bd_pins mrmac_0_core/tx_axis_tvalid_1]
-  connect_bd_net -net MCDMA2_m_axis_tdata_0 [get_bd_pins Four_MCDMA/m_axis_tdata_2] [get_bd_pins mrmac_0_core/tx_axis_tdata4]
-  connect_bd_net -net MCDMA2_mm2s_ch1_introut_0 [get_bd_pins Four_MCDMA/mm2s_ch1_introut_2] [get_bd_pins versal_cips_0/pl_ps_irq4]
-  connect_bd_net -net MCDMA2_s2mm_ch1_introut_0 [get_bd_pins Four_MCDMA/s2mm_ch1_introut_2] [get_bd_pins versal_cips_0/pl_ps_irq5]
-  connect_bd_net -net MCDMA2_tx_tkeep [get_bd_pins Four_MCDMA/tx_tkeep2] [get_bd_pins mrmac_0_core/tx_axis_tkeep_user4]
-  connect_bd_net -net MCDMA2_tx_tlast [get_bd_pins Four_MCDMA/tx_tlast2] [get_bd_pins mrmac_0_core/tx_axis_tlast_2]
-  connect_bd_net -net MCDMA2_tx_tvalid [get_bd_pins Four_MCDMA/tx_tvalid2] [get_bd_pins mrmac_0_core/tx_axis_tvalid_2]
-  connect_bd_net -net MCDMA3_m_axis_tdata_0 [get_bd_pins Four_MCDMA/m_axis_tdata_3] [get_bd_pins mrmac_0_core/tx_axis_tdata6]
-  connect_bd_net -net MCDMA3_mm2s_ch1_introut_0 [get_bd_pins Four_MCDMA/mm2s_ch1_introut_3] [get_bd_pins versal_cips_0/pl_ps_irq6]
-  connect_bd_net -net MCDMA3_s2mm_ch1_introut_0 [get_bd_pins Four_MCDMA/s2mm_ch1_introut_3] [get_bd_pins versal_cips_0/pl_ps_irq7]
-  connect_bd_net -net MCDMA3_tx_tkeep [get_bd_pins Four_MCDMA/tx_tkeep3] [get_bd_pins mrmac_0_core/tx_axis_tkeep_user6]
-  connect_bd_net -net MCDMA3_tx_tlast [get_bd_pins Four_MCDMA/tx_tlast3] [get_bd_pins mrmac_0_core/tx_axis_tlast_3]
-  connect_bd_net -net MCDMA3_tx_tvalid [get_bd_pins Four_MCDMA/tx_tvalid3] [get_bd_pins mrmac_0_core/tx_axis_tvalid_3]
-  connect_bd_net -net MCDMA_m_axis_tdata_0 [get_bd_pins Four_MCDMA/m_axis_tdata_0] [get_bd_pins mrmac_0_core/tx_axis_tdata0]
-  connect_bd_net -net MCDMA_mm2s_ch1_introut_0 [get_bd_pins Four_MCDMA/mm2s_ch1_introut_0] [get_bd_pins versal_cips_0/pl_ps_irq0]
-  connect_bd_net -net MCDMA_s2mm_ch1_introut_0 [get_bd_pins Four_MCDMA/s2mm_ch1_introut_0] [get_bd_pins versal_cips_0/pl_ps_irq1]
-  connect_bd_net -net MCDMA_tx_tkeep [get_bd_pins Four_MCDMA/tx_tkeep] [get_bd_pins mrmac_0_core/tx_axis_tkeep_user0]
-  connect_bd_net -net MCDMA_tx_tlast [get_bd_pins Four_MCDMA/tx_tlast] [get_bd_pins mrmac_0_core/tx_axis_tlast_0]
-  connect_bd_net -net MCDMA_tx_tvalid [get_bd_pins Four_MCDMA/tx_tvalid] [get_bd_pins mrmac_0_core/tx_axis_tvalid_0]
-  connect_bd_net -net Net [get_bd_pins util_vector_logic_1/Res] [get_bd_pins mrmac_0_core/tx_core_reset] [get_bd_pins mrmac_0_core/tx_serdes_reset]
-  connect_bd_net -net Net1 [get_bd_pins util_vector_logic_0/Res] [get_bd_pins mrmac_0_core/rx_core_reset] [get_bd_pins mrmac_0_core/rx_serdes_reset]
+  connect_bd_net -net Four_MCDMA_tx_tkeep0 [get_bd_pins MCDMA0/tx_tkeep0] [get_bd_pins mrmac_0_core/tx_axis_tkeep_user0]
+  connect_bd_net -net Four_MCDMA_tx_tkeep1 [get_bd_pins MCDMA1/tx_tkeep1] [get_bd_pins mrmac_0_core/tx_axis_tkeep_user2]
+  connect_bd_net -net Four_MCDMA_tx_tkeep2 [get_bd_pins MCDMA2/tx_tkeep2] [get_bd_pins mrmac_0_core/tx_axis_tkeep_user4]
+  connect_bd_net -net Four_MCDMA_tx_tkeep3 [get_bd_pins MCDMA3/tx_tkeep3] [get_bd_pins mrmac_0_core/tx_axis_tkeep_user6]
+  connect_bd_net -net MCDMA1_m_axis_tdata_0 [get_bd_pins MCDMA1/m_axis_tdata_1] [get_bd_pins mrmac_0_core/tx_axis_tdata2]
+  connect_bd_net -net MCDMA1_mm2s_ch1_introut_0 [get_bd_pins MCDMA1/mm2s_ch1_introut_1] [get_bd_pins versal_cips_0/pl_ps_irq2]
+  connect_bd_net -net MCDMA1_s2mm_ch1_introut_0 [get_bd_pins MCDMA1/s2mm_ch1_introut_1] [get_bd_pins versal_cips_0/pl_ps_irq3]
+  connect_bd_net -net MCDMA1_tx_tlast [get_bd_pins MCDMA1/tx_tlast1] [get_bd_pins mrmac_0_core/tx_axis_tlast_1]
+  connect_bd_net -net MCDMA1_tx_tvalid [get_bd_pins MCDMA1/tx_tvalid1] [get_bd_pins mrmac_0_core/tx_axis_tvalid_1]
+  connect_bd_net -net MCDMA2_m_axis_tdata_0 [get_bd_pins MCDMA2/m_axis_tdata_2] [get_bd_pins mrmac_0_core/tx_axis_tdata4]
+  connect_bd_net -net MCDMA2_mm2s_ch1_introut_0 [get_bd_pins MCDMA2/mm2s_ch1_introut_2] [get_bd_pins versal_cips_0/pl_ps_irq4]
+  connect_bd_net -net MCDMA2_s2mm_ch1_introut_0 [get_bd_pins MCDMA2/s2mm_ch1_introut_2] [get_bd_pins versal_cips_0/pl_ps_irq5]
+  connect_bd_net -net MCDMA2_tx_tlast [get_bd_pins MCDMA2/tx_tlast2] [get_bd_pins mrmac_0_core/tx_axis_tlast_2]
+  connect_bd_net -net MCDMA2_tx_tvalid [get_bd_pins MCDMA2/tx_tvalid2] [get_bd_pins mrmac_0_core/tx_axis_tvalid_2]
+  connect_bd_net -net MCDMA3_m_axis_tdata_0 [get_bd_pins MCDMA3/m_axis_tdata_3] [get_bd_pins mrmac_0_core/tx_axis_tdata6]
+  connect_bd_net -net MCDMA3_mm2s_ch1_introut_0 [get_bd_pins MCDMA3/mm2s_ch1_introut_3] [get_bd_pins versal_cips_0/pl_ps_irq6]
+  connect_bd_net -net MCDMA3_s2mm_ch1_introut_0 [get_bd_pins MCDMA3/s2mm_ch1_introut_3] [get_bd_pins versal_cips_0/pl_ps_irq7]
+  connect_bd_net -net MCDMA3_tx_tlast [get_bd_pins MCDMA3/tx_tlast3] [get_bd_pins mrmac_0_core/tx_axis_tlast_3]
+  connect_bd_net -net MCDMA3_tx_tvalid [get_bd_pins MCDMA3/tx_tvalid3] [get_bd_pins mrmac_0_core/tx_axis_tvalid_3]
+  connect_bd_net -net MCDMA_m_axis_tdata_0 [get_bd_pins MCDMA0/m_axis_tdata_0] [get_bd_pins mrmac_0_core/tx_axis_tdata0]
+  connect_bd_net -net MCDMA_mm2s_ch1_introut_0 [get_bd_pins MCDMA0/mm2s_ch1_introut_0] [get_bd_pins versal_cips_0/pl_ps_irq0]
+  connect_bd_net -net MCDMA_s2mm_ch1_introut_0 [get_bd_pins MCDMA0/s2mm_ch1_introut_0] [get_bd_pins versal_cips_0/pl_ps_irq1]
+  connect_bd_net -net MCDMA_tx_tlast [get_bd_pins MCDMA0/tx_tlast] [get_bd_pins mrmac_0_core/tx_axis_tlast_0]
+  connect_bd_net -net MCDMA_tx_tvalid [get_bd_pins MCDMA0/tx_tvalid] [get_bd_pins mrmac_0_core/tx_axis_tvalid_0]
+  connect_bd_net -net Net [get_bd_pins clk_rst_wrapper/tx_reset] [get_bd_pins mrmac_0_core/tx_core_reset] [get_bd_pins mrmac_0_core/tx_serdes_reset]
+  connect_bd_net -net Net1 [get_bd_pins clk_rst_wrapper/rx_reset] [get_bd_pins mrmac_0_core/rx_core_reset] [get_bd_pins mrmac_0_core/rx_serdes_reset]
   connect_bd_net -net Net2 [get_bd_pins xlconstant_0/dout] [get_bd_pins mrmac_0_core/tx_preamblein_0] [get_bd_pins mrmac_0_core/tx_preamblein_1] [get_bd_pins mrmac_0_core/tx_preamblein_3] [get_bd_pins mrmac_0_core/tx_preamblein_2]
-  connect_bd_net -net aresetn_0_1 [get_bd_pins proc_sys_reset_0/interconnect_aresetn] [get_bd_pins mrmac_0_gt_wrapper/aresetn_0]
-  connect_bd_net -net clk_wizard_0_clk_out1 [get_bd_pins xlconcat_6/dout] [get_bd_pins mrmac_0_core/tx_axi_clk] [get_bd_pins mrmac_0_core/rx_axi_clk]
-  connect_bd_net -net clk_wizard_0_clk_out2 [get_bd_pins clk_wizard_0/clk_out1] [get_bd_pins xlconcat_6/In0] [get_bd_pins xlconcat_6/In1] [get_bd_pins xlconcat_6/In2] [get_bd_pins xlconcat_6/In3] [get_bd_pins axi_noc_0/aclk7]
+  connect_bd_net -net RX_MST_DP_RESET_0_1 [get_bd_pins usr_rdy_reset/rx_mst_dp_reset] [get_bd_pins mrmac_0_gt_wrapper/RX_MST_DP_RESET_0]
+  connect_bd_net -net TX_MST_DP_RESET_0_1 [get_bd_pins usr_rdy_reset/tx_mst_dp_reset] [get_bd_pins mrmac_0_gt_wrapper/TX_MST_DP_RESET_0]
+  connect_bd_net -net aresetn_0_1 [get_bd_pins clk_rst_wrapper/interconnect_aresetn] [get_bd_pins mrmac_0_gt_wrapper/aresetn_0]
+  connect_bd_net -net clk_rst_wrapper_bus_struct_reset [get_bd_pins clk_rst_wrapper/bus_struct_reset] [get_bd_pins mrmac_0_core/rx_flexif_reset]
+  connect_bd_net -net clk_wizard_0_clk_out1 [get_bd_pins clk_rst_wrapper/tx_rx_axi_clk] [get_bd_pins mrmac_0_core/tx_axi_clk] [get_bd_pins mrmac_0_core/rx_axi_clk]
+  connect_bd_net -net clk_wizard_0_clk_out2 [get_bd_pins clk_rst_wrapper/clk_out1] [get_bd_pins axi_noc_0/aclk7] [get_bd_pins MCDMA0/m_axis_aclk_0] [get_bd_pins MCDMA1/m_axis_aclk_0] [get_bd_pins MCDMA2/m_axis_aclk_0] [get_bd_pins MCDMA3/m_axis_aclk_0]
+  connect_bd_net -net core_reset_1 [get_bd_pins clk_rst_wrapper/peripheral_aresetn2] [get_bd_pins MCDMA0/core_reset] [get_bd_pins MCDMA1/core_reset] [get_bd_pins MCDMA2/core_reset] [get_bd_pins MCDMA3/core_reset]
   connect_bd_net -net gt_quad_base_gtpowergood [get_bd_pins mrmac_0_gt_wrapper/gtpowergood] [get_bd_pins mrmac_0_core/gtpowergood_in]
   connect_bd_net -net gt_quad_base_txn [get_bd_pins mrmac_0_gt_wrapper/gt_txn_out_0] [get_bd_ports gt_txn_out_0]
   connect_bd_net -net gt_quad_base_txp [get_bd_pins mrmac_0_gt_wrapper/gt_txp_out_0] [get_bd_ports gt_txp_out_0]
   connect_bd_net -net gt_rxn_in_0_1 [get_bd_ports gt_rxn_in_0] [get_bd_pins mrmac_0_gt_wrapper/gt_rxn_in_0]
   connect_bd_net -net gt_rxp_in_0_1 [get_bd_ports gt_rxp_in_0] [get_bd_pins mrmac_0_gt_wrapper/gt_rxp_in_0]
-  connect_bd_net -net m_axis_tready_1_1 [get_bd_pins mrmac_0_core/tx_axis_tready_0] [get_bd_pins Four_MCDMA/m_axis_tready_1]
-  connect_bd_net -net mrmac_0_core_gt_rx_reset_done_out [get_bd_pins mrmac_0_core/gt_rx_reset_done_out] [get_bd_pins util_vector_logic_0/Op1]
-  connect_bd_net -net mrmac_0_core_gt_tx_reset_done_out [get_bd_pins mrmac_0_core/gt_tx_reset_done_out] [get_bd_pins util_vector_logic_1/Op1]
-  connect_bd_net -net mrmac_0_core_mst_rx_dp_reset_out_0 [get_bd_pins mrmac_0_core/mst_rx_dp_reset_out_0] [get_bd_pins xlconcat_4/In0]
-  connect_bd_net -net mrmac_0_core_mst_rx_dp_reset_out_1 [get_bd_pins mrmac_0_core/mst_rx_dp_reset_out_1] [get_bd_pins xlconcat_4/In1]
-  connect_bd_net -net mrmac_0_core_mst_rx_dp_reset_out_2 [get_bd_pins mrmac_0_core/mst_rx_dp_reset_out_2] [get_bd_pins xlconcat_4/In2]
-  connect_bd_net -net mrmac_0_core_mst_rx_dp_reset_out_3 [get_bd_pins mrmac_0_core/mst_rx_dp_reset_out_3] [get_bd_pins xlconcat_4/In3]
-  connect_bd_net -net mrmac_0_core_mst_rx_reset_out_0 [get_bd_pins mrmac_0_core/mst_rx_reset_out_0] [get_bd_pins xlconcat_0/In0]
-  connect_bd_net -net mrmac_0_core_mst_rx_reset_out_1 [get_bd_pins mrmac_0_core/mst_rx_reset_out_1] [get_bd_pins xlconcat_0/In1]
-  connect_bd_net -net mrmac_0_core_mst_rx_reset_out_2 [get_bd_pins mrmac_0_core/mst_rx_reset_out_2] [get_bd_pins xlconcat_0/In2]
-  connect_bd_net -net mrmac_0_core_mst_rx_reset_out_3 [get_bd_pins mrmac_0_core/mst_rx_reset_out_3] [get_bd_pins xlconcat_0/In3]
-  connect_bd_net -net mrmac_0_core_mst_tx_dp_reset_out_0 [get_bd_pins mrmac_0_core/mst_tx_dp_reset_out_0] [get_bd_pins xlconcat_3/In0]
-  connect_bd_net -net mrmac_0_core_mst_tx_dp_reset_out_1 [get_bd_pins mrmac_0_core/mst_tx_dp_reset_out_1] [get_bd_pins xlconcat_3/In1]
-  connect_bd_net -net mrmac_0_core_mst_tx_dp_reset_out_2 [get_bd_pins mrmac_0_core/mst_tx_dp_reset_out_2] [get_bd_pins xlconcat_3/In2]
-  connect_bd_net -net mrmac_0_core_mst_tx_dp_reset_out_3 [get_bd_pins mrmac_0_core/mst_tx_dp_reset_out_3] [get_bd_pins xlconcat_3/In3]
-  connect_bd_net -net mrmac_0_core_mst_tx_reset_out_0 [get_bd_pins mrmac_0_core/mst_tx_reset_out_0] [get_bd_pins xlconcat_2/In0]
-  connect_bd_net -net mrmac_0_core_mst_tx_reset_out_1 [get_bd_pins mrmac_0_core/mst_tx_reset_out_1] [get_bd_pins xlconcat_2/In1]
-  connect_bd_net -net mrmac_0_core_mst_tx_reset_out_2 [get_bd_pins mrmac_0_core/mst_tx_reset_out_2] [get_bd_pins xlconcat_2/In2]
-  connect_bd_net -net mrmac_0_core_mst_tx_reset_out_3 [get_bd_pins mrmac_0_core/mst_tx_reset_out_3] [get_bd_pins xlconcat_2/In3]
-  connect_bd_net -net mrmac_0_core_rx_axis_tdata0 [get_bd_pins mrmac_0_core/rx_axis_tdata0] [get_bd_pins Four_MCDMA/s_axis_tdata_0]
-  connect_bd_net -net mrmac_0_core_rx_axis_tdata2 [get_bd_pins mrmac_0_core/rx_axis_tdata2] [get_bd_pins Four_MCDMA/s_axis_tdata_1]
-  connect_bd_net -net mrmac_0_core_rx_axis_tkeep_user0 [get_bd_pins mrmac_0_core/rx_axis_tkeep_user0] [get_bd_pins Four_MCDMA/s_axis_tkeep_0]
-  connect_bd_net -net mrmac_0_core_rx_axis_tkeep_user2 [get_bd_pins mrmac_0_core/rx_axis_tkeep_user2] [get_bd_pins Four_MCDMA/s_axis_tkeep_1]
-  connect_bd_net -net mrmac_0_core_rx_axis_tkeep_user6 [get_bd_pins mrmac_0_core/rx_axis_tkeep_user6] [get_bd_pins Four_MCDMA/s_axis_tkeep_3]
-  connect_bd_net -net mrmac_0_core_rx_axis_tlast_0 [get_bd_pins mrmac_0_core/rx_axis_tlast_0] [get_bd_pins Four_MCDMA/rx_tlast]
-  connect_bd_net -net mrmac_0_core_rx_axis_tlast_1 [get_bd_pins mrmac_0_core/rx_axis_tlast_1] [get_bd_pins Four_MCDMA/rx_axis_tlast_1]
-  connect_bd_net -net mrmac_0_core_rx_axis_tlast_2 [get_bd_pins mrmac_0_core/rx_axis_tlast_2] [get_bd_pins Four_MCDMA/rx_axis_tlast_2]
-  connect_bd_net -net mrmac_0_core_rx_axis_tlast_3 [get_bd_pins mrmac_0_core/rx_axis_tlast_3] [get_bd_pins Four_MCDMA/rx_axis_tlast_3]
-  connect_bd_net -net mrmac_0_core_rx_axis_tvalid_0 [get_bd_pins mrmac_0_core/rx_axis_tvalid_0] [get_bd_pins Four_MCDMA/rx_tvalid]
-  connect_bd_net -net mrmac_0_core_rx_axis_tvalid_1 [get_bd_pins mrmac_0_core/rx_axis_tvalid_1] [get_bd_pins Four_MCDMA/rx_axis_tvalid_1]
-  connect_bd_net -net mrmac_0_core_rx_axis_tvalid_2 [get_bd_pins mrmac_0_core/rx_axis_tvalid_2] [get_bd_pins Four_MCDMA/rx_axis_tvalid_2]
-  connect_bd_net -net mrmac_0_core_rx_axis_tvalid_3 [get_bd_pins mrmac_0_core/rx_axis_tvalid_3] [get_bd_pins Four_MCDMA/rx_axis_tvalid_3]
-  connect_bd_net -net mrmac_0_core_rxuserrdy_out_0 [get_bd_pins mrmac_0_core/rxuserrdy_out_0] [get_bd_pins xlconcat_1/In0]
-  connect_bd_net -net mrmac_0_core_rxuserrdy_out_1 [get_bd_pins mrmac_0_core/rxuserrdy_out_1] [get_bd_pins xlconcat_1/In1]
-  connect_bd_net -net mrmac_0_core_rxuserrdy_out_2 [get_bd_pins mrmac_0_core/rxuserrdy_out_2] [get_bd_pins xlconcat_1/In2]
-  connect_bd_net -net mrmac_0_core_rxuserrdy_out_3 [get_bd_pins mrmac_0_core/rxuserrdy_out_3] [get_bd_pins xlconcat_1/In3]
-  connect_bd_net -net mrmac_0_core_tx_axis_tready_1 [get_bd_pins mrmac_0_core/tx_axis_tready_1] [get_bd_pins Four_MCDMA/tx_axis_tready_1]
-  connect_bd_net -net mrmac_0_core_tx_axis_tready_2 [get_bd_pins mrmac_0_core/tx_axis_tready_2] [get_bd_pins Four_MCDMA/tx_axis_tready_2]
-  connect_bd_net -net mrmac_0_core_tx_axis_tready_3 [get_bd_pins mrmac_0_core/tx_axis_tready_3] [get_bd_pins Four_MCDMA/tx_axis_tready_3]
-  connect_bd_net -net mrmac_0_core_txuserrdy_out_0 [get_bd_pins mrmac_0_core/txuserrdy_out_0] [get_bd_pins xlconcat_5/In0]
-  connect_bd_net -net mrmac_0_core_txuserrdy_out_1 [get_bd_pins mrmac_0_core/txuserrdy_out_1] [get_bd_pins xlconcat_5/In1]
-  connect_bd_net -net mrmac_0_core_txuserrdy_out_2 [get_bd_pins mrmac_0_core/txuserrdy_out_2] [get_bd_pins xlconcat_5/In2]
-  connect_bd_net -net mrmac_0_core_txuserrdy_out_3 [get_bd_pins mrmac_0_core/txuserrdy_out_3] [get_bd_pins xlconcat_5/In3]
+  connect_bd_net -net m_axis_tready_1_1 [get_bd_pins mrmac_0_core/tx_axis_tready_0] [get_bd_pins MCDMA0/tx_axis_tready_0]
+  connect_bd_net -net mrmac_0_core_gt_rx_reset_done_out [get_bd_pins mrmac_0_core/gt_rx_reset_done_out] [get_bd_pins clk_rst_wrapper/Op1]
+  connect_bd_net -net mrmac_0_core_gt_tx_reset_done_out [get_bd_pins mrmac_0_core/gt_tx_reset_done_out] [get_bd_pins clk_rst_wrapper/Op2]
+  connect_bd_net -net mrmac_0_core_mst_rx_dp_reset_out_0 [get_bd_pins mrmac_0_core/mst_rx_dp_reset_out_0] [get_bd_pins usr_rdy_reset/mst_rx_dp_reset_in_0]
+  connect_bd_net -net mrmac_0_core_mst_rx_dp_reset_out_1 [get_bd_pins mrmac_0_core/mst_rx_dp_reset_out_1] [get_bd_pins usr_rdy_reset/mst_rx_dp_reset_in_1]
+  connect_bd_net -net mrmac_0_core_mst_rx_dp_reset_out_2 [get_bd_pins mrmac_0_core/mst_rx_dp_reset_out_2] [get_bd_pins usr_rdy_reset/mst_rx_dp_reset_in_2]
+  connect_bd_net -net mrmac_0_core_mst_rx_dp_reset_out_3 [get_bd_pins mrmac_0_core/mst_rx_dp_reset_out_3] [get_bd_pins usr_rdy_reset/mst_rx_dp_reset_in_3]
+  connect_bd_net -net mrmac_0_core_mst_rx_reset_out_0 [get_bd_pins mrmac_0_core/mst_rx_reset_out_0] [get_bd_pins usr_rdy_reset/mst_rx_reset_in_0]
+  connect_bd_net -net mrmac_0_core_mst_rx_reset_out_2 [get_bd_pins mrmac_0_core/mst_rx_reset_out_2] [get_bd_pins usr_rdy_reset/mst_rx_reset_in_2]
+  connect_bd_net -net mrmac_0_core_mst_rx_reset_out_3 [get_bd_pins mrmac_0_core/mst_rx_reset_out_3] [get_bd_pins usr_rdy_reset/mst_rx_reset_in_3]
+  connect_bd_net -net mrmac_0_core_mst_tx_dp_reset_out_0 [get_bd_pins mrmac_0_core/mst_tx_dp_reset_out_0] [get_bd_pins usr_rdy_reset/mst_tx_dp_reset_in_0]
+  connect_bd_net -net mrmac_0_core_mst_tx_dp_reset_out_1 [get_bd_pins mrmac_0_core/mst_tx_dp_reset_out_1] [get_bd_pins usr_rdy_reset/mst_tx_dp_reset_in_1]
+  connect_bd_net -net mrmac_0_core_mst_tx_dp_reset_out_2 [get_bd_pins mrmac_0_core/mst_tx_dp_reset_out_2] [get_bd_pins usr_rdy_reset/mst_tx_dp_reset_in_2]
+  connect_bd_net -net mrmac_0_core_mst_tx_dp_reset_out_3 [get_bd_pins mrmac_0_core/mst_tx_dp_reset_out_3] [get_bd_pins usr_rdy_reset/mst_tx_dp_reset_in_3]
+  connect_bd_net -net mrmac_0_core_mst_tx_reset_out_0 [get_bd_pins mrmac_0_core/mst_tx_reset_out_0] [get_bd_pins usr_rdy_reset/mst_tx_reset_in_0]
+  connect_bd_net -net mrmac_0_core_mst_tx_reset_out_1 [get_bd_pins mrmac_0_core/mst_tx_reset_out_1] [get_bd_pins usr_rdy_reset/mst_tx_reset_in_1]
+  connect_bd_net -net mrmac_0_core_mst_tx_reset_out_2 [get_bd_pins mrmac_0_core/mst_tx_reset_out_2] [get_bd_pins usr_rdy_reset/mst_tx_reset_in_2]
+  connect_bd_net -net mrmac_0_core_mst_tx_reset_out_3 [get_bd_pins mrmac_0_core/mst_tx_reset_out_3] [get_bd_pins usr_rdy_reset/mst_tx_reset_in_3]
+  connect_bd_net -net mrmac_0_core_rx_axis_tdata0 [get_bd_pins mrmac_0_core/rx_axis_tdata0] [get_bd_pins MCDMA0/s_axis_tdata_0]
+  connect_bd_net -net mrmac_0_core_rx_axis_tdata2 [get_bd_pins mrmac_0_core/rx_axis_tdata2] [get_bd_pins MCDMA1/s_axis_tdata_1]
+  connect_bd_net -net mrmac_0_core_rx_axis_tkeep_user0 [get_bd_pins mrmac_0_core/rx_axis_tkeep_user0] [get_bd_pins MCDMA0/s_axis_tkeep_0]
+  connect_bd_net -net mrmac_0_core_rx_axis_tkeep_user2 [get_bd_pins mrmac_0_core/rx_axis_tkeep_user2] [get_bd_pins MCDMA1/s_axis_tkeep_1]
+  connect_bd_net -net mrmac_0_core_rx_axis_tkeep_user6 [get_bd_pins mrmac_0_core/rx_axis_tkeep_user6] [get_bd_pins MCDMA3/s_axis_tkeep_3]
+  connect_bd_net -net mrmac_0_core_rx_axis_tlast_0 [get_bd_pins mrmac_0_core/rx_axis_tlast_0] [get_bd_pins MCDMA0/rx_tlast]
+  connect_bd_net -net mrmac_0_core_rx_axis_tlast_1 [get_bd_pins mrmac_0_core/rx_axis_tlast_1] [get_bd_pins MCDMA1/rx_axis_tlast_1]
+  connect_bd_net -net mrmac_0_core_rx_axis_tlast_2 [get_bd_pins mrmac_0_core/rx_axis_tlast_2] [get_bd_pins MCDMA2/rx_axis_tlast_2]
+  connect_bd_net -net mrmac_0_core_rx_axis_tlast_3 [get_bd_pins mrmac_0_core/rx_axis_tlast_3] [get_bd_pins MCDMA3/rx_axis_tlast_3]
+  connect_bd_net -net mrmac_0_core_rx_axis_tvalid_0 [get_bd_pins mrmac_0_core/rx_axis_tvalid_0] [get_bd_pins MCDMA0/rx_tvalid]
+  connect_bd_net -net mrmac_0_core_rx_axis_tvalid_1 [get_bd_pins mrmac_0_core/rx_axis_tvalid_1] [get_bd_pins MCDMA1/rx_axis_tvalid_1]
+  connect_bd_net -net mrmac_0_core_rx_axis_tvalid_2 [get_bd_pins mrmac_0_core/rx_axis_tvalid_2] [get_bd_pins MCDMA2/rx_axis_tvalid_2]
+  connect_bd_net -net mrmac_0_core_rx_axis_tvalid_3 [get_bd_pins mrmac_0_core/rx_axis_tvalid_3] [get_bd_pins MCDMA3/rx_axis_tvalid_3]
+  connect_bd_net -net mrmac_0_core_rxuserrdy_out_0 [get_bd_pins mrmac_0_core/rxuserrdy_out_0] [get_bd_pins usr_rdy_reset/rxuserrdy_in_0]
+  connect_bd_net -net mrmac_0_core_rxuserrdy_out_1 [get_bd_pins mrmac_0_core/rxuserrdy_out_1] [get_bd_pins usr_rdy_reset/rxuserrdy_in_1]
+  connect_bd_net -net mrmac_0_core_rxuserrdy_out_2 [get_bd_pins mrmac_0_core/rxuserrdy_out_2] [get_bd_pins usr_rdy_reset/rxuserrdy_in_2]
+  connect_bd_net -net mrmac_0_core_rxuserrdy_out_3 [get_bd_pins mrmac_0_core/rxuserrdy_out_3] [get_bd_pins usr_rdy_reset/rxuserrdy_in_3]
+  connect_bd_net -net mrmac_0_core_tx_axis_tready_1 [get_bd_pins mrmac_0_core/tx_axis_tready_1] [get_bd_pins MCDMA1/tx_axis_tready_1]
+  connect_bd_net -net mrmac_0_core_tx_axis_tready_2 [get_bd_pins mrmac_0_core/tx_axis_tready_2] [get_bd_pins MCDMA2/tx_axis_tready_2]
+  connect_bd_net -net mrmac_0_core_tx_axis_tready_3 [get_bd_pins mrmac_0_core/tx_axis_tready_3] [get_bd_pins MCDMA3/tx_axis_tready_3]
+  connect_bd_net -net mrmac_0_core_txuserrdy_out_0 [get_bd_pins mrmac_0_core/txuserrdy_out_0] [get_bd_pins usr_rdy_reset/txuserrdy_in_0]
+  connect_bd_net -net mrmac_0_core_txuserrdy_out_1 [get_bd_pins mrmac_0_core/txuserrdy_out_1] [get_bd_pins usr_rdy_reset/txuserrdy_in_1]
+  connect_bd_net -net mrmac_0_core_txuserrdy_out_2 [get_bd_pins mrmac_0_core/txuserrdy_out_2] [get_bd_pins usr_rdy_reset/txuserrdy_in_2]
+  connect_bd_net -net mrmac_0_core_txuserrdy_out_3 [get_bd_pins mrmac_0_core/txuserrdy_out_3] [get_bd_pins usr_rdy_reset/txuserrdy_in_3]
   connect_bd_net -net mrmac_0_gt_wrapper_RX_REC_CLK_out_n_0_0 [get_bd_pins mrmac_0_gt_wrapper/RX_REC_CLK_out_n_0_0] [get_bd_ports RX_REC_CLK_out_n_0_0]
   connect_bd_net -net mrmac_0_gt_wrapper_RX_REC_CLK_out_p_0_0 [get_bd_pins mrmac_0_gt_wrapper/RX_REC_CLK_out_p_0_0] [get_bd_ports RX_REC_CLK_out_p_0_0]
   connect_bd_net -net mrmac_0_gt_wrapper_ch0_rxmstresetdone_1 [get_bd_pins mrmac_0_gt_wrapper/ch0_rxmstresetdone_1] [get_bd_pins mrmac_0_core/mst_rx_resetdone_in_0]
@@ -2447,33 +2874,35 @@ proc create_root_design { parentCell } {
   connect_bd_net -net mrmac_0_gt_wrapper_ch3_rxpmaresetdone_0 [get_bd_pins mrmac_0_gt_wrapper/ch3_rxpmaresetdone_0] [get_bd_pins mrmac_0_core/rx_pma_resetdone_in_3]
   connect_bd_net -net mrmac_0_gt_wrapper_ch3_txmstresetdone_0 [get_bd_pins mrmac_0_gt_wrapper/ch3_txmstresetdone_0] [get_bd_pins mrmac_0_core/mst_tx_resetdone_in_3]
   connect_bd_net -net mrmac_0_gt_wrapper_ch3_txpmaresetdone_0 [get_bd_pins mrmac_0_gt_wrapper/ch3_txpmaresetdone_0] [get_bd_pins mrmac_0_core/tx_pma_resetdone_in_3]
-  connect_bd_net -net mrmac_0_gt_wrapper_dout_0 [get_bd_pins mrmac_0_gt_wrapper/rx_usr_clk2] [get_bd_pins mrmac_0_core/rx_alt_serdes_clk] [get_bd_pins mrmac_0_core/rx_flexif_clk]
+  connect_bd_net -net mrmac_0_gt_wrapper_dout_0 [get_bd_pins mrmac_0_gt_wrapper/rx_alt_serdes_clk_new] [get_bd_pins mrmac_0_core/rx_alt_serdes_clk] [get_bd_pins mrmac_0_core/rx_flexif_clk]
   connect_bd_net -net mrmac_0_gt_wrapper_gt_reset_all_0 [get_bd_pins mrmac_0_gt_wrapper/gt_reset_all_0] [get_bd_pins mrmac_0_core/gt_reset_all_in]
   connect_bd_net -net mrmac_0_gt_wrapper_gt_reset_rx_datapath_0 [get_bd_pins mrmac_0_gt_wrapper/gt_reset_rx_datapath_0] [get_bd_pins mrmac_0_core/gt_reset_rx_datapath_in]
   connect_bd_net -net mrmac_0_gt_wrapper_gt_reset_tx_datapath_0 [get_bd_pins mrmac_0_gt_wrapper/gt_reset_tx_datapath_0] [get_bd_pins mrmac_0_core/gt_reset_tx_datapath_in]
-  connect_bd_net -net mrmac_0_gt_wrapper_rx_usr_clk1_0 [get_bd_pins mrmac_0_gt_wrapper/rx_usr_clk1_0] [get_bd_pins mrmac_0_core/rx_core_clk] [get_bd_pins mrmac_0_core/rx_serdes_clk]
-  connect_bd_net -net mrmac_0_gt_wrapper_tx_usr_clk_0 [get_bd_pins mrmac_0_gt_wrapper/tx_usr_clk_0] [get_bd_pins mrmac_0_core/tx_core_clk]
-  connect_bd_net -net mrmac_0_gt_wrapper_tx_usr_clk_1 [get_bd_pins mrmac_0_gt_wrapper/tx_usr_clk_1] [get_bd_pins mrmac_0_core/tx_flexif_clk] [get_bd_pins mrmac_0_core/tx_alt_serdes_clk]
-  connect_bd_net -net proc_sys_reset_0_bus_struct_reset [get_bd_pins proc_sys_reset_0/bus_struct_reset] [get_bd_pins mrmac_0_core/rx_flexif_reset]
-  connect_bd_net -net rx_userrdy_in_0_1 [get_bd_pins xlconcat_5/dout] [get_bd_pins mrmac_0_gt_wrapper/rx_userrdy_in_0]
-  connect_bd_net -net s_axi_aresetn_1 [get_bd_pins proc_sys_reset_0/peripheral_aresetn] [get_bd_pins mrmac_0_core/s_axi_aresetn] [get_bd_pins smartconnect_0/aresetn] [get_bd_pins Four_MCDMA/s_axi_aresetn] [get_bd_pins mrmac_0_gt_wrapper/s_axi_aresetn]
-  connect_bd_net -net s_axis_tdata_0_1 [get_bd_pins mrmac_0_core/rx_axis_tdata4] [get_bd_pins Four_MCDMA/s_axis_tdata_2]
-  connect_bd_net -net s_axis_tdata_0_2 [get_bd_pins mrmac_0_core/rx_axis_tdata6] [get_bd_pins Four_MCDMA/s_axis_tdata_3]
-  connect_bd_net -net s_axis_tkeep_0_1 [get_bd_pins mrmac_0_core/rx_axis_tkeep_user4] [get_bd_pins Four_MCDMA/s_axis_tkeep_2]
-  connect_bd_net -net tx_userrdy_in_0_1 [get_bd_pins xlconcat_1/dout] [get_bd_pins mrmac_0_gt_wrapper/tx_userrdy_in_0]
+  connect_bd_net -net mrmac_0_gt_wrapper_rx_core_clk_serdes_clk_new [get_bd_pins mrmac_0_gt_wrapper/rx_core_clk_serdes_clk_new] [get_bd_pins mrmac_0_core/rx_core_clk] [get_bd_pins mrmac_0_core/rx_serdes_clk]
+  connect_bd_net -net mrmac_0_gt_wrapper_tx_core_clk_new [get_bd_pins mrmac_0_gt_wrapper/tx_core_clk_new] [get_bd_pins mrmac_0_core/tx_core_clk] [get_bd_pins clk_rst_wrapper/clk_in1]
+  connect_bd_net -net mrmac_0_gt_wrapper_tx_usr_clk_1 [get_bd_pins mrmac_0_gt_wrapper/tx_alt_serdes_clk_new] [get_bd_pins mrmac_0_core/tx_flexif_clk] [get_bd_pins mrmac_0_core/tx_alt_serdes_clk]
+  connect_bd_net -net mst_rx_reset_out_1 [get_bd_pins mrmac_0_core/mst_rx_reset_out_1] [get_bd_pins usr_rdy_reset/mst_rx_reset_in_1]
+  connect_bd_net -net rx_mst_reset_in_0_1 [get_bd_pins usr_rdy_reset/rx_mst_reset_out] [get_bd_pins mrmac_0_gt_wrapper/rx_mst_reset_in_0]
+  connect_bd_net -net rx_userrdy_in_0_1 [get_bd_pins usr_rdy_reset/rx_userrdy_out] [get_bd_pins mrmac_0_gt_wrapper/rx_userrdy_in_0]
+  connect_bd_net -net s_axi_aresetn_1 [get_bd_pins clk_rst_wrapper/peripheral_aresetn] [get_bd_pins mrmac_0_core/s_axi_aresetn] [get_bd_pins smartconnect_0/aresetn] [get_bd_pins mrmac_0_gt_wrapper/s_axi_aresetn] [get_bd_pins MCDMA0/s_axi_aresetn] [get_bd_pins MCDMA1/s_axi_aresetn] [get_bd_pins MCDMA2/s_axi_aresetn] [get_bd_pins MCDMA3/s_axi_aresetn] [get_bd_pins MCDMA0/axi_resetn_0] [get_bd_pins MCDMA1/axi_resetn_1] [get_bd_pins MCDMA2/axi_resetn_2] [get_bd_pins MCDMA3/axi_resetn_3]
+  connect_bd_net -net s_axis_tdata_0_1 [get_bd_pins mrmac_0_core/rx_axis_tdata4] [get_bd_pins MCDMA2/s_axis_tdata_2]
+  connect_bd_net -net s_axis_tdata_0_2 [get_bd_pins mrmac_0_core/rx_axis_tdata6] [get_bd_pins MCDMA3/s_axis_tdata_3]
+  connect_bd_net -net s_axis_tkeep_0_1 [get_bd_pins mrmac_0_core/rx_axis_tkeep_user4] [get_bd_pins MCDMA2/s_axis_tkeep_2]
+  connect_bd_net -net tx_mst_reset_in_0_1 [get_bd_pins usr_rdy_reset/tx_mst_reset_out] [get_bd_pins mrmac_0_gt_wrapper/tx_mst_reset_in_0]
+  connect_bd_net -net tx_userrdy_in_0_1 [get_bd_pins usr_rdy_reset/tx_userrdy_out_0] [get_bd_pins mrmac_0_gt_wrapper/tx_userrdy_in_0]
   connect_bd_net -net versal_cips_0_fpd_cci_noc_axi0_clk [get_bd_pins versal_cips_0/fpd_cci_noc_axi0_clk] [get_bd_pins axi_noc_0/aclk0]
   connect_bd_net -net versal_cips_0_fpd_cci_noc_axi1_clk [get_bd_pins versal_cips_0/fpd_cci_noc_axi1_clk] [get_bd_pins axi_noc_0/aclk1]
   connect_bd_net -net versal_cips_0_fpd_cci_noc_axi2_clk [get_bd_pins versal_cips_0/fpd_cci_noc_axi2_clk] [get_bd_pins axi_noc_0/aclk2]
   connect_bd_net -net versal_cips_0_fpd_cci_noc_axi3_clk [get_bd_pins versal_cips_0/fpd_cci_noc_axi3_clk] [get_bd_pins axi_noc_0/aclk3]
   connect_bd_net -net versal_cips_0_lpd_axi_noc_clk [get_bd_pins versal_cips_0/lpd_axi_noc_clk] [get_bd_pins axi_noc_0/aclk4]
-  connect_bd_net -net versal_cips_0_pl0_ref_clk [get_bd_pins versal_cips_0/pl0_ref_clk] [get_bd_pins proc_sys_reset_0/slowest_sync_clk] [get_bd_pins versal_cips_0/m_axi_fpd_aclk] [get_bd_pins mrmac_0_core/s_axi_aclk] [get_bd_pins smartconnect_0/aclk] [get_bd_pins Four_MCDMA/s_axi_aclk] [get_bd_pins axi_noc_0/aclk6] [get_bd_pins clk_wizard_0/clk_in1] [get_bd_pins mrmac_0_gt_wrapper/apb3clk_quad]
-  connect_bd_net -net versal_cips_0_pl0_resetn [get_bd_pins versal_cips_0/pl0_resetn] [get_bd_pins proc_sys_reset_0/ext_reset_in]
+  connect_bd_net -net versal_cips_0_pl0_ref_clk [get_bd_pins versal_cips_0/pl0_ref_clk] [get_bd_pins mrmac_0_core/s_axi_aclk] [get_bd_pins axi_noc_0/aclk6] [get_bd_pins mrmac_0_gt_wrapper/apb3clk_quad] [get_bd_pins versal_cips_0/m_axi_fpd_aclk] [get_bd_pins smartconnect_0/aclk] [get_bd_pins clk_rst_wrapper/slowest_sync_clk] [get_bd_pins MCDMA0/s_axi_aclk] [get_bd_pins MCDMA1/s_axi_aclk] [get_bd_pins MCDMA2/s_axi_aclk] [get_bd_pins MCDMA3/s_axi_aclk]
+  connect_bd_net -net versal_cips_0_pl0_resetn [get_bd_pins versal_cips_0/pl0_resetn] [get_bd_pins clk_rst_wrapper/ext_reset_in]
   connect_bd_net -net versal_cips_0_pmc_axi_noc_axi0_clk [get_bd_pins versal_cips_0/pmc_axi_noc_axi0_clk] [get_bd_pins axi_noc_0/aclk5]
-  connect_bd_net -net xlconcat_0_dout [get_bd_pins xlconcat_0/dout] [get_bd_pins mrmac_0_gt_wrapper/rx_mst_reset_in_0]
-  connect_bd_net -net xlconcat_2_dout [get_bd_pins xlconcat_2/dout] [get_bd_pins mrmac_0_gt_wrapper/tx_mst_reset_in_0]
-  connect_bd_net -net xlconcat_3_dout [get_bd_pins xlconcat_3/dout] [get_bd_pins mrmac_0_gt_wrapper/TX_MST_DP_RESET_0]
-  connect_bd_net -net xlconcat_4_dout [get_bd_pins xlconcat_4/dout] [get_bd_pins mrmac_0_gt_wrapper/RX_MST_DP_RESET_0]
   connect_bd_net -net xlconstant_1_dout [get_bd_pins xlconstant_1/dout] [get_bd_pins mrmac_0_core/pm_tick] [get_bd_pins mrmac_0_core/rx_ts_clk] [get_bd_pins mrmac_0_core/tx_ts_clk]
+  connect_bd_net -net xlconstant_2_dout [get_bd_pins xlconstant_2/dout] [get_bd_pins mrmac_0_core/ctl_tx_lane0_vlm_bip7_override_01] [get_bd_pins mrmac_0_core/ctl_tx_send_idle_in_0] [get_bd_pins mrmac_0_core/ctl_tx_send_lfi_in_0] [get_bd_pins mrmac_0_core/ctl_tx_send_rfi_in_0] [get_bd_pins mrmac_0_core/ctl_tx_send_idle_in_1] [get_bd_pins mrmac_0_core/ctl_tx_send_lfi_in_1] [get_bd_pins mrmac_0_core/ctl_tx_send_rfi_in_1] [get_bd_pins mrmac_0_core/ctl_tx_lane0_vlm_bip7_override_23] [get_bd_pins mrmac_0_core/ctl_tx_send_idle_in_2] [get_bd_pins mrmac_0_core/ctl_tx_send_lfi_in_2] [get_bd_pins mrmac_0_core/ctl_tx_send_rfi_in_2] [get_bd_pins mrmac_0_core/ctl_tx_send_idle_in_3] [get_bd_pins mrmac_0_core/ctl_tx_send_lfi_in_3] [get_bd_pins mrmac_0_core/ctl_tx_send_rfi_in_3]
+  connect_bd_net -net xlconstant_3_dout [get_bd_pins xlconstant_3/dout] [get_bd_pins mrmac_0_core/ctl_tx_lane0_vlm_bip7_override_value_01] [get_bd_pins mrmac_0_core/ctl_tx_lane0_vlm_bip7_override_value_23]
+  connect_bd_net -net xlconstant_4_dout [get_bd_pins xlconstant_4/dout] [get_bd_pins mrmac_0_core/tx_flex_almarker0] [get_bd_pins mrmac_0_core/tx_flex_almarker1] [get_bd_pins mrmac_0_core/tx_flex_almarker2] [get_bd_pins mrmac_0_core/tx_flex_almarker3] [get_bd_pins mrmac_0_core/tx_flex_almarker4] [get_bd_pins mrmac_0_core/tx_flex_almarker5] [get_bd_pins mrmac_0_core/tx_flex_almarker6] [get_bd_pins mrmac_0_core/tx_flex_almarker7] [get_bd_pins mrmac_0_core/tx_flex_ena_0] [get_bd_pins mrmac_0_core/tx_flex_ena_1] [get_bd_pins mrmac_0_core/tx_flex_ena_2] [get_bd_pins mrmac_0_core/tx_flex_ena_3] [get_bd_pins mrmac_0_core/rx_flex_cm_ena_0] [get_bd_pins mrmac_0_core/rx_flex_cm_ena_1] [get_bd_pins mrmac_0_core/rx_flex_cm_ena_2] [get_bd_pins mrmac_0_core/rx_flex_cm_ena_3]
+  connect_bd_net -net xlconstant_5_dout [get_bd_pins xlconstant_5/dout] [get_bd_pins mrmac_0_core/rx_flex_cm_data0] [get_bd_pins mrmac_0_core/tx_flex_data0]
 
   # Create address segments
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_0/FPD_CCI_NOC_0] [get_bd_addr_segs axi_noc_0/S00_AXI/C0_DDR_LOW0x2] -force
@@ -2491,40 +2920,30 @@ proc create_root_design { parentCell } {
   assign_bd_address -offset 0xA4080000 -range 0x00010000 -target_address_space [get_bd_addr_spaces versal_cips_0/M_AXI_FPD] [get_bd_addr_segs mrmac_0_gt_wrapper/axi_gpio_gt_rate_reset_ctl_2/S_AXI/Reg] -force
   assign_bd_address -offset 0xA4090000 -range 0x00010000 -target_address_space [get_bd_addr_spaces versal_cips_0/M_AXI_FPD] [get_bd_addr_segs mrmac_0_gt_wrapper/axi_gpio_gt_rate_reset_ctl_3/S_AXI/Reg] -force
   assign_bd_address -offset 0xA40A0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces versal_cips_0/M_AXI_FPD] [get_bd_addr_segs mrmac_0_gt_wrapper/axi_gpio_gt_reset_mask/S_AXI/Reg] -force
-  assign_bd_address -offset 0xA4020000 -range 0x00010000 -target_address_space [get_bd_addr_spaces versal_cips_0/M_AXI_FPD] [get_bd_addr_segs Four_MCDMA/axi_mcdma_0/S_AXI_LITE/Reg] -force
-  assign_bd_address -offset 0xA4030000 -range 0x00010000 -target_address_space [get_bd_addr_spaces versal_cips_0/M_AXI_FPD] [get_bd_addr_segs Four_MCDMA/axi_mcdma_1/S_AXI_LITE/Reg] -force
-  assign_bd_address -offset 0xA4040000 -range 0x00010000 -target_address_space [get_bd_addr_spaces versal_cips_0/M_AXI_FPD] [get_bd_addr_segs Four_MCDMA/axi_mcdma_2/S_AXI_LITE/Reg] -force
-  assign_bd_address -offset 0xA4050000 -range 0x00010000 -target_address_space [get_bd_addr_spaces versal_cips_0/M_AXI_FPD] [get_bd_addr_segs Four_MCDMA/axi_mcdma_3/S_AXI_LITE/Reg] -force
+  assign_bd_address -offset 0xA4040000 -range 0x00010000 -with_name SEG_axi_mcdma_0_Reg_1 -target_address_space [get_bd_addr_spaces versal_cips_0/M_AXI_FPD] [get_bd_addr_segs MCDMA0/axi_mcdma_0/S_AXI_LITE/Reg] -force
+  assign_bd_address -offset 0xA4020000 -range 0x00010000 -with_name SEG_axi_mcdma_1_Reg_1 -target_address_space [get_bd_addr_spaces versal_cips_0/M_AXI_FPD] [get_bd_addr_segs MCDMA1/axi_mcdma_0/S_AXI_LITE/Reg] -force
+  assign_bd_address -offset 0xA4030000 -range 0x00010000 -with_name SEG_axi_mcdma_2_Reg -target_address_space [get_bd_addr_spaces versal_cips_0/M_AXI_FPD] [get_bd_addr_segs MCDMA2/axi_mcdma_0/S_AXI_LITE/Reg] -force
+  assign_bd_address -offset 0xA4050000 -range 0x00010000 -with_name SEG_axi_mcdma_3_Reg -target_address_space [get_bd_addr_spaces versal_cips_0/M_AXI_FPD] [get_bd_addr_segs MCDMA3/axi_mcdma_0/S_AXI_LITE/Reg] -force
   assign_bd_address -offset 0xA4010000 -range 0x00010000 -target_address_space [get_bd_addr_spaces versal_cips_0/M_AXI_FPD] [get_bd_addr_segs mrmac_0_gt_wrapper/gt_quad_base/APB3_INTF/Reg] -force
   assign_bd_address -offset 0xA4000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces versal_cips_0/M_AXI_FPD] [get_bd_addr_segs mrmac_0_core/s_axi/Reg] -force
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_0/PMC_NOC_AXI_0] [get_bd_addr_segs axi_noc_0/S05_AXI/C0_DDR_LOW0x2] -force
   assign_bd_address -offset 0x000800000000 -range 0x000180000000 -target_address_space [get_bd_addr_spaces versal_cips_0/PMC_NOC_AXI_0] [get_bd_addr_segs axi_noc_0/S05_AXI/C0_DDR_LOW1x2] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces Four_MCDMA/axi_mcdma_0/Data_MM2S] [get_bd_addr_segs axi_noc_0/S10_AXI/C2_DDR_LOW0x2] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces Four_MCDMA/axi_mcdma_0/Data_S2MM] [get_bd_addr_segs axi_noc_0/S11_AXI/C2_DDR_LOW0x2] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces Four_MCDMA/axi_mcdma_0/Data_SG] [get_bd_addr_segs axi_noc_0/S09_AXI/C2_DDR_LOW0x2] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces Four_MCDMA/axi_mcdma_1/Data_MM2S] [get_bd_addr_segs axi_noc_0/S13_AXI/C3_DDR_LOW0x2] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces Four_MCDMA/axi_mcdma_1/Data_S2MM] [get_bd_addr_segs axi_noc_0/S14_AXI/C3_DDR_LOW0x2] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces Four_MCDMA/axi_mcdma_1/Data_SG] [get_bd_addr_segs axi_noc_0/S12_AXI/C3_DDR_LOW0x2] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces Four_MCDMA/axi_mcdma_2/Data_MM2S] [get_bd_addr_segs axi_noc_0/S07_AXI/C1_DDR_LOW0x2] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces Four_MCDMA/axi_mcdma_2/Data_S2MM] [get_bd_addr_segs axi_noc_0/S08_AXI/C1_DDR_LOW0x2] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces Four_MCDMA/axi_mcdma_2/Data_SG] [get_bd_addr_segs axi_noc_0/S06_AXI/C1_DDR_LOW0x2] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces Four_MCDMA/axi_mcdma_3/Data_MM2S] [get_bd_addr_segs axi_noc_0/S16_AXI/C2_DDR_LOW0x2] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces Four_MCDMA/axi_mcdma_3/Data_S2MM] [get_bd_addr_segs axi_noc_0/S17_AXI/C2_DDR_LOW0x2] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces Four_MCDMA/axi_mcdma_3/Data_SG] [get_bd_addr_segs axi_noc_0/S15_AXI/C2_DDR_LOW0x2] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces MCDMA0/axi_mcdma_0/Data_MM2S] [get_bd_addr_segs axi_noc_0/S07_AXI/C1_DDR_LOW0x2] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces MCDMA0/axi_mcdma_0/Data_S2MM] [get_bd_addr_segs axi_noc_0/S08_AXI/C1_DDR_LOW0x2] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces MCDMA1/axi_mcdma_0/Data_MM2S] [get_bd_addr_segs axi_noc_0/S10_AXI/C2_DDR_LOW0x2] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces MCDMA1/axi_mcdma_0/Data_S2MM] [get_bd_addr_segs axi_noc_0/S11_AXI/C2_DDR_LOW0x2] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces MCDMA2/axi_mcdma_0/Data_SG] [get_bd_addr_segs axi_noc_0/S12_AXI/C3_DDR_LOW0x2] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces MCDMA3/axi_mcdma_0/Data_MM2S] [get_bd_addr_segs axi_noc_0/S16_AXI/C2_DDR_LOW0x2] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces MCDMA3/axi_mcdma_0/Data_S2MM] [get_bd_addr_segs axi_noc_0/S17_AXI/C2_DDR_LOW0x2] -force
 
   # Exclude Address Segments
-  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces Four_MCDMA/axi_mcdma_0/Data_MM2S] [get_bd_addr_segs axi_noc_0/S10_AXI/C2_DDR_LOW1x2]
-  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces Four_MCDMA/axi_mcdma_0/Data_S2MM] [get_bd_addr_segs axi_noc_0/S11_AXI/C2_DDR_LOW1x2]
-  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces Four_MCDMA/axi_mcdma_0/Data_SG] [get_bd_addr_segs axi_noc_0/S09_AXI/C2_DDR_LOW1x2]
-  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces Four_MCDMA/axi_mcdma_1/Data_MM2S] [get_bd_addr_segs axi_noc_0/S13_AXI/C3_DDR_LOW1x2]
-  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces Four_MCDMA/axi_mcdma_1/Data_S2MM] [get_bd_addr_segs axi_noc_0/S14_AXI/C3_DDR_LOW1x2]
-  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces Four_MCDMA/axi_mcdma_1/Data_SG] [get_bd_addr_segs axi_noc_0/S12_AXI/C3_DDR_LOW1x2]
-  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces Four_MCDMA/axi_mcdma_2/Data_MM2S] [get_bd_addr_segs axi_noc_0/S07_AXI/C1_DDR_LOW1x2]
-  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces Four_MCDMA/axi_mcdma_2/Data_S2MM] [get_bd_addr_segs axi_noc_0/S08_AXI/C1_DDR_LOW1x2]
-  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces Four_MCDMA/axi_mcdma_2/Data_SG] [get_bd_addr_segs axi_noc_0/S06_AXI/C1_DDR_LOW1x2]
-  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces Four_MCDMA/axi_mcdma_3/Data_MM2S] [get_bd_addr_segs axi_noc_0/S16_AXI/C2_DDR_LOW1x2]
-  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces Four_MCDMA/axi_mcdma_3/Data_S2MM] [get_bd_addr_segs axi_noc_0/S17_AXI/C2_DDR_LOW1x2]
-  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces Four_MCDMA/axi_mcdma_3/Data_SG] [get_bd_addr_segs axi_noc_0/S15_AXI/C2_DDR_LOW1x2]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces MCDMA0/axi_mcdma_0/Data_MM2S] [get_bd_addr_segs axi_noc_0/S07_AXI/C1_DDR_LOW1x2]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces MCDMA0/axi_mcdma_0/Data_S2MM] [get_bd_addr_segs axi_noc_0/S08_AXI/C1_DDR_LOW1x2]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces MCDMA1/axi_mcdma_0/Data_MM2S] [get_bd_addr_segs axi_noc_0/S10_AXI/C2_DDR_LOW1x2]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces MCDMA1/axi_mcdma_0/Data_S2MM] [get_bd_addr_segs axi_noc_0/S11_AXI/C2_DDR_LOW1x2]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces MCDMA2/axi_mcdma_0/Data_SG] [get_bd_addr_segs axi_noc_0/S12_AXI/C3_DDR_LOW1x2]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces MCDMA3/axi_mcdma_0/Data_MM2S] [get_bd_addr_segs axi_noc_0/S16_AXI/C2_DDR_LOW1x2]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces MCDMA3/axi_mcdma_0/Data_S2MM] [get_bd_addr_segs axi_noc_0/S17_AXI/C2_DDR_LOW1x2]
 
 
   # Restore current instance

@@ -8,6 +8,7 @@
 			reg = <0x0 0xa4060000 0x0 0x40000>;
 	};
 	
+	
 	/delete-node/ gt_quad_base@a4010000;
 	/delete-node/ gpio@a4060000;
 	/delete-node/ gpio@a4070000;
@@ -17,6 +18,11 @@
 		
 };
 
+&mrmac_0_gt_wrapper_gt_quad_base{
+	status = "disabled";
+
+};
+
 &amba {
         zyxclmm_drm {
                 compatible = "xlnx,zocl-versal";
@@ -24,73 +30,84 @@
 };
 
 
-&Four_MCDMA_axi_mcdma_0{
-    compatible = "xlnx,axi-mcdma-1.1";
+&MCDMA0_axi_mcdma_0{
+    compatible = "xlnx,eth-dma";
     xlnx,addrwidth = <0x20>;
     xlnx,include-dre;
 };
 
-&Four_MCDMA_axi_mcdma_1{
-    compatible = "xlnx,axi-mcdma-1.1";
+&MCDMA1_axi_mcdma_0{
+    compatible = "xlnx,eth-dma";
     xlnx,addrwidth = <0x20>;
     xlnx,include-dre;
 };
 
-&Four_MCDMA_axi_mcdma_2{
-    compatible = "xlnx,axi-mcdma-1.1";
+&MCDMA2_axi_mcdma_0{
+    compatible = "xlnx,eth-dma";
     xlnx,addrwidth = <0x20>;
     xlnx,include-dre;
 };
 
-&Four_MCDMA_axi_mcdma_3{
-    compatible = "xlnx,axi-mcdma-1.1";
+&MCDMA3_axi_mcdma_0{
+    compatible = "xlnx,eth-dma";
     xlnx,addrwidth = <0x20>;
     xlnx,include-dre;
 };
 
 &mrmac_0_core {
-    axistream-connected = <&Four_MCDMA_axi_mcdma_2>;
-    xlnx,mrmac-rate = <25000>;
-    xlnx,num-queues = /bits/ 16 <0x1>;
-    xlnx,gtpll = <&gt_pll>;
+    axistream-connected = <&MCDMA0_axi_mcdma_0>;
+    interrupt-names = "mm2s_ch1_introut", "s2mm_ch1_introut";
+    interrupt-parent = <&gic>;
+    interrupts = <0 84 4 0 85 4>;
     local-mac-address = [00 0a 35 00 00 00];
     xlnx,channel-ids = "1";
-    xlnx,gtctrl = <&gt_ctrl_common>;
+    xlnx,num-queues = /bits/ 16 <0x1>;
     xlnx,addrwidth = <0x20>;
+    xlnx,mrmac-rate = <25000>;
+    xlnx,gtpll = <&gt_pll>;
+    xlnx,gtctrl = <&gt_ctrl_common>;
 };
 
 &mrmac_0_core_1 {
-
-    axistream-connected = <&Four_MCDMA_axi_mcdma_0>;
-    xlnx,mrmac-rate = <25000>;
-    xlnx,num-queues = /bits/ 16 <0x1>;
-    xlnx,gtpll = <&gt_pll>;
-    xlnx,channel-ids = "1";
+    axistream-connected = <&MCDMA1_axi_mcdma_0>;
+    interrupt-names = "mm2s_ch1_introut", "s2mm_ch1_introut";
+    interrupt-parent = <&gic>;
+    interrupts = <0 86 4 0 87 4>;
     local-mac-address = [00 0a 35 00 00 01];
+    xlnx,channel-ids = "1";
+    xlnx,num-queues = /bits/ 16 <0x1>;
+    xlnx,addrwidth = <0x20>;    
+    xlnx,mrmac-rate = <25000>;
+    xlnx,gtpll = <&gt_pll>;
     xlnx,gtctrl = <&gt_ctrl_common>;
-    xlnx,addrwidth = <0x20>;
 };
 
 &mrmac_0_core_2 {
-    axistream-connected = <&Four_MCDMA_axi_mcdma_1>;
-    xlnx,mrmac-rate = <25000>;
-    xlnx,num-queues = /bits/ 16 <0x1>;
-    xlnx,gtpll = <&gt_pll>;
+    axistream-connected = <&MCDMA2_axi_mcdma_0>;
+    interrupt-names = "mm2s_ch1_introut", "s2mm_ch1_introut";
+    interrupt-parent = <&gic>;
+    interrupts = <0 88 4 0 89 4>;
     local-mac-address = [00 0a 35 00 00 02];
     xlnx,channel-ids = "1";
-    xlnx,gtctrl = <&gt_ctrl_common>;
+    xlnx,num-queues = /bits/ 16 <0x1>;
     xlnx,addrwidth = <0x20>;
+    xlnx,mrmac-rate = <25000>;
+    xlnx,gtpll = <&gt_pll>;
+    xlnx,gtctrl = <&gt_ctrl_common>;    
 };
 
 &mrmac_0_core_3 {
-    axistream-connected = <&Four_MCDMA_axi_mcdma_3>;
-    xlnx,mrmac-rate = <25000>;
-    xlnx,num-queues = /bits/ 16 <0x1>;
-    xlnx,gtpll = <&gt_pll>;
-    xlnx,channel-ids = "1";
+    axistream-connected = <&MCDMA3_axi_mcdma_0>;
+    interrupt-names = "mm2s_ch1_introut", "s2mm_ch1_introut";
+    interrupt-parent = <&gic>;
+    interrupts = <0 90 4 0 91 4>;
     local-mac-address = [00 0a 35 00 00 03];
-    xlnx,gtctrl = <&gt_ctrl_common>;
+    xlnx,channel-ids = "1";
+    xlnx,num-queues = /bits/ 16 <0x1>;
     xlnx,addrwidth = <0x20>;
+    xlnx,mrmac-rate = <25000>;
+    xlnx,gtpll = <&gt_pll>;
+    xlnx,gtctrl = <&gt_ctrl_common>;
 };
 
 
