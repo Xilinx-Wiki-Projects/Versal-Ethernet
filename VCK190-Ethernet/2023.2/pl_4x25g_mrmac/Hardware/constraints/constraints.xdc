@@ -100,6 +100,16 @@ create_clock -period 3.103 -name {gt_ref_clk_p} -waveform {0.000 1.551} [get_por
 ### RX
 #
 create_clock -period 3.103 -name gt_ref_clk_p -waveform {0.000 1.551} [get_ports gt_ref_clk_p]
+
+
+### For GT Rate port 
+set_max_delay -datapath_only -from [get_pins -hierarchical -filter {NAME =~ *_i/mrmac_0_gt_wrapper/axi_gpio_gt_rate_reset_ctl_*/U0/gpio_core_1/Dual.gpio_Data_Out_reg[*]*/C}] -to [get_pins -hierarchical -filter {NAME =~ *_i/mrmac_0_gt_wrapper/gt_quad_base/inst/quad_inst/CH*_*XRATE[*]}] 9.0
+## GTWIZ APB3 IF
+set_max_delay -datapath_only -from [get_pins -hierarchical -filter {NAME =~ *_i/mrmac_0_gt_wrapper/gt_quad_base/inst/quad_inst/APB3CLK}] -to [get_pins -hierarchical -filter {NAME =~ *_i/mrmac_0_gt_wrapper/gt_axi_apb_bridge_0/U0/AXILITE_SLAVE_IF_MODULE/S_AXI_RDATA_reg[*]/D}] 9.0
+
+
+
+
 set_disable_timing -from TX_CORE_CLK[0] -to TX_AXIS_TLAST_0 [get_cells y7H2fvck190_mrmac_4x25g_i~fmrmac_0_core~finst~fi_vck190_mrmac_4x25g_mrmac_0_core_0_top~tobsfgejqac5cbvet~]
 set_disable_timing -from TX_CORE_CLK[0] -to TX_AXIS_TVALID_0 [get_cells y7H2fvck190_mrmac_4x25g_i~fmrmac_0_core~finst~fi_vck190_mrmac_4x25g_mrmac_0_core_0_top~tobsfgejqac5cbvet~]
 set_disable_timing -from TX_CORE_CLK[0] -to TX_AXIS_TREADY_0 [get_cells y7H2fvck190_mrmac_4x25g_i~fmrmac_0_core~finst~fi_vck190_mrmac_4x25g_mrmac_0_core_0_top~tobsfgejqac5cbvet~]
@@ -2426,21 +2436,21 @@ set_disable_timing -from TX_ALT_SERDES_CLK[2] -to TX_SERDES_DATA3[76] [get_cells
 set_disable_timing -from TX_ALT_SERDES_CLK[2] -to TX_SERDES_DATA3[77] [get_cells y7H2fvck190_mrmac_4x25g_i~fmrmac_0_core~finst~fi_vck190_mrmac_4x25g_mrmac_0_core_0_top~tobsfgejqac5cbvet~]
 set_disable_timing -from TX_ALT_SERDES_CLK[2] -to TX_SERDES_DATA3[78] [get_cells y7H2fvck190_mrmac_4x25g_i~fmrmac_0_core~finst~fi_vck190_mrmac_4x25g_mrmac_0_core_0_top~tobsfgejqac5cbvet~]
 set_disable_timing -from TX_ALT_SERDES_CLK[2] -to TX_SERDES_DATA3[79] [get_cells y7H2fvck190_mrmac_4x25g_i~fmrmac_0_core~finst~fi_vck190_mrmac_4x25g_mrmac_0_core_0_top~tobsfgejqac5cbvet~]
-set_false_path -from [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/clk_rst_wrapper/clk_wizard_0/inst/clock_primitive_inst/MMCME5_inst/CLKOUT0]] -to [get_clocks clk_pl_0]
-set_false_path -from [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/clk_rst_wrapper/clk_wizard_0/inst/clock_primitive_inst/MMCME5_inst/CLKOUT0]] -to [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/clk_rst_wrapper/clk_wizard_0/inst/clock_primitive_inst/MMCME5_inst/CLKOUT0]]
-set_false_path -from [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/clk_rst_wrapper/clk_wizard_0/inst/clock_primitive_inst/MMCME5_inst/CLKOUT0]] -to [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/clk_rst_wrapper/clk_wizard_0/inst/clock_primitive_inst/MMCME5_inst/CLKOUT0]]
-set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */gt_quad_base*/inst/quad_inst/CH0_TXOUTCLK}]] -to [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */inst/clock_primitive_inst/MMCME5_inst/CLKOUT0}]] 2.800
-set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */inst/clock_primitive_inst/MMCME5_inst/CLKOUT0}]] -to [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */gt_quad_base*/inst/quad_inst/CH0_TXOUTCLK}]] 2.800
-set_max_delay -datapath_only -from [get_clocks clk_pl_0] -to [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */inst/clock_primitive_inst/MMCME5_inst/CLKOUT0}]] 2.800
-set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */quad_inst/CH0_TXOUTCLK}]] -to [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */MMCME5_inst/CLKOUT0}]] 2.560
-set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */quad_inst/CH2_TXOUTCLK}]] -to [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */MMCME5_inst/CLKOUT0}]] 2.560
-set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */MMCME5_inst/CLKOUT0}]] -to [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */quad_inst/CH0_TXOUTCLK}]] 2.560
-set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */MMCME5_inst/CLKOUT0}]] -to [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */quad_inst/CH2_TXOUTCLK}]] 2.560
-set_clock_groups -name pl0_ref_clk_0 -asynchronous -group [get_clocks -of_objects [get_pins */versal_cips_0/pl0_ref_clk]]
+#set_false_path -from [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/clk_rst_wrapper/clk_wizard_0/inst/clock_primitive_inst/MMCME5_inst/CLKOUT0]] -to [get_clocks clk_pl_0]
+#set_false_path -from [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/clk_rst_wrapper/clk_wizard_0/inst/clock_primitive_inst/MMCME5_inst/CLKOUT0]] -to [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/clk_rst_wrapper/clk_wizard_0/inst/clock_primitive_inst/MMCME5_inst/CLKOUT0]]
+#set_false_path -from [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/clk_rst_wrapper/clk_wizard_0/inst/clock_primitive_inst/MMCME5_inst/CLKOUT0]] -to [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/clk_rst_wrapper/clk_wizard_0/inst/clock_primitive_inst/MMCME5_inst/CLKOUT0]]
+#set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */gt_quad_base*/inst/quad_inst/CH0_TXOUTCLK}]] -to [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */inst/clock_primitive_inst/MMCME5_inst/CLKOUT0}]] 2.800
+#set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */inst/clock_primitive_inst/MMCME5_inst/CLKOUT0}]] -to [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */gt_quad_base*/inst/quad_inst/CH0_TXOUTCLK}]] 2.800
+#set_max_delay -datapath_only -from [get_clocks clk_pl_0] -to [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */inst/clock_primitive_inst/MMCME5_inst/CLKOUT0}]] 2.800
+#set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */quad_inst/CH0_TXOUTCLK}]] -to [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */MMCME5_inst/CLKOUT0}]] 2.560
+#set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */quad_inst/CH2_TXOUTCLK}]] -to [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */MMCME5_inst/CLKOUT0}]] 2.560
+#set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */MMCME5_inst/CLKOUT0}]] -to [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */quad_inst/CH0_TXOUTCLK}]] 2.560
+#set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */MMCME5_inst/CLKOUT0}]] -to [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */quad_inst/CH2_TXOUTCLK}]] 2.560
+#set_clock_groups -name pl0_ref_clk_0 -asynchronous -group [get_clocks -of_objects [get_pins */versal_cips_0/pl0_ref_clk]]
 
 ####################################################################################
 # Constraints from file : 'xpm_cdc_async_rst.tcl'
 ####################################################################################
 
-set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/mrmac_0_gt_wrapper/gt_quad_base/inst/quad_inst/CH0_TXOUTCLK]] -to [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/mrmac_0_gt_wrapper/bufg_gt_0_tx_outclk_div2_ch1/inst/bufg_gt_usrclk_inst/O]] 2.560
-set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/mrmac_0_gt_wrapper/gt_quad_base/inst/quad_inst/CH0_TXOUTCLK]] -to [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/mrmac_0_gt_wrapper/bufg_gt_0_tx_outclk_div2_ch0/inst/bufg_gt_usrclk_inst/O]] 2.560
+#set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/mrmac_0_gt_wrapper/gt_quad_base/inst/quad_inst/CH0_TXOUTCLK]] -to [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/mrmac_0_gt_wrapper/bufg_gt_0_tx_outclk_div2_ch1/inst/bufg_gt_usrclk_inst/O]] 2.560
+#set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/mrmac_0_gt_wrapper/gt_quad_base/inst/quad_inst/CH0_TXOUTCLK]] -to [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/mrmac_0_gt_wrapper/bufg_gt_0_tx_outclk_div2_ch0/inst/bufg_gt_usrclk_inst/O]] 2.560

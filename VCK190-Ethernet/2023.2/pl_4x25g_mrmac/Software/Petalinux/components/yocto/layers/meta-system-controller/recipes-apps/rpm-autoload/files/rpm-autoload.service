@@ -1,0 +1,10 @@
+[Unit]
+Description=rpm-autoload
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/rpm-autoload.sh
+StandardOutput=journal+console
+
+[Install]
+WantedBy=multi-user.target

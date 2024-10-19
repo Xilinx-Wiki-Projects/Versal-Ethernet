@@ -1,0 +1,24 @@
+From 70f9d0afd43274b72369e20f6742b41d9c3b40eb Mon Sep 17 00:00:00 2001
+From: Sandeep Gundlupet Raju <sandeep.gundlupet-raju@amd.com>
+Date: Thu, 13 Apr 2023 11:19:49 -0600
+Subject: [PATCH] setup.cfg: use /usr/bin/env python shebang
+
+Signed-off-by: Sandeep Gundlupet Raju <sandeep.gundlupet-raju@amd.com>
+---
+ setup.cfg | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/setup.cfg b/setup.cfg
+index ef02ee65..f0e378ae 100644
+--- a/setup.cfg
++++ b/setup.cfg
+@@ -1,3 +1,6 @@
++[build]
++executable=/usr/bin/env python
++
+ [options.entry_points]
+ console_scripts =
+     spawner = controller_manager.spawner:main
+-- 
+2.34.1
+

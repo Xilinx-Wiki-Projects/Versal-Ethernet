@@ -1,0 +1,33 @@
+name: auto-backport
+
+on:
+  pull_request:
+    branches:
+      - master-next
+    types: ["closed"]
+
+jobs:  
+  cherry_pick:
+    strategy:
+      matrix:
+        branch: [kirkstone, dunfell, langdale]
+    runs-on: ubuntu-22.04
+    name: Cherry pick into release branches
+    if: |
+      (github.event.pull_request.merged == true ) &&
+      (contains(github.event.pull_request.labels.*.name, 'version-upgrade') || contains(github.event.pull_request.labels.*.name, 'auto-backport'))
+    steps:
+      - name: checkout current
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Cherry pick into ${{ matrix.branch }}-next
+        uses: carloscastrojumo/github-cherry-pick-action@v1.0.3
+        with:
+          branch: ${{ matrix.branch }}-next
+          labels: |
+            auto-created
+            backport
+            ${{ matrix.branch }}
+            auto-integrate
+          token: ${{ secrets.BOT_CREDENTIAL }}

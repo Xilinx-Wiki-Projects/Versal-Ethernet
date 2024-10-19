@@ -7,6 +7,9 @@ CONFIG_packagegroup-petalinux-jupyter
 CONFIG_pm-notebooks
 CONFIG_openamp-demo-notebooks
 CONFIG_python3-ipywidgets
-CONFIG_aie-oob
-CONFIG_aie-notebooks
 CONFIG_iperf3
+CONFIG_linuxptp
+CONFIG_ptp1stepp2pcfg
+CONFIG_ptp1stepcfg
+CONFIG_idtcm
+

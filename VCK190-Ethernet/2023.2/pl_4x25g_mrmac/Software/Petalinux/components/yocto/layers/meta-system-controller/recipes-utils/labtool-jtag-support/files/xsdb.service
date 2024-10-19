@@ -1,0 +1,11 @@
+[Unit]
+Description=Enable xsdb
+After=rpm-autoload.service
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/xsdb
+StandardOutput=journal+console
+
+[Install]
+WantedBy=multi-user.target

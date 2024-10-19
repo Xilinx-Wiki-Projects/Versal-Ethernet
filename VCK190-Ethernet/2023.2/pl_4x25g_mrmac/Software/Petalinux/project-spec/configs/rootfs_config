@@ -59,7 +59,7 @@ CONFIG_system-versal=y
 #
 # busybox 
 #
-# CONFIG_busybox is not set
+CONFIG_busybox=y
 # CONFIG_busybox-inetd is not set
 # CONFIG_busybox-dbg is not set
 # CONFIG_busybox-syslog is not set
@@ -370,7 +370,7 @@ CONFIG_mtd-utils=y
 #
 # util-linux 
 #
-# CONFIG_util-linux is not set
+CONFIG_util-linux=y
 # CONFIG_util-linux-sulogin is not set
 # CONFIG_util-linux-losetup is not set
 # CONFIG_util-linux-hwclock is not set
@@ -2105,7 +2105,7 @@ CONFIG_xrt=y
 #
 # zocl
 #
-CONFIG_zocl=y
+# CONFIG_zocl is not set
 # CONFIG_zocl-dev is not set
 # CONFIG_zocl-dbg is not set
 
@@ -3455,7 +3455,7 @@ CONFIG_bridge-utils=y
 #
 # tcpdump 
 #
-# CONFIG_tcpdump is not set
+CONFIG_tcpdump=y
 # CONFIG_tcpdump-dev is not set
 # CONFIG_tcpdump-dbg is not set
 
@@ -4065,14 +4065,15 @@ CONFIG_Init-manager-systemd=y
 #
 # user packages 
 #
-# CONFIG_aie-notebooks is not set
-CONFIG_aie-oob=y
 # CONFIG_gpio-demo is not set
+CONFIG_idtcm=y
 CONFIG_iperf3=y
 # CONFIG_openamp-demo-notebooks is not set
 # CONFIG_packagegroup-petalinux-jupyter is not set
 # CONFIG_peekpoke is not set
 # CONFIG_pm-notebooks is not set
+# CONFIG_ptp1stepcfg is not set
+# CONFIG_ptp1stepp2pcfg is not set
 # CONFIG_python3-ipywidgets is not set
 
 #

@@ -1,0 +1,37 @@
+name: auto approve and enable auto-merge
+
+on:
+  pull_request:
+    types: [review_requested]
+    branches:
+      - '*-next'
+      
+jobs:  
+  auto-approve-and-merge:
+    runs-on: ubuntu-latest
+    name: auto approve and enable auto-merge     
+    steps:
+      - name: Sleep for 5 min (give PR time to create labels)
+        run: sleep 5m
+        shell: bash
+        
+      - name: check label after delay
+        uses: docker://agilepathway/pull-request-label-checker:latest
+        with:
+          any_of: auto-integrate,version-upgrade
+          repo_token: ${{ secrets.BOT2_CREDENTIAL }}
+          
+      - name: Auto approve
+        uses: juliangruber/approve-pull-request-action@v2.0.1
+        with:
+          github-token: ${{ secrets.BOT2_CREDENTIAL }}
+          number: ${{ github.event.pull_request.number }}
+
+      - name: Enable Pull Request Automerge
+        uses: peter-evans/enable-pull-request-automerge@v2.2.0
+        with:
+          token: ${{ secrets.BOT2_CREDENTIAL }}
+          pull-request-number: ${{ github.event.pull_request.number }}
+          merge-method: rebase
+
+

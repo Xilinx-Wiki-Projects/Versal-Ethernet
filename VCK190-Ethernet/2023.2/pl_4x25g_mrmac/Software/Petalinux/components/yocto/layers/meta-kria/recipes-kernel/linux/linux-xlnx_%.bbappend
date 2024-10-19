@@ -1,0 +1,1 @@
+KERNEL_MODULE_AUTOLOAD:kria += "usb5744"

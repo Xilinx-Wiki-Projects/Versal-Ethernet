@@ -1,0 +1,11 @@
+DESCRIPTION = "PetaLinux self hosted tools packages"
+
+inherit packagegroup features_check
+REQUIRED_DISTRO_FEATURES = "x11 opengl"
+
+SELF_HOSTED_PACKAGES = " \
+	packagegroup-self-hosted \
+	vim \
+	"
+
+RDEPENDS:${PN} = "${SELF_HOSTED_PACKAGES}"
