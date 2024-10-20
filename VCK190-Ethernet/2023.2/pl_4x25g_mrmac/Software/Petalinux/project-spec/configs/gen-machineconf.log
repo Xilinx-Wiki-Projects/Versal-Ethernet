@@ -1,7 +1,7 @@
 [DEBUG] Using xsct from : /proj/gsd/petalinux/2023.2/tools/xsct/bin/xsct
 [DEBUG] Using conf/mconf from : /proj/gsd/petalinux/2023.2/components/yocto/buildtools_extended/sysroots/x86_64-petalinux-linux/usr/bin/mconf
 [INFO] Silentconfig project
-[DEBUG] Running CMD: yes "" | env KCONFIG_CONFIG=/group/techsup/ajayad/GitHubRepo/Versal-Ethernet/VCK190-Ethernet/2023.2/pl_4x25g_mrmac/Software/xilinx-vck190-trd/project-spec/configs/config conf /group/techsup/ajayad/GitHubRepo/Versal-Ethernet/VCK190-Ethernet/2023.2/pl_4x25g_mrmac/Software/xilinx-vck190-trd/project-spec/configs/configs/Kconfig
+[DEBUG] Running CMD: yes "" | env KCONFIG_CONFIG=/group/techsup/ajayad/GitHubRepo/Versal-Ethernet/VCK190-Ethernet/2023.2/pl_4x25g_mrmac/Software/Petalinux/project-spec/configs/config conf /group/techsup/ajayad/GitHubRepo/Versal-Ethernet/VCK190-Ethernet/2023.2/pl_4x25g_mrmac/Software/Petalinux/project-spec/configs/configs/Kconfig
 [DEBUG] *
 * PetaLinux System Configuration
 *
@@ -270,10 +270,10 @@ Enable Buildtools Extended (YOCTO_BUILDTOOLS_EXTENDED) [Y/n/?]
 user layer 0 (USER_LAYER_0) [${PROOT}/project-spec/meta-vck190-trd] 
   user layer 1 (USER_LAYER_1) [] 
 #
-# configuration written to /group/techsup/ajayad/GitHubRepo/Versal-Ethernet/VCK190-Ethernet/2023.2/pl_4x25g_mrmac/Software/xilinx-vck190-trd/project-spec/configs/config
+# configuration written to /group/techsup/ajayad/GitHubRepo/Versal-Ethernet/VCK190-Ethernet/2023.2/pl_4x25g_mrmac/Software/Petalinux/project-spec/configs/config
 #
 [INFO] Silentconfig rootfs
-[DEBUG] Running CMD: yes "" | env KCONFIG_CONFIG=/group/techsup/ajayad/GitHubRepo/Versal-Ethernet/VCK190-Ethernet/2023.2/pl_4x25g_mrmac/Software/xilinx-vck190-trd/project-spec/configs/rootfs_config conf /group/techsup/ajayad/GitHubRepo/Versal-Ethernet/VCK190-Ethernet/2023.2/pl_4x25g_mrmac/Software/xilinx-vck190-trd/project-spec/configs/rootfsconfigs/Kconfig
+[DEBUG] Running CMD: yes "" | env KCONFIG_CONFIG=/group/techsup/ajayad/GitHubRepo/Versal-Ethernet/VCK190-Ethernet/2023.2/pl_4x25g_mrmac/Software/Petalinux/project-spec/configs/rootfs_config conf /group/techsup/ajayad/GitHubRepo/Versal-Ethernet/VCK190-Ethernet/2023.2/pl_4x25g_mrmac/Software/Petalinux/project-spec/configs/rootfsconfigs/Kconfig
 [DEBUG] *
 * Configuration
 *
@@ -3823,5 +3823,6 @@ Create new Groups (CREATE_NEW_GROUPS) [aie;]
 Add Users to Groups (ADD_USERS_TO_GROUPS) [petalinux:audio,video,aie,input;] 
 Add Users to Sudo users (ADD_USERS_TO_SUDOERS) [petalinux] 
 #
-# configuration written to /group/techsup/ajayad/GitHubRepo/Versal-Ethernet/VCK190-Ethernet/2023.2/pl_4x25g_mrmac/Software/xilinx-vck190-trd/project-spec/configs/rootfs_config
+# configuration written to /group/techsup/ajayad/GitHubRepo/Versal-Ethernet/VCK190-Ethernet/2023.2/pl_4x25g_mrmac/Software/Petalinux/project-spec/configs/rootfs_config
 #
+[INFO] Adding user layers

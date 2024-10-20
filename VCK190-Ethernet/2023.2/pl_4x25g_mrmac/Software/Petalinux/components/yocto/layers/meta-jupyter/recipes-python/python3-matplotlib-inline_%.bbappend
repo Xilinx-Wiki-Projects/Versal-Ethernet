@@ -1,1 +1,0 @@
-inherit python_setuptools_build_meta

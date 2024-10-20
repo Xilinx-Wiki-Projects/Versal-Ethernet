@@ -1,7 +1,0 @@
-#!/bin/bash
-
-rm -f results.log
-
-find tests -executable -type f -exec {} \; >> results.log
-
-sed  -e '/OK/ s/^/PASS: / ; /FAILED/ s/^/FAIL: /' results.log
