@@ -53,6 +53,10 @@ if { $list_projs eq "" } {
    set_property BOARD_PART xilinx.com:vck190:part0:3.2 [current_project]
 }
 
+file mkdir ../Hardware/vck190_mrmac_4x25g_hw/vck190_mrmac_4x25g.ipdefs/ 
+file copy -force ../Hardware/MRMAC_AXI_MUX_V1_1 ../Hardware/vck190_mrmac_4x25g_hw/vck190_mrmac_4x25g.ipdefs/ 
+set_property  ip_repo_paths ../Hardware/vck190_mrmac_4x25g_hw/vck190_mrmac_4x25g.ipdefs/ [current_project]
+update_ip_catalog
 
 # CHANGE DESIGN NAME HERE
 variable design_name
