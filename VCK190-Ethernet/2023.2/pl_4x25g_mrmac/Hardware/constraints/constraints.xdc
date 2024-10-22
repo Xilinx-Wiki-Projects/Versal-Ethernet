@@ -36,7 +36,6 @@ set_property PACKAGE_PIN AD10 [get_ports gt_ref_clk_n]
 ####################################################################################
 #create_clock -period 6.400 -name {gt_refclk_p} -waveform {0.000 3.200} [get_ports {gt_refclk_p}]
 #create_clock -period 3.103 -name {CLK_IN_D_clk_p[0]} -waveform {0.000 1.551} [get_ports {CLK_IN_D_clk_p[0]}]
-create_clock -period 3.103 -name {gt_ref_clk_p} -waveform {0.000 1.551} [get_ports {gt_ref_clk_p}]
 
 
 
@@ -47,6 +46,9 @@ create_clock -period 3.103 -name {gt_ref_clk_p} -waveform {0.000 1.551} [get_por
 ## GTWIZ APB3 IF
 
 ### For 1588 Static config reg
+
+### timer syncer ip
+#ptp
 
 
 #set_max_delay -datapath_only -from [get_pins -hierarchical -filter {NAME =~ */MRMAC_1588_HELPER_HIER/mrmac_1588_support_ch*/axis_clock_converter_tx_*/inst/gen_async_conv.axisc_async_clock_converter_0/xpm_fifo_async_inst/gnuram_async_fifo.xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst/gen_rd_b.gen_doutb_pipe.doutb_pipe_reg[0][*]/C}] -to [get_pins -hierarchical -filter {NAME =~ *mrmac_subsys_i/mrmac_0_core/inst/i_mrmac_subsys_mrmac_0_core_0_top/*/TX_PTP_1588OP_IN_*[*]}] 2.6
@@ -99,17 +101,37 @@ create_clock -period 3.103 -name {gt_ref_clk_p} -waveform {0.000 1.551} [get_por
 #PG314
 ### RX
 #
-create_clock -period 3.103 -name gt_ref_clk_p -waveform {0.000 1.551} [get_ports gt_ref_clk_p]
 
 
-### For GT Rate port 
-set_max_delay -datapath_only -from [get_pins -hierarchical -filter {NAME =~ *_i/mrmac_0_gt_wrapper/axi_gpio_gt_rate_reset_ctl_*/U0/gpio_core_1/Dual.gpio_Data_Out_reg[*]*/C}] -to [get_pins -hierarchical -filter {NAME =~ *_i/mrmac_0_gt_wrapper/gt_quad_base/inst/quad_inst/CH*_*XRATE[*]}] 9.0
+### For GT Rate port
 ## GTWIZ APB3 IF
-set_max_delay -datapath_only -from [get_pins -hierarchical -filter {NAME =~ *_i/mrmac_0_gt_wrapper/gt_quad_base/inst/quad_inst/APB3CLK}] -to [get_pins -hierarchical -filter {NAME =~ *_i/mrmac_0_gt_wrapper/gt_axi_apb_bridge_0/U0/AXILITE_SLAVE_IF_MODULE/S_AXI_RDATA_reg[*]/D}] 9.0
 
 
 
 
+set_false_path -from [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/clk_rst_wrapper/clk_wizard_0/inst/clock_primitive_inst/MMCME5_inst/CLKOUT0]] -to [get_clocks clk_pl_0]
+set_false_path -from [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/clk_rst_wrapper/clk_wizard_0/inst/clock_primitive_inst/MMCME5_inst/CLKOUT0]] -to [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/clk_rst_wrapper/clk_wizard_0/inst/clock_primitive_inst/MMCME5_inst/CLKOUT0]]
+set_false_path -from [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/clk_rst_wrapper/clk_wizard_0/inst/clock_primitive_inst/MMCME5_inst/CLKOUT0]] -to [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/clk_rst_wrapper/clk_wizard_0/inst/clock_primitive_inst/MMCME5_inst/CLKOUT0]]
+set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */gt_quad_base*/inst/quad_inst/CH0_TXOUTCLK}]] -to [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */inst/clock_primitive_inst/MMCME5_inst/CLKOUT0}]] 2.800
+set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */inst/clock_primitive_inst/MMCME5_inst/CLKOUT0}]] -to [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */gt_quad_base*/inst/quad_inst/CH0_TXOUTCLK}]] 2.800
+set_max_delay -datapath_only -from [get_clocks clk_pl_0] -to [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */inst/clock_primitive_inst/MMCME5_inst/CLKOUT0}]] 2.800
+set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */quad_inst/CH0_TXOUTCLK}]] -to [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */MMCME5_inst/CLKOUT0}]] 2.560
+set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */quad_inst/CH2_TXOUTCLK}]] -to [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */MMCME5_inst/CLKOUT0}]] 2.560
+set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */MMCME5_inst/CLKOUT0}]] -to [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */quad_inst/CH0_TXOUTCLK}]] 2.560
+set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */MMCME5_inst/CLKOUT0}]] -to [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */quad_inst/CH2_TXOUTCLK}]] 2.560
+#set_clock_groups -name pl0_ref_clk_0 -asynchronous -group [get_clocks -of_objects [get_pins */versal_cips_0/pl0_ref_clk]]
+
+####################################################################################
+# Constraints from file : 'xpm_cdc_async_rst.tcl'
+####################################################################################
+
+set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/mrmac_0_gt_wrapper/gt_quad_base/inst/quad_inst/CH0_TXOUTCLK]] -to [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/mrmac_0_gt_wrapper/bufg_gt_0_tx_outclk_div2_ch1/inst/bufg_gt_usrclk_inst/O]] 2.560
+#set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/mrmac_0_gt_wrapper/gt_quad_base/inst/quad_inst/CH0_TXOUTCLK]] -to [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/mrmac_0_gt_wrapper/bufg_gt_0_tx_outclk_div2_ch0/inst/bufg_gt_usrclk_inst/O]] 2.560
+
+create_clock -period 3.103 -name gt_ref_clk_p -waveform {0.000 1.551} [get_ports gt_ref_clk_p]
+create_clock -period 3.103 -name gt_ref_clk_p -waveform {0.000 1.551} [get_ports gt_ref_clk_p]
+set_max_delay -datapath_only -from [get_pins -hierarchical -filter {NAME =~ *_i/mrmac_0_gt_wrapper/axi_gpio_gt_rate_reset_ctl_*/U0/gpio_core_1/Dual.gpio_Data_Out_reg[*]*/C}] -to [get_pins -hierarchical -filter {NAME =~ *_i/mrmac_0_gt_wrapper/gt_quad_base/inst/quad_inst/CH*_*XRATE[*]}] 9.000
+set_max_delay -datapath_only -from [get_pins -hierarchical -filter {NAME =~ *_i/mrmac_0_gt_wrapper/gt_quad_base/inst/quad_inst/APB3CLK}] -to [get_pins -hierarchical -filter {NAME =~ *_i/mrmac_0_gt_wrapper/gt_axi_apb_bridge_0/U0/AXILITE_SLAVE_IF_MODULE/S_AXI_RDATA_reg[*]/D}] 9.000
 set_disable_timing -from TX_CORE_CLK[0] -to TX_AXIS_TLAST_0 [get_cells y7H2fvck190_mrmac_4x25g_i~fmrmac_0_core~finst~fi_vck190_mrmac_4x25g_mrmac_0_core_0_top~tobsfgejqac5cbvet~]
 set_disable_timing -from TX_CORE_CLK[0] -to TX_AXIS_TVALID_0 [get_cells y7H2fvck190_mrmac_4x25g_i~fmrmac_0_core~finst~fi_vck190_mrmac_4x25g_mrmac_0_core_0_top~tobsfgejqac5cbvet~]
 set_disable_timing -from TX_CORE_CLK[0] -to TX_AXIS_TREADY_0 [get_cells y7H2fvck190_mrmac_4x25g_i~fmrmac_0_core~finst~fi_vck190_mrmac_4x25g_mrmac_0_core_0_top~tobsfgejqac5cbvet~]
@@ -2436,21 +2458,108 @@ set_disable_timing -from TX_ALT_SERDES_CLK[2] -to TX_SERDES_DATA3[76] [get_cells
 set_disable_timing -from TX_ALT_SERDES_CLK[2] -to TX_SERDES_DATA3[77] [get_cells y7H2fvck190_mrmac_4x25g_i~fmrmac_0_core~finst~fi_vck190_mrmac_4x25g_mrmac_0_core_0_top~tobsfgejqac5cbvet~]
 set_disable_timing -from TX_ALT_SERDES_CLK[2] -to TX_SERDES_DATA3[78] [get_cells y7H2fvck190_mrmac_4x25g_i~fmrmac_0_core~finst~fi_vck190_mrmac_4x25g_mrmac_0_core_0_top~tobsfgejqac5cbvet~]
 set_disable_timing -from TX_ALT_SERDES_CLK[2] -to TX_SERDES_DATA3[79] [get_cells y7H2fvck190_mrmac_4x25g_i~fmrmac_0_core~finst~fi_vck190_mrmac_4x25g_mrmac_0_core_0_top~tobsfgejqac5cbvet~]
-#set_false_path -from [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/clk_rst_wrapper/clk_wizard_0/inst/clock_primitive_inst/MMCME5_inst/CLKOUT0]] -to [get_clocks clk_pl_0]
-#set_false_path -from [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/clk_rst_wrapper/clk_wizard_0/inst/clock_primitive_inst/MMCME5_inst/CLKOUT0]] -to [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/clk_rst_wrapper/clk_wizard_0/inst/clock_primitive_inst/MMCME5_inst/CLKOUT0]]
-#set_false_path -from [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/clk_rst_wrapper/clk_wizard_0/inst/clock_primitive_inst/MMCME5_inst/CLKOUT0]] -to [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/clk_rst_wrapper/clk_wizard_0/inst/clock_primitive_inst/MMCME5_inst/CLKOUT0]]
-#set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */gt_quad_base*/inst/quad_inst/CH0_TXOUTCLK}]] -to [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */inst/clock_primitive_inst/MMCME5_inst/CLKOUT0}]] 2.800
-#set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */inst/clock_primitive_inst/MMCME5_inst/CLKOUT0}]] -to [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */gt_quad_base*/inst/quad_inst/CH0_TXOUTCLK}]] 2.800
-#set_max_delay -datapath_only -from [get_clocks clk_pl_0] -to [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */inst/clock_primitive_inst/MMCME5_inst/CLKOUT0}]] 2.800
-#set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */quad_inst/CH0_TXOUTCLK}]] -to [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */MMCME5_inst/CLKOUT0}]] 2.560
-#set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */quad_inst/CH2_TXOUTCLK}]] -to [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */MMCME5_inst/CLKOUT0}]] 2.560
-#set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */MMCME5_inst/CLKOUT0}]] -to [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */quad_inst/CH0_TXOUTCLK}]] 2.560
-#set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */MMCME5_inst/CLKOUT0}]] -to [get_clocks -of_objects [get_pins -hierarchical -filter {NAME =~ */quad_inst/CH2_TXOUTCLK}]] 2.560
-#set_clock_groups -name pl0_ref_clk_0 -asynchronous -group [get_clocks -of_objects [get_pins */versal_cips_0/pl0_ref_clk]]
 
 ####################################################################################
 # Constraints from file : 'xpm_cdc_async_rst.tcl'
 ####################################################################################
 
-#set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/mrmac_0_gt_wrapper/gt_quad_base/inst/quad_inst/CH0_TXOUTCLK]] -to [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/mrmac_0_gt_wrapper/bufg_gt_0_tx_outclk_div2_ch1/inst/bufg_gt_usrclk_inst/O]] 2.560
-#set_max_delay -datapath_only -from [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/mrmac_0_gt_wrapper/gt_quad_base/inst/quad_inst/CH0_TXOUTCLK]] -to [get_clocks -of_objects [get_pins vck190_mrmac_4x25g_i/mrmac_0_gt_wrapper/bufg_gt_0_tx_outclk_div2_ch0/inst/bufg_gt_usrclk_inst/O]] 2.560
+current_instance vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst
+set_property LOC DDRMC_X1Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/u_ddrmc_main}]
+set_property LOC DDRMC_RIU_X1Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/u_ddrmc_riu}]
+set_property LOC XPLL_X6Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/u_xpll0_bank0}]
+set_property LOC XPLL_X8Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/u_xpll0_bank1}]
+set_property LOC XPLL_X10Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/u_xpll0_bank2}]
+set_property LOC XPHY_X27Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST0/NIBBLE[0].UNISIM.I_XPHY}]
+set_property LOC XPHY_X28Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST0/NIBBLE[1].UNISIM.I_XPHY}]
+set_property LOC XPHY_X29Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST0/NIBBLE[2].UNISIM.I_XPHY}]
+set_property LOC XPHY_X30Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST0/NIBBLE[3].UNISIM.I_XPHY}]
+set_property LOC XPHY_X32Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST0/NIBBLE[4].UNISIM.I_XPHY}]
+set_property LOC XPHY_X33Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST0/NIBBLE[5].UNISIM.I_XPHY}]
+set_property LOC XPHY_X34Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST0/NIBBLE[6].UNISIM.I_XPHY}]
+set_property LOC XPHY_X35Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST0/NIBBLE[7].UNISIM.I_XPHY}]
+set_property LOC XPHY_X36Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/NIBBLE[0].UNISIM.I_XPHY}]
+set_property LOC XPHY_X37Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/NIBBLE[1].UNISIM.I_XPHY}]
+set_property LOC XPHY_X38Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/NIBBLE[2].UNISIM.I_XPHY}]
+set_property LOC XPHY_X39Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/NIBBLE[3].UNISIM.I_XPHY}]
+set_property LOC XPHY_X41Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/NIBBLE[4].UNISIM.I_XPHY}]
+set_property LOC XPHY_X42Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/NIBBLE[5].UNISIM.I_XPHY}]
+set_property LOC XPHY_X43Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/NIBBLE[6].UNISIM.I_XPHY}]
+set_property LOC XPHY_X44Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/NIBBLE[7].UNISIM.I_XPHY}]
+set_property LOC XPHY_X45Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST2/NIBBLE[0].UNISIM.I_XPHY}]
+set_property LOC XPHY_X46Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST2/NIBBLE[1].UNISIM.I_XPHY}]
+set_property LOC XPHY_X47Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST2/NIBBLE[2].UNISIM.I_XPHY}]
+set_property LOC XPHY_X48Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST2/NIBBLE[3].UNISIM.I_XPHY}]
+set_property LOC XPHY_X50Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST2/NIBBLE[4].UNISIM.I_XPHY}]
+set_property LOC XPHY_X51Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST2/NIBBLE[5].UNISIM.I_XPHY}]
+set_property LOC XPHY_X52Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST2/NIBBLE[6].UNISIM.I_XPHY}]
+set_property LOC XPHY_X53Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST2/NIBBLE[7].UNISIM.I_XPHY}]
+set_property LOC XPIO_VREF_X27Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST0/IO_VREF[0].I_VREF}]
+set_property LOC XPIO_VREF_X28Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST0/IO_VREF[1].I_VREF}]
+set_property LOC XPIO_VREF_X32Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST0/IO_VREF[4].I_VREF}]
+set_property LOC XPIO_VREF_X33Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST0/IO_VREF[5].I_VREF}]
+set_property LOC XPIO_VREF_X36Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/IO_VREF[0].I_VREF}]
+set_property LOC XPIO_VREF_X37Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/IO_VREF[1].I_VREF}]
+set_property LOC XPIO_VREF_X38Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/IO_VREF[2].I_VREF}]
+set_property LOC XPIO_VREF_X39Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/IO_VREF[3].I_VREF}]
+set_property LOC XPIO_VREF_X41Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/IO_VREF[4].I_VREF}]
+set_property LOC XPIO_VREF_X42Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/IO_VREF[5].I_VREF}]
+set_property LOC XPIO_VREF_X43Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/IO_VREF[6].I_VREF}]
+set_property LOC XPIO_VREF_X44Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/IO_VREF[7].I_VREF}]
+set_property LOC XPIO_VREF_X50Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST2/IO_VREF[4].I_VREF}]
+set_property LOC XPIO_VREF_X51Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST2/IO_VREF[5].I_VREF}]
+set_property LOC XPIO_VREF_X52Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST2/IO_VREF[6].I_VREF}]
+set_property LOC XPIO_VREF_X53Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC1_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST2/IO_VREF[7].I_VREF}]
+current_instance -quiet
+current_instance vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst
+set_property LOC DDRMC_X3Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/u_ddrmc_main}]
+set_property LOC DDRMC_RIU_X3Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/u_ddrmc_riu}]
+set_property LOC XPLL_X18Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/u_xpll0_bank0}]
+set_property LOC XPLL_X20Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/u_xpll0_bank1}]
+set_property LOC XPLL_X22Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/u_xpll0_bank2}]
+set_property LOC XPHY_X100Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST2/NIBBLE[1].UNISIM.I_XPHY}]
+set_property LOC XPHY_X101Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST2/NIBBLE[2].UNISIM.I_XPHY}]
+set_property LOC XPHY_X102Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST2/NIBBLE[3].UNISIM.I_XPHY}]
+set_property LOC XPHY_X104Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST2/NIBBLE[4].UNISIM.I_XPHY}]
+set_property LOC XPHY_X105Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST2/NIBBLE[5].UNISIM.I_XPHY}]
+set_property LOC XPHY_X106Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST2/NIBBLE[6].UNISIM.I_XPHY}]
+set_property LOC XPHY_X107Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST2/NIBBLE[7].UNISIM.I_XPHY}]
+set_property LOC XPHY_X81Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST0/NIBBLE[0].UNISIM.I_XPHY}]
+set_property LOC XPHY_X82Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST0/NIBBLE[1].UNISIM.I_XPHY}]
+set_property LOC XPHY_X83Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST0/NIBBLE[2].UNISIM.I_XPHY}]
+set_property LOC XPHY_X84Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST0/NIBBLE[3].UNISIM.I_XPHY}]
+set_property LOC XPHY_X86Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST0/NIBBLE[4].UNISIM.I_XPHY}]
+set_property LOC XPHY_X87Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST0/NIBBLE[5].UNISIM.I_XPHY}]
+set_property LOC XPHY_X88Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST0/NIBBLE[6].UNISIM.I_XPHY}]
+set_property LOC XPHY_X89Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST0/NIBBLE[7].UNISIM.I_XPHY}]
+set_property LOC XPHY_X90Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/NIBBLE[0].UNISIM.I_XPHY}]
+set_property LOC XPHY_X91Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/NIBBLE[1].UNISIM.I_XPHY}]
+set_property LOC XPHY_X92Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/NIBBLE[2].UNISIM.I_XPHY}]
+set_property LOC XPHY_X93Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/NIBBLE[3].UNISIM.I_XPHY}]
+set_property LOC XPHY_X95Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/NIBBLE[4].UNISIM.I_XPHY}]
+set_property LOC XPHY_X96Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/NIBBLE[5].UNISIM.I_XPHY}]
+set_property LOC XPHY_X97Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/NIBBLE[6].UNISIM.I_XPHY}]
+set_property LOC XPHY_X98Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/NIBBLE[7].UNISIM.I_XPHY}]
+set_property LOC XPHY_X99Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST2/NIBBLE[0].UNISIM.I_XPHY}]
+set_property LOC XPIO_VREF_X104Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST2/IO_VREF[4].I_VREF}]
+set_property LOC XPIO_VREF_X105Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST2/IO_VREF[5].I_VREF}]
+set_property LOC XPIO_VREF_X106Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST2/IO_VREF[6].I_VREF}]
+set_property LOC XPIO_VREF_X107Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST2/IO_VREF[7].I_VREF}]
+set_property LOC XPIO_VREF_X81Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST0/IO_VREF[0].I_VREF}]
+set_property LOC XPIO_VREF_X82Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST0/IO_VREF[1].I_VREF}]
+set_property LOC XPIO_VREF_X86Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST0/IO_VREF[4].I_VREF}]
+set_property LOC XPIO_VREF_X87Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST0/IO_VREF[5].I_VREF}]
+set_property LOC XPIO_VREF_X90Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/IO_VREF[0].I_VREF}]
+set_property LOC XPIO_VREF_X91Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/IO_VREF[1].I_VREF}]
+set_property LOC XPIO_VREF_X92Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/IO_VREF[2].I_VREF}]
+set_property LOC XPIO_VREF_X93Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/IO_VREF[3].I_VREF}]
+set_property LOC XPIO_VREF_X95Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/IO_VREF[4].I_VREF}]
+set_property LOC XPIO_VREF_X96Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/IO_VREF[5].I_VREF}]
+set_property LOC XPIO_VREF_X97Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/IO_VREF[6].I_VREF}]
+set_property LOC XPIO_VREF_X98Y0 [get_cells -hier -filter {NAME =~ vck190_mrmac_4x25g_i/axi_noc_0/inst/MC0_ddrc/inst/noc_ddr4_phy/inst/BANK_WRAPPER_INST1/IO_VREF[7].I_VREF}]
+current_instance -quiet
+set_max_delay -datapath_only -from [get_pins vck190_mrmac_4x25g_i/MCDMA0/axis_data_fifo_1/inst/gen_fifo.xpm_fifo_axis_inst/xpm_fifo_base_inst/gen_pntr_flags_cc.gen_full_rst_val.ram_full_n_reg/C] -to [get_pins {vck190_mrmac_4x25g_i/MCDMA0/axis_data_fifo_3/inst/gen_fifo.xpm_fifo_axis_inst/gaxis_pkt_fifo_cc.axis_pkt_cnt_reg[19]/D}] 4.000
+set_max_delay -datapath_only -from [get_pins vck190_mrmac_4x25g_i/MCDMA1/axis_data_fifo_1/inst/gen_fifo.xpm_fifo_axis_inst/xpm_fifo_base_inst/gen_pntr_flags_cc.gen_full_rst_val.ram_full_n_reg/C] -to [get_pins {vck190_mrmac_4x25g_i/MCDMA1/axis_data_fifo_3/inst/gen_fifo.xpm_fifo_axis_inst/gaxis_pkt_fifo_cc.axis_pkt_cnt_reg[19]/D}] 4.000
+set_max_delay -datapath_only -from [get_pins vck190_mrmac_4x25g_i/MCDMA2/axis_data_fifo_1/inst/gen_fifo.xpm_fifo_axis_inst/xpm_fifo_base_inst/gen_pntr_flags_cc.gen_full_rst_val.ram_full_n_reg/C] -to [get_pins {vck190_mrmac_4x25g_i/MCDMA2/axis_data_fifo_3/inst/gen_fifo.xpm_fifo_axis_inst/gaxis_pkt_fifo_cc.axis_pkt_cnt_reg[19]/D}] 4.000
+set_max_delay -datapath_only -from [get_pins vck190_mrmac_4x25g_i/MCDMA3/axis_data_fifo_1/inst/gen_fifo.xpm_fifo_axis_inst/xpm_fifo_base_inst/gen_pntr_flags_cc.gen_full_rst_val.ram_full_n_reg/C] -to [get_pins {vck190_mrmac_4x25g_i/MCDMA3/axis_data_fifo_3/inst/gen_fifo.xpm_fifo_axis_inst/gaxis_pkt_fifo_cc.axis_pkt_cnt_reg[19]/D}] 4.000
+
+set_max_delay -datapath_only -from [get_pins {vck190_mrmac_4x25g_i/axi_gpio_0/U0/gpio_core_1/Not_Dual.gpio_Data_Out_reg[3]_replica_1/C}] -to [get_pins {vck190_mrmac_4x25g_i/MCDMA0/axis_data_fifo_1/inst/gen_fifo.xpm_fifo_axis_inst/xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst/gen_wr_a.gen_word_narrow.mem_reg_uram_0/DIN_B[6]}] 4.000

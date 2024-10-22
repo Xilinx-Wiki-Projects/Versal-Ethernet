@@ -1,0 +1,107 @@
+From 963581609e512a3b03bf80a3e699a4995c774234 Mon Sep 17 00:00:00 2001
+From: Sarath Babu Naidu Gaddam <sarath.babu.naidu.gaddam@xilinx.com>
+Date: Mon, 18 Oct 2021 22:25:00 -0600
+Subject: [PATCH 5/7] net: xilinx: axienet: Add support for PTP 1step
+
+Signed-off-by: Sarath Babu Naidu Gaddam <sarath.babu.naidu.gaddam@xilinx.com>
+---
+ drivers/net/ethernet/xilinx/xilinx_axienet.h      |  2 +
+ drivers/net/ethernet/xilinx/xilinx_axienet_main.c | 60 ++++++++++++++++++++---
+ 2 files changed, 56 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/net/ethernet/xilinx/xilinx_axienet.h b/drivers/net/ethernet/xilinx/xilinx_axienet.h
+index 89ee779..cd06212 100644
+--- a/drivers/net/ethernet/xilinx/xilinx_axienet.h
++++ b/drivers/net/ethernet/xilinx/xilinx_axienet.h
+@@ -370,6 +370,8 @@
+ #define TX_PTP_CSUM_OFFSET      0x28
+ #define TX_PTP_TS_OFFSET        0x4C
+ #define TX_PTP_CF_OFFSET        0x32
++#define ONESTEP_PKT_TYPE_SHIFT 24
++#define CSUM_OFFSET_SHIFT      16
+ 
+ /* XXV MAC Register Definitions */
+ #define XXV_GT_RESET_OFFSET		0x00000000
+diff --git a/drivers/net/ethernet/xilinx/xilinx_axienet_main.c b/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
+index 8e16cf2..ced57d8 100644
+--- a/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
++++ b/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
+@@ -984,6 +984,7 @@ void axienet_start_xmit_done(struct net_device *ndev,
+ 		cur_p->app0 = 0;
+ 		cur_p->app1 = 0;
+ 		cur_p->app2 = 0;
++		cur_p->app3 = 0;
+ 		cur_p->app4 = 0;
+ 		cur_p->status = 0;
+ 		cur_p->tx_skb = 0;
+@@ -1261,14 +1262,61 @@ static int axienet_skb_tstsmp(struct sk_buff **__skb, struct axienet_dma_q *q,
+ #else
+ 			offset = offsetof(struct axidma_bd, app2);
+ #endif
+-			cur_p->app0 = lower_32_bits(ptp_ts_phy_addr + offset);
+-			cur_p->app1 = upper_32_bits(ptp_ts_phy_addr + offset);
+-			/* 1:0 flag for PTP */
+-			cur_p->app0 |= TX_TS_OP_TWOSTEP;
+ 			cur_p->app2 = prandom_u32_max(XAXIFIFO_TXTS_TAG_MAX) + 1;
+ 
+-			skb_shinfo(skb)->tx_flags |= SKBTX_IN_PROGRESS;
+-			cur_p->ptp_tx_skb = (phys_addr_t)skb_get(skb);
++			if (lp->tstamp_config.tx_type == HWTSTAMP_TX_ONESTEP_SYNC ||
++					lp->tstamp_config.tx_type == HWTSTAMP_TX_ONESTEP_P2P) {
++
++				u8 packet_flags = ptp_os(skb, lp);
++
++				/* Pass one step flag with packet type (sync/pdelay resp)
++				 * to command FIFO helper only when one step TS is required.
++				 * Pass the default two step flag for other PTP events.
++				 */
++
++				if (!packet_flags)
++					packet_flags = TX_TS_OP_TWOSTEP;
++				else
++					packet_flags |= TX_TS_OP_ONESTEP;
++
++				if ((packet_flags & 0xF) == TX_TS_OP_ONESTEP) {
++					/* For Sync Packet */
++					if ((packet_flags & 0xF0) == MSG_TYPE_SYNC_FLAG) {
++						cur_p->app0 |= TX_TS_OP_ONESTEP;
++						cur_p->app2 |= ((TX_TS_OP_ONESTEP |
++									TX_TS_CSUM_UPDATE_MRMAC) << ONESTEP_PKT_TYPE_SHIFT);
++						cur_p->app3 = TX_PTP_CF_OFFSET;
++						cur_p->app3 |= (TX_PTP_CSUM_OFFSET << CSUM_OFFSET_SHIFT);
++					}
++					/* For PDelay Response packet */
++					if ((packet_flags & 0xF0) == MSG_TYPE_PDELAY_RESP_FLAG) {
++						cur_p->app0 |= TX_TS_OP_ONESTEP;
++						cur_p->app2 |= ((TX_TS_OP_ONESTEP | TX_TS_CSUM_UPDATE_MRMAC |
++									TX_TS_PDELAY_UPDATE_MRMAC ) << ONESTEP_PKT_TYPE_SHIFT);
++						cur_p->app3 = TX_PTP_CF_OFFSET;
++						cur_p->app3 |= (TX_PTP_CSUM_OFFSET << CSUM_OFFSET_SHIFT);
++					}
++
++				} else if ((packet_flags & 0xF) == TX_TS_OP_TWOSTEP) {
++					cur_p->app0 = lower_32_bits(ptp_ts_phy_addr + offset);
++					cur_p->app1 = upper_32_bits(ptp_ts_phy_addr + offset);
++					/* 1:0 flag for PTP */
++					cur_p->app0 |= TX_TS_OP_TWOSTEP;
++
++					skb_shinfo(skb)->tx_flags |= SKBTX_IN_PROGRESS;
++					cur_p->ptp_tx_skb = (phys_addr_t)skb_get(skb);
++				}
++
++			} else {
++
++				cur_p->app0 = lower_32_bits(ptp_ts_phy_addr + offset);
++				cur_p->app1 = upper_32_bits(ptp_ts_phy_addr + offset);
++				/* 1:0 flag for PTP */
++				cur_p->app0 |= TX_TS_OP_TWOSTEP;
++
++				skb_shinfo(skb)->tx_flags |= SKBTX_IN_PROGRESS;
++				cur_p->ptp_tx_skb = (phys_addr_t)skb_get(skb);
++			}
+ 
+ 		} else {
+ 			/* No operation */
+-- 
+2.7.4
+

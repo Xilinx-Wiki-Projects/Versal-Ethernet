@@ -1,0 +1,45 @@
+From 7d8dea059fa3e333ab6c0a81b3702ae7ba1fc02e Mon Sep 17 00:00:00 2001
+From: Harini Katakam <harini.katakam@xilinx.com>
+Date: Thu, 15 Jul 2021 18:40:33 +0530
+Subject: [PATCH 4/7] net: xilinx: axienet: Add ethtool coalesce configuration
+ for MCMDMA
+
+Add support to configure RX and TX coalesce count from ethtool.
+
+Signed-off-by: Sarath Babu Naidu Gaddam <sarath.babu.naidu.gaddam@xilinx.com>
+---
+ drivers/net/ethernet/xilinx/xilinx_axienet_main.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/drivers/net/ethernet/xilinx/xilinx_axienet_main.c b/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
+index c81669a..8e16cf2 100644
+--- a/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
++++ b/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
+@@ -2598,7 +2598,12 @@ axienet_ethtools_get_coalesce(struct net_device *ndev,
+ 	for_each_rx_dma_queue(lp, i) {
+ 		q = lp->dq[i];
+ 
++#ifdef CONFIG_AXIENET_HAS_MCDMA
++		regval = axienet_dma_in32(q, XMCDMA_CHAN_CR_OFFSET(q->chan_id) +
++				      XMCDMA_RX_OFFSET);
++#else
+ 		regval = axienet_dma_in32(q, XAXIDMA_RX_CR_OFFSET);
++#endif
+ 		ecoalesce->rx_max_coalesced_frames +=
+ 						(regval & XAXIDMA_COALESCE_MASK)
+ 						     >> XAXIDMA_COALESCE_SHIFT;
+@@ -2606,7 +2611,11 @@ axienet_ethtools_get_coalesce(struct net_device *ndev,
+ 	}
+ 	for_each_tx_dma_queue(lp, i) {
+ 		q = lp->dq[i];
++#ifdef CONFIG_AXIENET_HAS_MCDMA
++		regval = axienet_dma_in32(q, XMCDMA_CHAN_CR_OFFSET(q->chan_id));
++#else
+ 		regval = axienet_dma_in32(q, XAXIDMA_TX_CR_OFFSET);
++#endif
+ 		ecoalesce->tx_max_coalesced_frames +=
+ 						(regval & XAXIDMA_COALESCE_MASK)
+ 						     >> XAXIDMA_COALESCE_SHIFT;
+-- 
+2.7.4
+
