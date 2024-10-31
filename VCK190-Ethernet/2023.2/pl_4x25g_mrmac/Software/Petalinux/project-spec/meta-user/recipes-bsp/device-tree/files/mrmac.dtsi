@@ -1,0 +1,227 @@
+/include/ "system-conf.dtsi"
+/ {
+	chosen {
+		stdout-path = "serial0:115200";
+	};
+
+	amba_pl@0 {
+		ptp_1588_timer_syncer@80000000 {
+			compatible = "xlnx,timer-syncer-1588-2.0\0xlnx,timer-syncer-1588-3.0";
+		};
+		ptp_1588_timer_syncer@80010000 {
+			compatible = "xlnx,timer-syncer-1588-2.0\0xlnx,timer-syncer-1588-3.0";
+		};
+		ptp_1588_timer_syncer@80020000 {
+			compatible = "xlnx,timer-syncer-1588-2.0\0xlnx,timer-syncer-1588-3.0";
+		};
+		ptp_1588_timer_syncer@80030000 {
+			compatible = "xlnx,timer-syncer-1588-2.0\0xlnx,timer-syncer-1588-3.0";
+		};
+
+		axi_mcdma@a4020000 {
+			compatible = "xlnx,axi-mcdma-1.1";
+			xlnx,include-dre;
+			xlnx,addrwidth = <0x20>;
+			dma-channel@a4020000 {
+				compatible = "xlnx,axi-dma-mm2s-channel";
+				dma-channels = <0x1>;
+				interrupt-parent = <&gic>;
+				interrupts = <0 84 4>;
+				xlnx,datawidth = <0x40>;
+				xlnx,device-id = <0x0>;
+				xlnx,include-dre ;
+			};
+			dma-channel@a4020030 {
+				compatible = "xlnx,axi-dma-s2mm-channel";
+				dma-channels = <0x1>;
+				interrupt-parent = <&gic>;
+				interrupts = <0 85 4>;
+				xlnx,datawidth = <0x40>;
+				xlnx,device-id = <0x0>;
+				xlnx,include-dre ;
+			};
+		};
+		axi_mcdma@a4030000 {
+			compatible = "xlnx,axi-mcdma-1.1";
+			xlnx,include-dre;
+			xlnx,addrwidth = <0x20>;
+			dma-channel@a4030000 {
+				compatible = "xlnx,axi-dma-mm2s-channel";
+				dma-channels = <0x1>;
+				interrupt-parent = <&gic>;
+				interrupts = <0 86 4>;
+				xlnx,datawidth = <0x40>;
+				xlnx,device-id = <0x1>;
+				xlnx,include-dre ;
+			};
+			dma-channel@a4030030 {
+				compatible = "xlnx,axi-dma-s2mm-channel";
+				dma-channels = <0x1>;
+				interrupt-parent = <&gic>;
+				interrupts = <0 87 4>;
+				xlnx,datawidth = <0x40>;
+				xlnx,device-id = <0x1>;
+				xlnx,include-dre ;
+			};
+		};
+		axi_mcdma@a4040000 {
+			compatible = "xlnx,axi-mcdma-1.1";
+			xlnx,include-dre;
+			xlnx,addrwidth = <0x20>;
+			dma-channel@a4040000 {
+				compatible = "xlnx,axi-dma-mm2s-channel";
+				dma-channels = <0x1>;
+				interrupt-parent = <&gic>;
+				interrupts = <0 88 4>;
+				xlnx,datawidth = <0x40>;
+				xlnx,device-id = <0x2>;
+				xlnx,include-dre ;
+			};
+			dma-channel@a4040030 {
+				compatible = "xlnx,axi-dma-s2mm-channel";
+				dma-channels = <0x1>;
+				interrupt-parent = <&gic>;
+				interrupts = <0 89 4>;
+				xlnx,datawidth = <0x40>;
+				xlnx,device-id = <0x2>;
+				xlnx,include-dre ;
+			};
+		};
+		axi_mcdma@a4050000 {
+			compatible = "xlnx,axi-mcdma-1.1";
+			xlnx,include-dre;
+			xlnx,addrwidth = <0x20>;
+			dma-channel@a4050000 {
+				compatible = "xlnx,axi-dma-mm2s-channel";
+				dma-channels = <0x1>;
+				interrupt-parent = <&gic>;
+				interrupts = <0 90 4>;
+				xlnx,datawidth = <0x40>;
+				xlnx,device-id = <0x3>;
+				xlnx,include-dre ;
+			};
+			dma-channel@a4050030 {
+				compatible = "xlnx,axi-dma-s2mm-channel";
+				dma-channels = <0x1>;
+				interrupt-parent = <&gic>;
+				interrupts = <0 91 4>;
+				xlnx,datawidth = <0x40>;
+				xlnx,device-id = <0x3>;
+				xlnx,include-dre ;
+			};
+		};
+
+		gt_pll: gt_pll@a40a0000 {
+			reg = <0x0 0xa40a0000 0x0 0x10000>;
+		};
+
+		gt_ctrl_common: gt_ctrl_common@a4060000 {
+			reg = <0x0 0xa4060000 0x0 0x40000>;
+		};
+
+		axi_mux: axi_mux@a40b0000 {
+                        reg = <0x0 0xa40b0000 0x0 0x10000>;
+                };
+
+
+		mrmac@a4010000 {
+			axistream-connected = <&DATAPATH_MCDMA_HIER_DATAPATH_MCDMA_0_axi_mcdma_0>;
+			interrupt-names = "mm2s_ch1_introut", "s2mm_ch1_introut";
+                        interrupt-parent = <&gic>;
+                        interrupts = <0 84 4 0 85 4>;
+			local-mac-address = [00 0a 35 00 00 00];
+			xlnx,channel-ids = "1";
+			xlnx,num-queues = /bits/ 16 <0x1>;
+			xlnx,addrwidth = <0x20>;		
+			xlnx,mrmac-rate = <25000>;
+			xlnx,gtpll = <&gt_pll>;
+			xlnx,gtctrl = <&gt_ctrl_common>;
+			xlnx,axi_mux = <&axi_mux>;
+			ptp-hardware-clock = <&MRMAC_1588_HELPER_HIER_SYS_TIMER_0_ptp_1588_timer_syncer_0>;
+		};
+
+		mrmac@a4011000 {
+			axistream-connected = <&DATAPATH_MCDMA_HIER_DATAPATH_MCDMA_1_axi_mcdma_0>;
+			interrupt-names = "mm2s_ch1_introut", "s2mm_ch1_introut";
+                        interrupt-parent = <&gic>;
+                        interrupts = <0 86 4 0 87 4>;
+			local-mac-address = [00 0a 35 00 00 01];
+			xlnx,channel-ids = "1";
+			xlnx,num-queues = /bits/ 16 <0x1>;
+			xlnx,addrwidth = <0x20>;			
+			xlnx,mrmac-rate = <25000>;
+			xlnx,gtpll = <&gt_pll>;
+			xlnx,gtctrl = <&gt_ctrl_common>;
+			xlnx,axi_mux = <&axi_mux>;
+			ptp-hardware-clock = <&MRMAC_1588_HELPER_HIER_SYS_TIMER_1_ptp_1588_timer_syncer_0>;
+		};
+
+		mrmac@a4012000 {
+			axistream-connected = <&DATAPATH_MCDMA_HIER_DATAPATH_MCDMA_2_axi_mcdma_0>;
+			 interrupt-names = "mm2s_ch1_introut", "s2mm_ch1_introut";
+                        interrupt-parent = <&gic>;
+                        interrupts = <0 88 4 0 89 4>;
+			local-mac-address = [00 0a 35 00 00 02];
+			xlnx,channel-ids = "1";
+			xlnx,num-queues = /bits/ 16 <0x1>;
+			xlnx,addrwidth = <0x20>;
+			xlnx,mrmac-rate = <25000>;
+			xlnx,gtpll = <&gt_pll>;
+			xlnx,gtctrl = <&gt_ctrl_common>;
+			xlnx,axi_mux = <&axi_mux>;
+			ptp-hardware-clock = <&MRMAC_1588_HELPER_HIER_SYS_TIMER_2_ptp_1588_timer_syncer_0>;
+		};
+
+		mrmac@a4013000 {
+			axistream-connected = <&DATAPATH_MCDMA_HIER_DATAPATH_MCDMA_3_axi_mcdma_0>;
+			interrupt-names = "mm2s_ch1_introut", "s2mm_ch1_introut";
+                        interrupt-parent = <&gic>;
+                        interrupts = <0 90 4 0 91 4>;
+			local-mac-address = [00 0a 35 00 00 03];
+			xlnx,channel-ids = "1";
+			xlnx,num-queues = /bits/ 16 <0x1>;
+			xlnx,addrwidth = <0x20>;
+			xlnx,mrmac-rate = <25000>;
+			xlnx,gtpll = <&gt_pll>;
+			xlnx,gtctrl = <&gt_ctrl_common>;
+			xlnx,axi_mux = <&axi_mux>;
+			ptp-hardware-clock = <&MRMAC_1588_HELPER_HIER_SYS_TIMER_3_ptp_1588_timer_syncer_0>;
+		};
+
+		/delete-node/ gt_quad_base@a4000000;
+		/delete-node/ gpio@a40a0000;
+		/delete-node/ gpio@a4060000;
+		/delete-node/ gpio@a4070000;
+		/delete-node/ gpio@a4080000;
+		/delete-node/ gpio@a4090000;
+		/delete-node/ gpio@a40b0000;
+	};
+	amba: axi {
+	      i2c@ff030000 {
+		      tca9548@74 {
+			      	compatible = "nxp,pca9548";
+				#pinctrl-names = "default";
+				#address-cells = <0x1>;
+				#size-cells = <0x0>;
+			      	reg = <0x74>;
+				#i2c-mux-idle-disconnect;
+
+
+
+			      i2c@7 {
+					#address-cells = <0x1>;
+					#size-cells = <0x0>;
+				      	reg = <0x7>;
+
+
+
+				      phc@5b {
+					      compatible = "idt,8a34001";
+					      reg = <0x5b>;
+				      };
+			      };
+		      };
+	      };
+      };
+
+};

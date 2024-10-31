@@ -1,0 +1,215 @@
+From e3843a3187e41e2a61ca8c874ea25b632c934f54 Mon Sep 17 00:00:00 2001
+From: Sarath Babu Naidu Gaddam <sarath.babu.naidu.gaddam@xilinx.com>
+Date: Tue, 28 Sep 2021 06:20:10 -0600
+Subject: [PATCH 6/7] net: xilinx: axienet: Add speed switching(10/25G)support
+ for MRMAC
+
+This patch supports changing the speed from 10G to 25G and 25G to 10G
+using ethtool.
+
+It also increases block lock timeout to 1second.while swithcing the
+speeds block lock is taking one second to show the link up.
+
+Signed-off-by: Sarath Babu Naidu Gaddam <sarath.babu.naidu.gaddam@xilinx.com>
+---
+ drivers/net/ethernet/xilinx/xilinx_axienet.h      |  5 ++
+ drivers/net/ethernet/xilinx/xilinx_axienet_main.c | 90 ++++++++++++++++++++++-
+ 2 files changed, 92 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/ethernet/xilinx/xilinx_axienet.h b/drivers/net/ethernet/xilinx/xilinx_axienet.h
+index cd06212..7a18148 100644
+--- a/drivers/net/ethernet/xilinx/xilinx_axienet.h
++++ b/drivers/net/ethernet/xilinx/xilinx_axienet.h
+@@ -354,6 +354,7 @@
+ #define XAE_IP_TCP_CSUM_VALIDATED	0x00000002
+ 
+ #define DELAY_OF_ONE_MILLISEC		1000
++#define DELAY_OF_ONE_SEC		1000000
+ 
+ /* Xilinx PCS/PMA PHY register for switching 1000BaseX or SGMII */
+ #define XLNX_MII_STD_SELECT_REG		0x11
+@@ -613,6 +614,8 @@
+ #define MRMAC_GT_LANE_OFFSET		BIT(16)
+ #define MRMAC_MAX_GT_LANES		4
+ #define QUALIFIER_BIT			BIT(31)
++#define MUX_10G_MASK 			0xF
++#define MUX_25G_MASK 			0x0
+ /**
+  * struct axidma_bd - Axi Dma buffer descriptor layout
+  * @next:         MM2S/S2MM Next Descriptor Pointer
+@@ -786,6 +789,7 @@ struct aximcdma_bd {
+  * @xxv_ip_version: XXV IP version
+  * @switch_lock: Spinlock for switchable IP.
+  * @restart_work: delayable work queue.
++ * @axi_mux: Mux is used for speed switching
+  */
+ struct axienet_local {
+ 	struct net_device *ndev;
+@@ -873,6 +877,7 @@ struct axienet_local {
+ 	u32 xxv_ip_version;
+ 	spinlock_t switch_lock;	/* To protect Link training programming from multiple context */
+ 	struct delayed_work restart_work;
++	void __iomem *axi_mux;  /* mux is used for speed switching */
+ };
+ 
+ /**
+diff --git a/drivers/net/ethernet/xilinx/xilinx_axienet_main.c b/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
+index ced57d8..2ed8586 100644
+--- a/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
++++ b/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
+@@ -90,12 +90,18 @@ EXPORT_SYMBOL(mrmac_gt_pll);
+ void __iomem *mrmac_gt_ctrl;
+ EXPORT_SYMBOL(mrmac_gt_ctrl);
+ 
++void __iomem *axi_mux_gpio;
++EXPORT_SYMBOL(axi_mux_gpio);
++
+ int mrmac_pll_reg;
+ EXPORT_SYMBOL(mrmac_pll_reg);
+ 
+ int mrmac_pll_rst;
+ EXPORT_SYMBOL(mrmac_pll_rst);
+ 
++int axi_mux_reg;
++EXPORT_SYMBOL(axi_mux_reg);
++
+ /* Option table for setting up Axi Ethernet hardware options */
+ static struct axienet_option axienet_options[] = {
+ 	/* Turn on jumbo packet support for both Rx and Tx */
+@@ -472,6 +478,21 @@ static void xxvenet_setoptions(struct net_device *ndev, u32 options)
+ 	lp->options |= options;
+ }
+ 
++static inline void axienet_reset_mux(struct axienet_local *lp)
++{
++	u32 val;
++
++	val = ioread32(lp->axi_mux);
++
++	if (lp->mrmac_rate == SPEED_25000) {
++		val &= ~(1 << lp->gt_lane);
++		iowrite32(val, lp->axi_mux);
++	} else {
++		val |= 1 << lp->gt_lane;
++		iowrite32(val, lp->axi_mux);
++	}
++}
++
+ static inline void axienet_mrmac_reset(struct axienet_local *lp)
+ {
+ 	u32 val, reg;
+@@ -617,6 +638,8 @@ static int axienet_device_reset(struct net_device *ndev)
+ 
+ 	if (lp->axienet_config->mactype == XAXIENET_MRMAC) {
+ 		/* Reset MRMAC */
++		if (axi_mux_reg)
++			axienet_reset_mux(lp);
+ 		axienet_mrmac_reset(lp);
+ 		err = axienet_mrmac_gt_reset(ndev);
+ 		if (err)
+@@ -2069,7 +2092,7 @@ static int axienet_open(struct net_device *ndev)
+ 		axienet_iow(lp, MRMAC_TX_STS_OFFSET, MRMAC_STS_ALL_MASK);
+ 		axienet_iow(lp, MRMAC_RX_STS_OFFSET, MRMAC_STS_ALL_MASK);
+ 		err = readx_poll_timeout(axienet_get_mrmac_blocklock, lp, val,
+-					 (val & MRMAC_RX_BLKLCK_MASK), 10, DELAY_OF_ONE_MILLISEC);
++					 (val & MRMAC_RX_BLKLCK_MASK), 10, DELAY_OF_ONE_SEC);
+ 		if (err)
+ 			netdev_err(ndev, "MRMAC block lock not complete! Cross-check the MAC ref clock configuration\n");
+ 
+@@ -2894,6 +2917,37 @@ void axienet_ethtools_strings(struct net_device *ndev, u32 sset, u8 *data)
+ #endif
+ }
+ 
++static int axienet_change_speed(struct net_device *dev, const struct ethtool_link_ksettings *cmd)
++{
++	struct axienet_local *lp = netdev_priv(dev);
++	int ret = 0;
++
++	if (lp->axienet_config->mactype == XAXIENET_MRMAC) {
++		lp->mrmac_rate = cmd->base.speed;
++		return 0;
++	} else {
++
++		return phy_ethtool_set_link_ksettings(dev, cmd);
++	}
++}
++
++static int axienet_get_speed(struct net_device *dev,  struct ethtool_link_ksettings *cmd)
++{
++	struct axienet_local *lp = netdev_priv(dev);
++
++	if (lp->axienet_config->mactype == XAXIENET_MRMAC) {
++		cmd->base.speed = lp->mrmac_rate;
++		return 0;
++	} else {
++
++		return phy_ethtool_get_link_ksettings(dev, cmd);
++	}
++}
++
++
++
++
++
+ static const struct ethtool_ops axienet_ethtool_ops = {
+ 	.supported_coalesce_params = ETHTOOL_COALESCE_MAX_FRAMES |
+ 				     ETHTOOL_COALESCE_USECS,
+@@ -2913,9 +2967,9 @@ static const struct ethtool_ops axienet_ethtool_ops = {
+ 	.get_sset_count	= axienet_ethtools_sset_count,
+ 	.get_ethtool_stats = axienet_ethtools_get_stats,
+ 	.get_strings = axienet_ethtools_strings,
+-	.get_link_ksettings = axienet_ethtools_get_link_ksettings,
+-	.set_link_ksettings = axienet_ethtools_set_link_ksettings,
+ 	.nway_reset	= axienet_ethtools_nway_reset,
++	.get_link_ksettings = axienet_get_speed,
++	.set_link_ksettings = axienet_change_speed,
+ };
+ 
+ #ifdef CONFIG_AXIENET_HAS_MCDMA
+@@ -3532,6 +3586,7 @@ static int axienet_probe(struct platform_device *pdev)
+ 	struct resource txtsres, rxtsres;
+ #endif
+ 	u16 num_queues = XAE_MAX_QUEUES;
++	struct resource axi_mux;
+ 
+ 	ret = of_property_read_u16(pdev->dev.of_node, "xlnx,num-queues",
+ 				   &num_queues);
+@@ -3803,6 +3858,35 @@ static int axienet_probe(struct platform_device *pdev)
+ 			goto cleanup_clk;
+ 		}
+ 		dev_info(&pdev->dev, "GT lane: %d\n", lp->gt_lane);
++		if(axi_mux_reg) {
++			lp->axi_mux = axi_mux_gpio;
++		} else {
++			np = of_parse_phandle(pdev->dev.of_node,
++					"xlnx,axi_mux", 0);
++			if (IS_ERR(np)) {
++				dev_warn(&pdev->dev,
++						"couldn't find axi_mux switching not supported\n");
++			} else {
++
++				ret = of_address_to_resource(np, 0, &axi_mux);
++
++				if (ret) {
++					dev_warn(&pdev->dev,
++							"unable to get axi_mux resource\n");
++				}
++
++				lp->axi_mux = devm_ioremap_resource(&pdev->dev,
++						&axi_mux);
++				if (IS_ERR(lp->axi_mux)) {
++					dev_warn(&pdev->dev,
++							"couldn't map axi_mux regs\n");
++				} else {
++					axi_mux_gpio = lp->axi_mux;
++					axi_mux_reg = 1;
++				}
++			}
++
++		}
+ 	}
+ 
+ #ifdef CONFIG_XILINX_AXI_EMAC_HWTSTAMP
+-- 
+2.7.4
+

@@ -1,0 +1,145 @@
+/include/ "system-conf.dtsi"
+/ {
+
+	gt_pll: gt_pll@a40a0000 {
+			reg = <0x0 0xa40a0000 0x0 0x10000>;
+	};
+	gt_ctrl_common: gt_ctrl_common@a4060000 {
+			reg = <0x0 0xa4060000 0x0 0x40000>;
+	};
+	
+	
+	/delete-node/ gt_quad_base@a4010000;
+	/delete-node/ gpio@a4060000;
+	/delete-node/ gpio@a4070000;
+	/delete-node/ gpio@a4080000;
+	/delete-node/ gpio@a4090000;
+	/delete-node/ gpio@a40a0000;
+		
+};
+
+&mrmac_0_gt_wrapper_gt_quad_base{
+	status = "disabled";
+
+};
+
+&amba {
+        zyxclmm_drm {
+                compatible = "xlnx,zocl-versal";
+        };
+};
+
+
+&MCDMA0_axi_dma_0{
+    compatible = "xlnx,eth-dma";
+    xlnx,addrwidth = <0x20>;
+    xlnx,include-dre;
+};
+
+&MCDMA1_axi_dma_0{
+    compatible = "xlnx,eth-dma";
+    xlnx,addrwidth = <0x20>;
+    xlnx,include-dre;
+};
+
+&MCDMA2_axi_dma_0{
+    compatible = "xlnx,eth-dma";
+    xlnx,addrwidth = <0x20>;
+    xlnx,include-dre;
+};
+
+&MCDMA3_axi_dma_0{
+    compatible = "xlnx,eth-dma";
+    xlnx,addrwidth = <0x20>;
+    xlnx,include-dre;
+};
+
+&mrmac_0_core {
+    axistream-connected = <&MCDMA0_axi_dma_0>;
+    interrupt-names = "mm2s_ch1_introut", "s2mm_ch1_introut";
+    interrupt-parent = <&gic>;
+    interrupts = <0 84 4 0 85 4>;
+    local-mac-address = [00 0a 35 00 00 00];
+    xlnx,channel-ids = "1";
+    xlnx,num-queues = /bits/ 16 <0x1>;
+    xlnx,addrwidth = <0x20>;
+    xlnx,mrmac-rate = <25000>;
+    xlnx,gtpll = <&gt_pll>;
+    xlnx,gtctrl = <&gt_ctrl_common>;
+};
+
+&mrmac_0_core_1 {
+    axistream-connected = <&MCDMA1_axi_dma_0>;
+    interrupt-names = "mm2s_ch1_introut", "s2mm_ch1_introut";
+    interrupt-parent = <&gic>;
+    interrupts = <0 86 4 0 87 4>;
+    local-mac-address = [00 0a 35 00 00 01];
+    xlnx,channel-ids = "1";
+    xlnx,num-queues = /bits/ 16 <0x1>;
+    xlnx,addrwidth = <0x20>;    
+    xlnx,mrmac-rate = <25000>;
+    xlnx,gtpll = <&gt_pll>;
+    xlnx,gtctrl = <&gt_ctrl_common>;
+};
+
+&mrmac_0_core_2 {
+    axistream-connected = <&MCDMA2_axi_dma_0>;
+    interrupt-names = "mm2s_ch1_introut", "s2mm_ch1_introut";
+    interrupt-parent = <&gic>;
+    interrupts = <0 88 4 0 89 4>;
+    local-mac-address = [00 0a 35 00 00 02];
+    xlnx,channel-ids = "1";
+    xlnx,num-queues = /bits/ 16 <0x1>;
+    xlnx,addrwidth = <0x20>;
+    xlnx,mrmac-rate = <25000>;
+    xlnx,gtpll = <&gt_pll>;
+    xlnx,gtctrl = <&gt_ctrl_common>;    
+};
+
+&mrmac_0_core_3 {
+    axistream-connected = <&MCDMA3_axi_dma_0>;
+    interrupt-names = "mm2s_ch1_introut", "s2mm_ch1_introut";
+    interrupt-parent = <&gic>;
+    interrupts = <0 90 4 0 91 4>;
+    local-mac-address = [00 0a 35 00 00 03];
+    xlnx,channel-ids = "1";
+    xlnx,num-queues = /bits/ 16 <0x1>;
+    xlnx,addrwidth = <0x20>;
+    xlnx,mrmac-rate = <25000>;
+    xlnx,gtpll = <&gt_pll>;
+    xlnx,gtctrl = <&gt_ctrl_common>;
+};
+
+
+&i2c1{
+		      tca9548@74 {
+			      	compatible = "nxp,pca9548";
+				#pinctrl-names = "default";
+				#address-cells = <0x1>;
+				#size-cells = <0x0>;
+			      	reg = <0x74>;
+				#i2c-mux-idle-disconnect;
+
+
+
+			      i2c@7 {
+					#address-cells = <0x1>;
+					#size-cells = <0x0>;
+				      	reg = <0x7>;
+
+
+
+				      phc@5b {
+					      compatible = "idt,8a34001";
+					      reg = <0x5b>;
+				      };
+			      };
+		      };
+	      };
+
+
+
+
+	
+
+
