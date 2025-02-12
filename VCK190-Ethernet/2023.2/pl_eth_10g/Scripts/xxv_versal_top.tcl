@@ -27,7 +27,7 @@ puts "INFO: Target part selected: '$part'"
 set proj_dir ../Hardware/${project_name}_hw
 
 create_project $project_name $proj_dir -part $part -force
-set_property board_part xilinx.com:vmk180:part0:3.2 [current_project]
+set_property board_part xilinx.com:vck190:part0:3.2 [current_project]
 #create_project -name ${project_name} -force -dir ${proj_dir} -part ${device}
 
 # Source the BD file, BD naming convention is xxv_versal.tcl
