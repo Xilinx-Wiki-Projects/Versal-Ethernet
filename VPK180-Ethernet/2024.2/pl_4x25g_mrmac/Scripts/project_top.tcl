@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # Set the name of the project:
-set project_name vpk180_4x25g_mrmac
+set project_name vpk180_4x25g_mrmac_4x25g
 
 # Set the project device:
 set device xcvp1802-lsvc4072-2MP-e-S
