@@ -1432,7 +1432,7 @@ CONFIG_libdfx=y
 #
 # libgcc 
 #
-# CONFIG_libgcc is not set
+CONFIG_libgcc=y
 # CONFIG_libgcc-dbg is not set
 # CONFIG_libgcc-dev is not set
 

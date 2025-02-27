@@ -181,6 +181,7 @@ etPetalinux:/home/petalinux# ethtool -s eth3 autoneg off speed 10000 duplex full
 ```
 - *Bring link up*
 ``` 
+Petalinux:/home/petalinux# ifconfig eth0 up
 [ 1307.699546] xilinx_axienet a4000000.mrmac eth0: MRMAC setup at 10000
 Petalinux:/home/petalinux# ifconfig eth1 up
 [ 1307.813265] xilinx_axienet a4001000.mrmac eth1: MRMAC setup at 10000
