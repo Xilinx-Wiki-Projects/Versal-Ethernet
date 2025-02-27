@@ -163,6 +163,30 @@ PING 192.168.4.1 (192.168.4.1): 56 data bytes
 54159 packets transmitted, 54159 packets received, 0% packet loss
 round-trip min/avg/max = 0.044/0.055/0.750 ms
 ```
+# iperf3 test
+*Client side* ``` iperf3 -c 192.168.1.1 -I eth0 -u -b 10G ```
+*Server side:*
+```
+Server listening on 5201 (test #1)
+-----------------------------------------------------------
+Accepted connection from 192.168.1.2, port 58680                                                                                                        
+[  5] local 192.168.1.1 port 5201 connected to 192.168.1.2 port 43002                                                                           
+[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams                                                      
+[  5]   0.00-1.00   sec   155 MBytes  1.30 Gbits/sec  0.004 ms  159/112216 (0.14%)                                       
+[  5]   1.00-2.00   sec   155 MBytes  1.30 Gbits/sec  0.005 ms  0/112266 (0%)                                         
+[  5]   2.00-3.00   sec   155 MBytes  1.30 Gbits/sec  0.005 ms  0/112249 (0%)                                              
+[  5]   3.00-4.00   sec   155 MBytes  1.30 Gbits/sec  0.005 ms  0/112301 (0%)                                              
+[  5]   4.00-5.00   sec   155 MBytes  1.30 Gbits/sec  0.004 ms  0/112242 (0%)                                              
+[  5]   5.00-6.00   sec   155 MBytes  1.30 Gbits/sec  0.004 ms  0/112208 (0%)                                              
+[  5]   6.00-7.00   sec   155 MBytes  1.30 Gbits/sec  0.004 ms  0/112201 (0%)                                              
+[  5]   7.00-8.00   sec   155 MBytes  1.30 Gbits/sec  0.003 ms  0/112178 (0%)                                              
+[  5]   8.00-9.00   sec   155 MBytes  1.30 Gbits/sec  0.005 ms  0/112233 (0%)                                              
+[  5]   9.00-10.00  sec   155 MBytes  1.30 Gbits/sec  0.006 ms  0/112060 (0%)                                              
+- - - - - - - - - - - - - - - - - - - - - - - - -                               
+[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams                                                                          
+[  5]   0.00-10.00  sec  1.51 GBytes  1.30 Gbits/sec  0.006 ms  159/1122154 (0.014%)  receiver                                       
+-----------------------------------------------------------                                            
+```
 
 # Rate Change
 - *Bring the link down*
