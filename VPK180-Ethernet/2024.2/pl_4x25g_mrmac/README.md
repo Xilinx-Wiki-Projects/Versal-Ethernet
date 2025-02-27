@@ -272,7 +272,7 @@ PING 192.168.4.1 (192.168.4.1): 56 data bytes
 round-trip min/avg/max = 0.043/0.052/0.173 ms
 ```
 ---
-## **Known Issues**
+# **Known Issues**
 In some device families, multiple RX resets may be required to bring the link up. If a user observes the following message but cannot ping, they can issue an RX reset by writing to gt_ctrl_common register.
 
 *Kernel log shows driver has set the right rate. However, status register shows no link.*
@@ -289,7 +289,7 @@ Petalinux:/home/petalinux# devmem 0xa4000744 32 0xffffffff
 Petalinux:/home/petalinux# devmem 0xa4000744          
 0x00000180
 ```
-# Issue RX Reset
+### Issue RX Reset
 ```
 Petalinux:/home/petalinux# devmem 0xa4060008 32 0x2 
 Petalinux:/home/petalinux# devmem 0xa4060008 32 0x0 
