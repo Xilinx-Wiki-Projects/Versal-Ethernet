@@ -1,0 +1,139 @@
+/include/ "system-conf.dtsi"
+/ {
+
+	gt_pll: gt_pll@a40a0000 { 
+			reg = <0x0 0xa40a0000 0x0 0x10000>;
+	};
+	gt_ctrl_common: gt_ctrl_common@a4060000 {
+			reg = <0x0 0xa4060000 0x0 0x40000>;
+	};
+		
+	
+	/delete-node/ gt_quad_base@a4000000;
+	/delete-node/ gpio@a4060000;
+	/delete-node/ mrmac@a4011000;
+	/delete-node/ mrmac@a4012000;
+	/delete-node/ mrmac@a4013000;
+	
+	
+		
+};
+
+&GT_WRAPPER_gt_quad_base{
+	status = "disabled";
+
+};
+
+&amba {
+        zyxclmm_drm {
+                compatible = "xlnx,zocl-versal";
+        };
+};
+
+
+&DATAPATH_MCDMA_HIER_axi_mcdma_0{
+    compatible = "xlnx,eth-dma";
+    xlnx,addrwidth = <0x20>;
+    xlnx,include-dre;
+};
+
+
+
+&mrmac_0 {
+    axistream-connected = <&DATAPATH_MCDMA_HIER_axi_mcdma_0>;
+    interrupt-names = "mm2s_ch1_introut", "s2mm_ch1_introut";
+    interrupt-parent = <&gic>;
+    interrupts = <0 84 4 0 85 4>;
+    xlnx,gt-mode = "Wide";
+    xlnx,gtpll = <&gt_pll>;
+    xlnx,gtctrl = <&gt_ctrl_common>;
+    max-speed = <100000>;
+    xlnx,channel-ids = "1";
+    xlnx,num-queues = /bits/ 16 <0x1>;
+    xlnx,addrwidth = <0x20>;
+    xlnx,axistream-dwidth = <0x100>;
+};
+
+&mrmac_0_1 {
+    axistream-connected = <&DATAPATH_MCDMA_HIER_axi_mcdma_0>;
+    interrupt-names = "mm2s_ch1_introut", "s2mm_ch1_introut";
+    interrupt-parent = <&gic>;
+    interrupts = <0 84 4 0 85 4>;
+    local-mac-address = [00 0a 35 00 00 01];
+    xlnx,gt-mode = "Wide";
+    xlnx,gtpll = <&gt_pll>;
+    xlnx,gtctrl = <&gt_ctrl_common>;
+    max-speed = <100000>;
+    xlnx,channel-ids = "1";
+    xlnx,num-queues = /bits/ 16 <0x1>;
+    xlnx,addrwidth = <0x20>;
+    status = "disabled";
+    xlnx,axistream-dwidth = <0x100>;
+};
+
+&mrmac_0_2 {
+    axistream-connected = <&DATAPATH_MCDMA_HIER_axi_mcdma_0>;
+    interrupt-names = "mm2s_ch1_introut", "s2mm_ch1_introut";
+    interrupt-parent = <&gic>;
+    interrupts = <0 84 4 0 85 4>;
+    local-mac-address = [00 0a 35 00 00 02];
+    xlnx,gt-mode = "Wide";
+    xlnx,gtpll = <&gt_pll>;
+    xlnx,gtctrl = <&gt_ctrl_common>;
+    max-speed = <100000>;
+    xlnx,channel-ids = "1";
+    xlnx,num-queues = /bits/ 16 <0x1>;
+    xlnx,addrwidth = <0x20>;
+    status = "disabled";
+    xlnx,axistream-dwidth = <0x100>;
+};
+
+&mrmac_0_3 {
+    axistream-connected = <&DATAPATH_MCDMA_HIER_axi_mcdma_0>;
+    interrupt-names = "mm2s_ch1_introut", "s2mm_ch1_introut";
+    interrupt-parent = <&gic>;
+    interrupts = <0 84 4 0 85 4>;
+    local-mac-address = [00 0a 35 00 00 03];
+    xlnx,gt-mode = "Wide";
+    xlnx,gtpll = <&gt_pll>;
+    xlnx,gtctrl = <&gt_ctrl_common>;
+    max-speed = <100000>;
+    xlnx,channel-ids = "1";
+    xlnx,num-queues = /bits/ 16 <0x1>;
+    xlnx,addrwidth = <0x20>;
+    status = "disabled";
+    xlnx,axistream-dwidth = <0x100>;
+};
+
+&i2c1{
+		      tca9548@74 {
+			      	compatible = "nxp,pca9548";
+				#pinctrl-names = "default";
+				#address-cells = <0x1>;
+				#size-cells = <0x0>;
+			      	reg = <0x74>;
+				#i2c-mux-idle-disconnect;
+
+
+
+			      i2c@7 {
+					#address-cells = <0x1>;
+					#size-cells = <0x0>;
+				      	reg = <0x7>;
+
+
+
+				      phc@5b {
+					      compatible = "idt,8a34001";
+					      reg = <0x5b>;
+				      };
+			      };
+		      };
+	      };
+
+
+
+
+	
+
+
