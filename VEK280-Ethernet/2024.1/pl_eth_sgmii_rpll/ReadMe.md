@@ -70,7 +70,7 @@ eth1      Link encap:Ethernet  HWaddr 00:0A:35:00:00:00
 
 ---
 ## **Known Issues**
-It is necessary to turn the AN off:
+If the interface is up but the link is not up, the user might need to take the manual steps shown below to turn the AN off:
 ```
 PetaLinux:/home/petalinux# ethtool -s eth1 autoneg off
 PetaLinux:/home/petalinux# [  369.303529] xilinx_axienet a4000000.ethernet eth1: Link is Up - 1Gbps/Full - flow control off
