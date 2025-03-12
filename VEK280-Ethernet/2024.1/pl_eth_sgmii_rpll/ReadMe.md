@@ -30,7 +30,7 @@ The Vivado project will be built in the `Hardware/pl_eth_sgmii_rpll_hw` director
 
 1. Enter the `Software/PetaLinux` directory and use the XSA from `Hardware/prebuilt` to create petalinux workspace. Follow the commands for the following:
 
-   To create Petalinux project, run the following 
+   To configure the PetaLinux project, run the following 
   
   `petalinux-config --get-hw-description  ../../Hardware/prebuilt --silentconfig`
   
