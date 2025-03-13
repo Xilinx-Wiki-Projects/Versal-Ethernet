@@ -1,5 +1,0 @@
-PETALINUX_VER=2024.1
-VALIDATE_HW_CHKSUM=1
-HARDWARE_PATH=/group/techsup/ajayad/cases/for_nan_rpll/my_fork/Versal-Ethernet/VEK280/2024.1/pl_eth_sgmii_rpll/Hardware/pl_eth_sgmii_rpll.xsa
-HDF_EXT=xsa
-YOCTO_SDK=52652d154ddc73d3f72fbc3b7e703dd288d990a9085c36399a106df849a5389f
