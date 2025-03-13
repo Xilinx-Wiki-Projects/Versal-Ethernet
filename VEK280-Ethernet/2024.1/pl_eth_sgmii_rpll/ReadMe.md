@@ -12,7 +12,7 @@ Here is a list of the required hardware to run the example design:
 - VEK280 Eval Board
 - 1G Supported Ethernet Cable
 - SGMII SFP
-- A host machine that VEK280 is connected to through the SFP cable
+- A host machine as a link partner
 
 ---
 
@@ -20,7 +20,7 @@ Here is a list of the required hardware to run the example design:
 
 ### **Vivado:**
 
-Enter the `Scripts` directory. From the command line run the following:
+Enter the `Scripts` directory. From the command line, and run the following:
 
 `vivado -source *top.tcl`
 
@@ -38,7 +38,7 @@ The Vivado project will be built in the `Hardware/pl_eth_sgmii_rpll_hw` director
   
   `petalinux-build`
 
-1. Once complete, the built images can be found in the plnx/images/linux/ directory. To package these images for SD boot, run the following from the plnx directory:
+1. Once complete, the built images can be found in the `<$PROJ_DIR>/images/linux/` directory. To package these images for SD boot, run the following from the plnx directory:
 
   `petalinux-package --boot --plm --psmfw --u-boot --dtb --force` 
 
@@ -47,7 +47,7 @@ The Vivado project will be built in the `Hardware/pl_eth_sgmii_rpll_hw` director
 
 ---
 ### **Validation**:
-####Ping Test
+#### Ping Test
 ```
 PetaLinux:/home/petalinux# ping -A -q -w 3 -I eth1 192.168.1.1 
 PING 192.168.1.1 (192.168.1.1): 56 data bytes
@@ -65,20 +65,17 @@ eth1      Link encap:Ethernet  HWaddr 00:0A:35:00:00:00
           TX packets:201413 errors:0 dropped:0 overruns:0 carrier:0
           collisions:0 txqueuelen:1000 
           RX bytes:9105440596 (8.4 GiB)  TX bytes:13977846 (13.3 MiB)
-
 ```
 
 ---
 ## **Known Issues**
-If the interface is up but the link is not up, the user might need to take the manual steps shown below to turn the AN off:
+If the interface is up but the link is not, the user may need to follow the manual steps below to turn off the AN:
 ```
 PetaLinux:/home/petalinux# ethtool -s eth1 autoneg off
 PetaLinux:/home/petalinux# [  369.303529] xilinx_axienet a4000000.ethernet eth1: Link is Up - 1Gbps/Full - flow control off
 [  369.313244] net eth1: Promiscuous mode enabled.
 [  369.317814] net eth1: Promiscuous mode enabled. 
 ```
-
-
 
 ---
 Copyright 2024 AMD-Xilinx Inc.
