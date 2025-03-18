@@ -20,9 +20,11 @@ The Vivado project will be built in the `Hardware/pl_basex_2_5g_hw` directory.
 
 ### **Petalinux:**
 Enter the `Software/PetaLinux` directory. From the command line run the following:
-`petalinux-config --get-hw-description ../../Hardware/prebuilt/ --silentconfig`
-`petalinux-build`
-`petalinux-package --boot --plm --psmfw --u-boot --dtb --force`
+```
+petalinux-config --get-hw-description ../../Hardware/prebuilt/ --silentconfig
+petalinux-build
+petalinux-package --boot --plm --psmfw --u-boot --dtb --force
+```
 This will build the petalinux images and inside `images/linux` directory. 
 
 ### **Validation:**
