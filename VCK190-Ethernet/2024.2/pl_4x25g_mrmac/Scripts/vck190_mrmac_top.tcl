@@ -32,7 +32,7 @@ set_property board_part xilinx.com:vck190:part0:3.2 [current_project]
 
 # Source the BD file, BD naming convention is xxv_versal.tcl
 source ${project_name}_bd.tcl 
-
+after 30000
 #Set the path to the constraints file:
 set impl_const ../Hardware/constraints/constraints.xdc
 

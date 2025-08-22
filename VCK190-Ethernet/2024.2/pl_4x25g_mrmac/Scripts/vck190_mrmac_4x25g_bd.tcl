@@ -20,7 +20,7 @@ set script_folder [_tcl::get_script_folder]
 ################################################################
 # Check if script is running in correct Vivado version.
 ################################################################
-set scripts_vivado_version 2023.2
+set scripts_vivado_version 2024.2
 set current_vivado_version [version -short]
 
 if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
@@ -53,11 +53,11 @@ if { $list_projs eq "" } {
    set_property BOARD_PART xilinx.com:vck190:part0:3.2 [current_project]
 }
 
-
 file mkdir ../Hardware/vck190_mrmac_4x25g_hw/vck190_mrmac_4x25g.ipdefs/ 
 file copy -force ../Hardware/MRMAC_AXI_MUX_V1_1 ../Hardware/vck190_mrmac_4x25g_hw/vck190_mrmac_4x25g.ipdefs/ 
 set_property  ip_repo_paths ../Hardware/vck190_mrmac_4x25g_hw/vck190_mrmac_4x25g.ipdefs/ [current_project]
 update_ip_catalog
+
 
 # CHANGE DESIGN NAME HERE
 variable design_name
@@ -135,9 +135,9 @@ set bCheckIPsPassed 1
 set bCheckIPs 1
 if { $bCheckIPs == 1 } {
    set list_check_ips "\ 
-xilinx.com:ip:mrmac:2.2\
+xilinx.com:ip:mrmac:3.0\
 xilinx.com:ip:versal_cips:3.4\
-xilinx.com:ip:axi_noc:1.0\
+xilinx.com:ip:axi_noc:1.1\
 xilinx.com:ip:smartconnect:1.0\
 xilinx.com:ip:xlconstant:1.1\
 xilinx.com:ip:clk_wizard:1.0\
@@ -145,7 +145,7 @@ xilinx.com:ip:axi_gpio:2.0\
 xilinx.com:ip:util_vector_logic:2.0\
 xilinx.com:ip:xlconcat:2.1\
 xilinx.com:ip:proc_sys_reset:5.0\
-xilinx.com:ip:axi_mcdma:1.1\
+xilinx.com:ip:axi_mcdma:1.2\
 xilinx.com:ip:axis_data_fifo:2.0\
 xilinx.com:ip:xlslice:1.0\
 xilinx.com:ip:axi_register_slice:2.1\
@@ -244,15 +244,24 @@ proc create_hier_cell_bufg_gt_rxoutclk { parentCell nameHier } {
   set gt_bufg_gt_rxoutclk_ch3 [ create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt:1.0 gt_bufg_gt_rxoutclk_ch3 ]
 
   # Create port connections
-  connect_bd_net -net conct_rx_usr_clk_dout [get_bd_pins conct_rx_usr_clk/dout] [get_bd_pins rx_usr_clk]
-  connect_bd_net -net gt_bufg_gt_rxoutclk_ch0_usrclk [get_bd_pins gt_bufg_gt_rxoutclk_ch0/usrclk] [get_bd_pins conct_rx_usr_clk/In0]
-  connect_bd_net -net gt_bufg_gt_rxoutclk_ch1_usrclk [get_bd_pins gt_bufg_gt_rxoutclk_ch1/usrclk] [get_bd_pins conct_rx_usr_clk/In1]
-  connect_bd_net -net gt_bufg_gt_rxoutclk_ch2_usrclk [get_bd_pins gt_bufg_gt_rxoutclk_ch2/usrclk] [get_bd_pins conct_rx_usr_clk/In2]
-  connect_bd_net -net gt_bufg_gt_rxoutclk_ch3_usrclk [get_bd_pins gt_bufg_gt_rxoutclk_ch3/usrclk] [get_bd_pins conct_rx_usr_clk/In3]
-  connect_bd_net -net outclk1_1 [get_bd_pins outclk1] [get_bd_pins gt_bufg_gt_rxoutclk_ch1/outclk]
-  connect_bd_net -net outclk2_1 [get_bd_pins outclk2] [get_bd_pins gt_bufg_gt_rxoutclk_ch2/outclk]
-  connect_bd_net -net outclk3_1 [get_bd_pins outclk3] [get_bd_pins gt_bufg_gt_rxoutclk_ch3/outclk]
-  connect_bd_net -net outclk_1 [get_bd_pins outclk] [get_bd_pins gt_bufg_gt_rxoutclk_ch0/outclk]
+  connect_bd_net -net conct_rx_usr_clk_dout  [get_bd_pins conct_rx_usr_clk/dout] \
+  [get_bd_pins rx_usr_clk]
+  connect_bd_net -net gt_bufg_gt_rxoutclk_ch0_usrclk  [get_bd_pins gt_bufg_gt_rxoutclk_ch0/usrclk] \
+  [get_bd_pins conct_rx_usr_clk/In0]
+  connect_bd_net -net gt_bufg_gt_rxoutclk_ch1_usrclk  [get_bd_pins gt_bufg_gt_rxoutclk_ch1/usrclk] \
+  [get_bd_pins conct_rx_usr_clk/In1]
+  connect_bd_net -net gt_bufg_gt_rxoutclk_ch2_usrclk  [get_bd_pins gt_bufg_gt_rxoutclk_ch2/usrclk] \
+  [get_bd_pins conct_rx_usr_clk/In2]
+  connect_bd_net -net gt_bufg_gt_rxoutclk_ch3_usrclk  [get_bd_pins gt_bufg_gt_rxoutclk_ch3/usrclk] \
+  [get_bd_pins conct_rx_usr_clk/In3]
+  connect_bd_net -net outclk1_1  [get_bd_pins outclk1] \
+  [get_bd_pins gt_bufg_gt_rxoutclk_ch1/outclk]
+  connect_bd_net -net outclk2_1  [get_bd_pins outclk2] \
+  [get_bd_pins gt_bufg_gt_rxoutclk_ch2/outclk]
+  connect_bd_net -net outclk3_1  [get_bd_pins outclk3] \
+  [get_bd_pins gt_bufg_gt_rxoutclk_ch3/outclk]
+  connect_bd_net -net outclk_1  [get_bd_pins outclk] \
+  [get_bd_pins gt_bufg_gt_rxoutclk_ch0/outclk]
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -311,11 +320,18 @@ proc create_hier_cell_bufg_gt_txoutclk { parentCell nameHier } {
   set gt_bufg_gt_txoutclk_ch2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt:1.0 gt_bufg_gt_txoutclk_ch2 ]
 
   # Create port connections
-  connect_bd_net -net bufg_gt_0_usrclk [get_bd_pins gt_bufg_gt_txoutclk_ch0/usrclk] [get_bd_pins conct_tx_usr_clk/In0] [get_bd_pins conct_tx_usr_clk/In1]
-  connect_bd_net -net conct_tx_usr_clk_dout [get_bd_pins conct_tx_usr_clk/dout] [get_bd_pins tx_usr_clk]
-  connect_bd_net -net gt_bufg_gt_txoutclk_ch2_usrclk [get_bd_pins gt_bufg_gt_txoutclk_ch2/usrclk] [get_bd_pins conct_tx_usr_clk/In2] [get_bd_pins conct_tx_usr_clk/In3]
-  connect_bd_net -net gt_quad_base_ch0_txoutclk [get_bd_pins outclk] [get_bd_pins gt_bufg_gt_txoutclk_ch0/outclk]
-  connect_bd_net -net outclk2_1 [get_bd_pins outclk2] [get_bd_pins gt_bufg_gt_txoutclk_ch2/outclk]
+  connect_bd_net -net bufg_gt_0_usrclk  [get_bd_pins gt_bufg_gt_txoutclk_ch0/usrclk] \
+  [get_bd_pins conct_tx_usr_clk/In0] \
+  [get_bd_pins conct_tx_usr_clk/In1]
+  connect_bd_net -net conct_tx_usr_clk_dout  [get_bd_pins conct_tx_usr_clk/dout] \
+  [get_bd_pins tx_usr_clk]
+  connect_bd_net -net gt_bufg_gt_txoutclk_ch2_usrclk  [get_bd_pins gt_bufg_gt_txoutclk_ch2/usrclk] \
+  [get_bd_pins conct_tx_usr_clk/In2] \
+  [get_bd_pins conct_tx_usr_clk/In3]
+  connect_bd_net -net gt_quad_base_ch0_txoutclk  [get_bd_pins outclk] \
+  [get_bd_pins gt_bufg_gt_txoutclk_ch0/outclk]
+  connect_bd_net -net outclk2_1  [get_bd_pins outclk2] \
+  [get_bd_pins gt_bufg_gt_txoutclk_ch2/outclk]
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -384,7 +400,7 @@ proc create_hier_cell_MCDMA2 { parentCell nameHier } {
   create_bd_pin -dir I s_axis_tvalid
 
   # Create instance: axi_mcdma_0, and set properties
-  set axi_mcdma_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_mcdma:1.1 axi_mcdma_0 ]
+  set axi_mcdma_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_mcdma:1.2 axi_mcdma_0 ]
   set_property -dict [list \
     CONFIG.c_addr_width {32} \
     CONFIG.c_include_mm2s_dre {1} \
@@ -416,6 +432,7 @@ proc create_hier_cell_MCDMA2 { parentCell nameHier } {
   set_property -dict [list \
     CONFIG.DIN_FROM {7} \
     CONFIG.DIN_WIDTH {11} \
+    CONFIG.DOUT_WIDTH {8} \
   ] $xlslice_0
 
 
@@ -508,41 +525,91 @@ proc create_hier_cell_MCDMA2 { parentCell nameHier } {
   connect_bd_intf_net -intf_net axis_data_fifo_3_M_AXIS [get_bd_intf_pins axis_data_fifo_3/M_AXIS] [get_bd_intf_pins mrmac_10g_mux_0/tx_s_axis]
 
   # Create port connections
-  connect_bd_net -net Din_1 [get_bd_pins Din] [get_bd_pins xlslice_4/Din]
-  connect_bd_net -net Net [get_bd_pins m_axis_aclk_0] [get_bd_pins axis_data_fifo_1/s_axis_aclk] [get_bd_pins axi_mcdma_0/s_axi_aclk] [get_bd_pins axi_register_slice_0_readonly/aclk] [get_bd_pins axi_register_slice_0_writeonly/aclk] [get_bd_pins axis_data_fifo_2/s_axis_aclk] [get_bd_pins axis_data_fifo_0/s_axis_aclk] [get_bd_pins axis_data_fifo_3/s_axis_aclk] [get_bd_pins mrmac_10g_mux_0/rx_s_aclk] [get_bd_pins mrmac_10g_mux_0/tx_s_aclk]
-  connect_bd_net -net axi_mcdma_3_mm2s_ch1_introut [get_bd_pins axi_mcdma_0/mm2s_ch1_introut] [get_bd_pins mm2s_ch1_introut_3]
-  connect_bd_net -net axi_mcdma_3_s2mm_ch1_introut [get_bd_pins axi_mcdma_0/s2mm_ch1_introut] [get_bd_pins s2mm_ch1_introut_3]
-  connect_bd_net -net axi_resetn_3_1 [get_bd_pins axi_resetn_3] [get_bd_pins axi_mcdma_0/axi_resetn]
-  connect_bd_net -net axis_data_fifo_0_s_axis_tready [get_bd_pins axis_data_fifo_0/s_axis_tready] [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tready]
-  connect_bd_net -net axis_data_fifo_1_s_axis_tready [get_bd_pins axis_data_fifo_1/s_axis_tready] [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tready]
-  connect_bd_net -net axis_data_fifo_2_m_axis_tdata [get_bd_pins axis_data_fifo_2/m_axis_tdata] [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tdata]
-  connect_bd_net -net axis_data_fifo_2_m_axis_tkeep [get_bd_pins axis_data_fifo_2/m_axis_tkeep] [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tkeep]
-  connect_bd_net -net axis_data_fifo_2_m_axis_tlast [get_bd_pins axis_data_fifo_2/m_axis_tlast] [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tlast]
-  connect_bd_net -net axis_data_fifo_2_m_axis_tvalid [get_bd_pins axis_data_fifo_2/m_axis_tvalid] [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tvalid]
-  connect_bd_net -net axis_data_fifo_7_m_axis_tdata [get_bd_pins axis_data_fifo_1/m_axis_tdata] [get_bd_pins m_axis_tdata_3]
-  connect_bd_net -net axis_data_fifo_7_m_axis_tkeep [get_bd_pins axis_data_fifo_1/m_axis_tkeep] [get_bd_pins xlconcat_0/In0]
-  connect_bd_net -net axis_data_fifo_7_m_axis_tlast [get_bd_pins axis_data_fifo_1/m_axis_tlast] [get_bd_pins tx_tlast3]
-  connect_bd_net -net axis_data_fifo_7_m_axis_tvalid [get_bd_pins axis_data_fifo_1/m_axis_tvalid] [get_bd_pins tx_tvalid3]
-  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tdata [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tdata] [get_bd_pins axis_data_fifo_0/s_axis_tdata]
-  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tkeep [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tkeep] [get_bd_pins axis_data_fifo_0/s_axis_tkeep]
-  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tlast [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tlast] [get_bd_pins axis_data_fifo_0/s_axis_tlast]
-  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tvalid [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tvalid] [get_bd_pins axis_data_fifo_0/s_axis_tvalid]
-  connect_bd_net -net mrmac_10g_mux_0_rx_s_axis_tready [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tready] [get_bd_pins axis_data_fifo_2/m_axis_tready]
-  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tdata [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tdata] [get_bd_pins axis_data_fifo_1/s_axis_tdata]
-  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tkeep [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tkeep] [get_bd_pins axis_data_fifo_1/s_axis_tkeep]
-  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tlast [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tlast] [get_bd_pins axis_data_fifo_1/s_axis_tlast]
-  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tvalid [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tvalid] [get_bd_pins axis_data_fifo_1/s_axis_tvalid]
-  connect_bd_net -net s_axi_aclk_1 [get_bd_pins s_axi_aclk] [get_bd_pins axi_mcdma_0/s_axi_lite_aclk]
-  connect_bd_net -net s_axis_aresetn_1 [get_bd_pins core_reset] [get_bd_pins axis_data_fifo_1/s_axis_aresetn] [get_bd_pins axi_register_slice_0_readonly/aresetn] [get_bd_pins axi_register_slice_0_writeonly/aresetn] [get_bd_pins axis_data_fifo_2/s_axis_aresetn] [get_bd_pins axis_data_fifo_0/s_axis_aresetn] [get_bd_pins axis_data_fifo_3/s_axis_aresetn] [get_bd_pins mrmac_10g_mux_0/rx_s_aresetn] [get_bd_pins mrmac_10g_mux_0/tx_s_aresetn]
-  connect_bd_net -net s_axis_tdata_1 [get_bd_pins s_axis_tdata] [get_bd_pins axis_data_fifo_2/s_axis_tdata]
-  connect_bd_net -net s_axis_tkeep_3_1 [get_bd_pins s_axis_tkeep_3] [get_bd_pins xlslice_0/Din]
-  connect_bd_net -net s_axis_tlast_1 [get_bd_pins s_axis_tlast] [get_bd_pins axis_data_fifo_2/s_axis_tlast]
-  connect_bd_net -net s_axis_tvalid_1 [get_bd_pins s_axis_tvalid] [get_bd_pins axis_data_fifo_2/s_axis_tvalid]
-  connect_bd_net -net tx_axis_tready_3_1 [get_bd_pins tx_axis_tready_3] [get_bd_pins axis_data_fifo_1/m_axis_tready]
-  connect_bd_net -net xlconcat_1_dout [get_bd_pins xlconcat_0/dout] [get_bd_pins tx_tkeep3]
-  connect_bd_net -net xlconstant_0_dout [get_bd_pins xlconstant_0/dout] [get_bd_pins xlconcat_0/In1]
-  connect_bd_net -net xlslice_0_Dout [get_bd_pins xlslice_0/Dout] [get_bd_pins axis_data_fifo_2/s_axis_tkeep]
-  connect_bd_net -net xlslice_4_Dout [get_bd_pins xlslice_4/Dout] [get_bd_pins mrmac_10g_mux_0/sel_10g_mode]
+  connect_bd_net -net Din_1  [get_bd_pins Din] \
+  [get_bd_pins xlslice_4/Din]
+  connect_bd_net -net Net  [get_bd_pins m_axis_aclk_0] \
+  [get_bd_pins axi_mcdma_0/s_axi_aclk] \
+  [get_bd_pins axi_register_slice_0_readonly/aclk] \
+  [get_bd_pins axi_register_slice_0_writeonly/aclk] \
+  [get_bd_pins axis_data_fifo_0/s_axis_aclk] \
+  [get_bd_pins axis_data_fifo_1/s_axis_aclk] \
+  [get_bd_pins axis_data_fifo_2/s_axis_aclk] \
+  [get_bd_pins axis_data_fifo_3/s_axis_aclk] \
+  [get_bd_pins mrmac_10g_mux_0/tx_s_aclk] \
+  [get_bd_pins mrmac_10g_mux_0/rx_s_aclk]
+  connect_bd_net -net axi_mcdma_3_mm2s_ch1_introut  [get_bd_pins axi_mcdma_0/mm2s_ch1_introut] \
+  [get_bd_pins mm2s_ch1_introut_3]
+  connect_bd_net -net axi_mcdma_3_s2mm_ch1_introut  [get_bd_pins axi_mcdma_0/s2mm_ch1_introut] \
+  [get_bd_pins s2mm_ch1_introut_3]
+  connect_bd_net -net axi_resetn_3_1  [get_bd_pins axi_resetn_3] \
+  [get_bd_pins axi_mcdma_0/axi_resetn]
+  connect_bd_net -net axis_data_fifo_0_s_axis_tready  [get_bd_pins axis_data_fifo_0/s_axis_tready] \
+  [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tready]
+  connect_bd_net -net axis_data_fifo_1_s_axis_tready  [get_bd_pins axis_data_fifo_1/s_axis_tready] \
+  [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tready]
+  connect_bd_net -net axis_data_fifo_2_m_axis_tdata  [get_bd_pins axis_data_fifo_2/m_axis_tdata] \
+  [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tdata]
+  connect_bd_net -net axis_data_fifo_2_m_axis_tkeep  [get_bd_pins axis_data_fifo_2/m_axis_tkeep] \
+  [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tkeep]
+  connect_bd_net -net axis_data_fifo_2_m_axis_tlast  [get_bd_pins axis_data_fifo_2/m_axis_tlast] \
+  [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tlast]
+  connect_bd_net -net axis_data_fifo_2_m_axis_tvalid  [get_bd_pins axis_data_fifo_2/m_axis_tvalid] \
+  [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tvalid]
+  connect_bd_net -net axis_data_fifo_7_m_axis_tdata  [get_bd_pins axis_data_fifo_1/m_axis_tdata] \
+  [get_bd_pins m_axis_tdata_3]
+  connect_bd_net -net axis_data_fifo_7_m_axis_tkeep  [get_bd_pins axis_data_fifo_1/m_axis_tkeep] \
+  [get_bd_pins xlconcat_0/In0]
+  connect_bd_net -net axis_data_fifo_7_m_axis_tlast  [get_bd_pins axis_data_fifo_1/m_axis_tlast] \
+  [get_bd_pins tx_tlast3]
+  connect_bd_net -net axis_data_fifo_7_m_axis_tvalid  [get_bd_pins axis_data_fifo_1/m_axis_tvalid] \
+  [get_bd_pins tx_tvalid3]
+  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tdata  [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tdata] \
+  [get_bd_pins axis_data_fifo_0/s_axis_tdata]
+  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tkeep  [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tkeep] \
+  [get_bd_pins axis_data_fifo_0/s_axis_tkeep]
+  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tlast  [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tlast] \
+  [get_bd_pins axis_data_fifo_0/s_axis_tlast]
+  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tvalid  [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tvalid] \
+  [get_bd_pins axis_data_fifo_0/s_axis_tvalid]
+  connect_bd_net -net mrmac_10g_mux_0_rx_s_axis_tready  [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tready] \
+  [get_bd_pins axis_data_fifo_2/m_axis_tready]
+  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tdata  [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tdata] \
+  [get_bd_pins axis_data_fifo_1/s_axis_tdata]
+  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tkeep  [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tkeep] \
+  [get_bd_pins axis_data_fifo_1/s_axis_tkeep]
+  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tlast  [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tlast] \
+  [get_bd_pins axis_data_fifo_1/s_axis_tlast]
+  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tvalid  [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tvalid] \
+  [get_bd_pins axis_data_fifo_1/s_axis_tvalid]
+  connect_bd_net -net s_axi_aclk_1  [get_bd_pins s_axi_aclk] \
+  [get_bd_pins axi_mcdma_0/s_axi_lite_aclk]
+  connect_bd_net -net s_axis_aresetn_1  [get_bd_pins core_reset] \
+  [get_bd_pins axi_register_slice_0_readonly/aresetn] \
+  [get_bd_pins axi_register_slice_0_writeonly/aresetn] \
+  [get_bd_pins axis_data_fifo_0/s_axis_aresetn] \
+  [get_bd_pins axis_data_fifo_1/s_axis_aresetn] \
+  [get_bd_pins axis_data_fifo_2/s_axis_aresetn] \
+  [get_bd_pins axis_data_fifo_3/s_axis_aresetn] \
+  [get_bd_pins mrmac_10g_mux_0/tx_s_aresetn] \
+  [get_bd_pins mrmac_10g_mux_0/rx_s_aresetn]
+  connect_bd_net -net s_axis_tdata_1  [get_bd_pins s_axis_tdata] \
+  [get_bd_pins axis_data_fifo_2/s_axis_tdata]
+  connect_bd_net -net s_axis_tkeep_3_1  [get_bd_pins s_axis_tkeep_3] \
+  [get_bd_pins xlslice_0/Din]
+  connect_bd_net -net s_axis_tlast_1  [get_bd_pins s_axis_tlast] \
+  [get_bd_pins axis_data_fifo_2/s_axis_tlast]
+  connect_bd_net -net s_axis_tvalid_1  [get_bd_pins s_axis_tvalid] \
+  [get_bd_pins axis_data_fifo_2/s_axis_tvalid]
+  connect_bd_net -net tx_axis_tready_3_1  [get_bd_pins tx_axis_tready_3] \
+  [get_bd_pins axis_data_fifo_1/m_axis_tready]
+  connect_bd_net -net xlconcat_1_dout  [get_bd_pins xlconcat_0/dout] \
+  [get_bd_pins tx_tkeep3]
+  connect_bd_net -net xlconstant_0_dout  [get_bd_pins xlconstant_0/dout] \
+  [get_bd_pins xlconcat_0/In1]
+  connect_bd_net -net xlslice_0_Dout  [get_bd_pins xlslice_0/Dout] \
+  [get_bd_pins axis_data_fifo_2/s_axis_tkeep]
+  connect_bd_net -net xlslice_4_Dout  [get_bd_pins xlslice_4/Dout] \
+  [get_bd_pins mrmac_10g_mux_0/sel_10g_mode]
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -611,7 +678,7 @@ proc create_hier_cell_MCDMA1 { parentCell nameHier } {
   create_bd_pin -dir I s_axis_tvalid
 
   # Create instance: axi_mcdma_0, and set properties
-  set axi_mcdma_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_mcdma:1.1 axi_mcdma_0 ]
+  set axi_mcdma_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_mcdma:1.2 axi_mcdma_0 ]
   set_property -dict [list \
     CONFIG.c_addr_width {32} \
     CONFIG.c_include_mm2s_dre {1} \
@@ -643,6 +710,7 @@ proc create_hier_cell_MCDMA1 { parentCell nameHier } {
   set_property -dict [list \
     CONFIG.DIN_FROM {7} \
     CONFIG.DIN_WIDTH {11} \
+    CONFIG.DOUT_WIDTH {8} \
   ] $xlslice_0
 
 
@@ -735,41 +803,91 @@ proc create_hier_cell_MCDMA1 { parentCell nameHier } {
   connect_bd_intf_net -intf_net axis_data_fifo_3_M_AXIS [get_bd_intf_pins axis_data_fifo_3/M_AXIS] [get_bd_intf_pins mrmac_10g_mux_0/tx_s_axis]
 
   # Create port connections
-  connect_bd_net -net Din_1 [get_bd_pins Din] [get_bd_pins xlslice_4/Din]
-  connect_bd_net -net Net [get_bd_pins m_axis_aclk_0] [get_bd_pins axis_data_fifo_1/s_axis_aclk] [get_bd_pins axi_mcdma_0/s_axi_aclk] [get_bd_pins axi_register_slice_0_readonly/aclk] [get_bd_pins axi_register_slice_0_writeonly/aclk] [get_bd_pins axis_data_fifo_2/s_axis_aclk] [get_bd_pins axis_data_fifo_0/s_axis_aclk] [get_bd_pins axis_data_fifo_3/s_axis_aclk] [get_bd_pins mrmac_10g_mux_0/rx_s_aclk] [get_bd_pins mrmac_10g_mux_0/tx_s_aclk]
-  connect_bd_net -net axi_mcdma_3_mm2s_ch1_introut [get_bd_pins axi_mcdma_0/mm2s_ch1_introut] [get_bd_pins mm2s_ch1_introut_3]
-  connect_bd_net -net axi_mcdma_3_s2mm_ch1_introut [get_bd_pins axi_mcdma_0/s2mm_ch1_introut] [get_bd_pins s2mm_ch1_introut_3]
-  connect_bd_net -net axi_resetn_3_1 [get_bd_pins axi_resetn_3] [get_bd_pins axi_mcdma_0/axi_resetn]
-  connect_bd_net -net axis_data_fifo_0_s_axis_tready [get_bd_pins axis_data_fifo_0/s_axis_tready] [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tready]
-  connect_bd_net -net axis_data_fifo_1_s_axis_tready [get_bd_pins axis_data_fifo_1/s_axis_tready] [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tready]
-  connect_bd_net -net axis_data_fifo_2_m_axis_tdata [get_bd_pins axis_data_fifo_2/m_axis_tdata] [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tdata]
-  connect_bd_net -net axis_data_fifo_2_m_axis_tkeep [get_bd_pins axis_data_fifo_2/m_axis_tkeep] [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tkeep]
-  connect_bd_net -net axis_data_fifo_2_m_axis_tlast [get_bd_pins axis_data_fifo_2/m_axis_tlast] [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tlast]
-  connect_bd_net -net axis_data_fifo_2_m_axis_tvalid [get_bd_pins axis_data_fifo_2/m_axis_tvalid] [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tvalid]
-  connect_bd_net -net axis_data_fifo_7_m_axis_tdata [get_bd_pins axis_data_fifo_1/m_axis_tdata] [get_bd_pins m_axis_tdata_3]
-  connect_bd_net -net axis_data_fifo_7_m_axis_tkeep [get_bd_pins axis_data_fifo_1/m_axis_tkeep] [get_bd_pins xlconcat_0/In0]
-  connect_bd_net -net axis_data_fifo_7_m_axis_tlast [get_bd_pins axis_data_fifo_1/m_axis_tlast] [get_bd_pins tx_tlast3]
-  connect_bd_net -net axis_data_fifo_7_m_axis_tvalid [get_bd_pins axis_data_fifo_1/m_axis_tvalid] [get_bd_pins tx_tvalid3]
-  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tdata [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tdata] [get_bd_pins axis_data_fifo_0/s_axis_tdata]
-  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tkeep [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tkeep] [get_bd_pins axis_data_fifo_0/s_axis_tkeep]
-  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tlast [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tlast] [get_bd_pins axis_data_fifo_0/s_axis_tlast]
-  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tvalid [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tvalid] [get_bd_pins axis_data_fifo_0/s_axis_tvalid]
-  connect_bd_net -net mrmac_10g_mux_0_rx_s_axis_tready [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tready] [get_bd_pins axis_data_fifo_2/m_axis_tready]
-  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tdata [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tdata] [get_bd_pins axis_data_fifo_1/s_axis_tdata]
-  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tkeep [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tkeep] [get_bd_pins axis_data_fifo_1/s_axis_tkeep]
-  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tlast [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tlast] [get_bd_pins axis_data_fifo_1/s_axis_tlast]
-  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tvalid [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tvalid] [get_bd_pins axis_data_fifo_1/s_axis_tvalid]
-  connect_bd_net -net s_axi_aclk_1 [get_bd_pins s_axi_aclk] [get_bd_pins axi_mcdma_0/s_axi_lite_aclk]
-  connect_bd_net -net s_axis_aresetn_1 [get_bd_pins core_reset] [get_bd_pins axis_data_fifo_1/s_axis_aresetn] [get_bd_pins axi_register_slice_0_readonly/aresetn] [get_bd_pins axi_register_slice_0_writeonly/aresetn] [get_bd_pins axis_data_fifo_2/s_axis_aresetn] [get_bd_pins axis_data_fifo_0/s_axis_aresetn] [get_bd_pins axis_data_fifo_3/s_axis_aresetn] [get_bd_pins mrmac_10g_mux_0/rx_s_aresetn] [get_bd_pins mrmac_10g_mux_0/tx_s_aresetn]
-  connect_bd_net -net s_axis_tdata_1 [get_bd_pins s_axis_tdata] [get_bd_pins axis_data_fifo_2/s_axis_tdata]
-  connect_bd_net -net s_axis_tkeep_3_1 [get_bd_pins s_axis_tkeep_3] [get_bd_pins xlslice_0/Din]
-  connect_bd_net -net s_axis_tlast_1 [get_bd_pins s_axis_tlast] [get_bd_pins axis_data_fifo_2/s_axis_tlast]
-  connect_bd_net -net s_axis_tvalid_1 [get_bd_pins s_axis_tvalid] [get_bd_pins axis_data_fifo_2/s_axis_tvalid]
-  connect_bd_net -net tx_axis_tready_3_1 [get_bd_pins tx_axis_tready_3] [get_bd_pins axis_data_fifo_1/m_axis_tready]
-  connect_bd_net -net xlconcat_1_dout [get_bd_pins xlconcat_0/dout] [get_bd_pins tx_tkeep3]
-  connect_bd_net -net xlconstant_0_dout [get_bd_pins xlconstant_0/dout] [get_bd_pins xlconcat_0/In1]
-  connect_bd_net -net xlslice_0_Dout [get_bd_pins xlslice_0/Dout] [get_bd_pins axis_data_fifo_2/s_axis_tkeep]
-  connect_bd_net -net xlslice_4_Dout [get_bd_pins xlslice_4/Dout] [get_bd_pins mrmac_10g_mux_0/sel_10g_mode]
+  connect_bd_net -net Din_1  [get_bd_pins Din] \
+  [get_bd_pins xlslice_4/Din]
+  connect_bd_net -net Net  [get_bd_pins m_axis_aclk_0] \
+  [get_bd_pins axi_mcdma_0/s_axi_aclk] \
+  [get_bd_pins axi_register_slice_0_readonly/aclk] \
+  [get_bd_pins axi_register_slice_0_writeonly/aclk] \
+  [get_bd_pins axis_data_fifo_0/s_axis_aclk] \
+  [get_bd_pins axis_data_fifo_1/s_axis_aclk] \
+  [get_bd_pins axis_data_fifo_2/s_axis_aclk] \
+  [get_bd_pins axis_data_fifo_3/s_axis_aclk] \
+  [get_bd_pins mrmac_10g_mux_0/tx_s_aclk] \
+  [get_bd_pins mrmac_10g_mux_0/rx_s_aclk]
+  connect_bd_net -net axi_mcdma_3_mm2s_ch1_introut  [get_bd_pins axi_mcdma_0/mm2s_ch1_introut] \
+  [get_bd_pins mm2s_ch1_introut_3]
+  connect_bd_net -net axi_mcdma_3_s2mm_ch1_introut  [get_bd_pins axi_mcdma_0/s2mm_ch1_introut] \
+  [get_bd_pins s2mm_ch1_introut_3]
+  connect_bd_net -net axi_resetn_3_1  [get_bd_pins axi_resetn_3] \
+  [get_bd_pins axi_mcdma_0/axi_resetn]
+  connect_bd_net -net axis_data_fifo_0_s_axis_tready  [get_bd_pins axis_data_fifo_0/s_axis_tready] \
+  [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tready]
+  connect_bd_net -net axis_data_fifo_1_s_axis_tready  [get_bd_pins axis_data_fifo_1/s_axis_tready] \
+  [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tready]
+  connect_bd_net -net axis_data_fifo_2_m_axis_tdata  [get_bd_pins axis_data_fifo_2/m_axis_tdata] \
+  [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tdata]
+  connect_bd_net -net axis_data_fifo_2_m_axis_tkeep  [get_bd_pins axis_data_fifo_2/m_axis_tkeep] \
+  [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tkeep]
+  connect_bd_net -net axis_data_fifo_2_m_axis_tlast  [get_bd_pins axis_data_fifo_2/m_axis_tlast] \
+  [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tlast]
+  connect_bd_net -net axis_data_fifo_2_m_axis_tvalid  [get_bd_pins axis_data_fifo_2/m_axis_tvalid] \
+  [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tvalid]
+  connect_bd_net -net axis_data_fifo_7_m_axis_tdata  [get_bd_pins axis_data_fifo_1/m_axis_tdata] \
+  [get_bd_pins m_axis_tdata_3]
+  connect_bd_net -net axis_data_fifo_7_m_axis_tkeep  [get_bd_pins axis_data_fifo_1/m_axis_tkeep] \
+  [get_bd_pins xlconcat_0/In0]
+  connect_bd_net -net axis_data_fifo_7_m_axis_tlast  [get_bd_pins axis_data_fifo_1/m_axis_tlast] \
+  [get_bd_pins tx_tlast3]
+  connect_bd_net -net axis_data_fifo_7_m_axis_tvalid  [get_bd_pins axis_data_fifo_1/m_axis_tvalid] \
+  [get_bd_pins tx_tvalid3]
+  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tdata  [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tdata] \
+  [get_bd_pins axis_data_fifo_0/s_axis_tdata]
+  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tkeep  [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tkeep] \
+  [get_bd_pins axis_data_fifo_0/s_axis_tkeep]
+  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tlast  [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tlast] \
+  [get_bd_pins axis_data_fifo_0/s_axis_tlast]
+  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tvalid  [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tvalid] \
+  [get_bd_pins axis_data_fifo_0/s_axis_tvalid]
+  connect_bd_net -net mrmac_10g_mux_0_rx_s_axis_tready  [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tready] \
+  [get_bd_pins axis_data_fifo_2/m_axis_tready]
+  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tdata  [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tdata] \
+  [get_bd_pins axis_data_fifo_1/s_axis_tdata]
+  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tkeep  [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tkeep] \
+  [get_bd_pins axis_data_fifo_1/s_axis_tkeep]
+  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tlast  [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tlast] \
+  [get_bd_pins axis_data_fifo_1/s_axis_tlast]
+  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tvalid  [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tvalid] \
+  [get_bd_pins axis_data_fifo_1/s_axis_tvalid]
+  connect_bd_net -net s_axi_aclk_1  [get_bd_pins s_axi_aclk] \
+  [get_bd_pins axi_mcdma_0/s_axi_lite_aclk]
+  connect_bd_net -net s_axis_aresetn_1  [get_bd_pins core_reset] \
+  [get_bd_pins axi_register_slice_0_readonly/aresetn] \
+  [get_bd_pins axi_register_slice_0_writeonly/aresetn] \
+  [get_bd_pins axis_data_fifo_0/s_axis_aresetn] \
+  [get_bd_pins axis_data_fifo_1/s_axis_aresetn] \
+  [get_bd_pins axis_data_fifo_2/s_axis_aresetn] \
+  [get_bd_pins axis_data_fifo_3/s_axis_aresetn] \
+  [get_bd_pins mrmac_10g_mux_0/tx_s_aresetn] \
+  [get_bd_pins mrmac_10g_mux_0/rx_s_aresetn]
+  connect_bd_net -net s_axis_tdata_1  [get_bd_pins s_axis_tdata] \
+  [get_bd_pins axis_data_fifo_2/s_axis_tdata]
+  connect_bd_net -net s_axis_tkeep_3_1  [get_bd_pins s_axis_tkeep_3] \
+  [get_bd_pins xlslice_0/Din]
+  connect_bd_net -net s_axis_tlast_1  [get_bd_pins s_axis_tlast] \
+  [get_bd_pins axis_data_fifo_2/s_axis_tlast]
+  connect_bd_net -net s_axis_tvalid_1  [get_bd_pins s_axis_tvalid] \
+  [get_bd_pins axis_data_fifo_2/s_axis_tvalid]
+  connect_bd_net -net tx_axis_tready_3_1  [get_bd_pins tx_axis_tready_3] \
+  [get_bd_pins axis_data_fifo_1/m_axis_tready]
+  connect_bd_net -net xlconcat_1_dout  [get_bd_pins xlconcat_0/dout] \
+  [get_bd_pins tx_tkeep3]
+  connect_bd_net -net xlconstant_0_dout  [get_bd_pins xlconstant_0/dout] \
+  [get_bd_pins xlconcat_0/In1]
+  connect_bd_net -net xlslice_0_Dout  [get_bd_pins xlslice_0/Dout] \
+  [get_bd_pins axis_data_fifo_2/s_axis_tkeep]
+  connect_bd_net -net xlslice_4_Dout  [get_bd_pins xlslice_4/Dout] \
+  [get_bd_pins mrmac_10g_mux_0/sel_10g_mode]
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -838,7 +956,7 @@ proc create_hier_cell_MCDMA3 { parentCell nameHier } {
   create_bd_pin -dir I s_axis_tvalid
 
   # Create instance: axi_mcdma_0, and set properties
-  set axi_mcdma_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_mcdma:1.1 axi_mcdma_0 ]
+  set axi_mcdma_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_mcdma:1.2 axi_mcdma_0 ]
   set_property -dict [list \
     CONFIG.c_addr_width {32} \
     CONFIG.c_include_mm2s_dre {1} \
@@ -870,6 +988,7 @@ proc create_hier_cell_MCDMA3 { parentCell nameHier } {
   set_property -dict [list \
     CONFIG.DIN_FROM {7} \
     CONFIG.DIN_WIDTH {11} \
+    CONFIG.DOUT_WIDTH {8} \
   ] $xlslice_0
 
 
@@ -962,41 +1081,91 @@ proc create_hier_cell_MCDMA3 { parentCell nameHier } {
   connect_bd_intf_net -intf_net axis_data_fifo_3_M_AXIS [get_bd_intf_pins axis_data_fifo_3/M_AXIS] [get_bd_intf_pins mrmac_10g_mux_0/tx_s_axis]
 
   # Create port connections
-  connect_bd_net -net Din_1 [get_bd_pins Din] [get_bd_pins xlslice_4/Din]
-  connect_bd_net -net Net [get_bd_pins m_axis_aclk_0] [get_bd_pins axis_data_fifo_1/s_axis_aclk] [get_bd_pins axi_mcdma_0/s_axi_aclk] [get_bd_pins axi_register_slice_0_readonly/aclk] [get_bd_pins axi_register_slice_0_writeonly/aclk] [get_bd_pins axis_data_fifo_2/s_axis_aclk] [get_bd_pins axis_data_fifo_0/s_axis_aclk] [get_bd_pins axis_data_fifo_3/s_axis_aclk] [get_bd_pins mrmac_10g_mux_0/rx_s_aclk] [get_bd_pins mrmac_10g_mux_0/tx_s_aclk]
-  connect_bd_net -net axi_mcdma_3_mm2s_ch1_introut [get_bd_pins axi_mcdma_0/mm2s_ch1_introut] [get_bd_pins mm2s_ch1_introut_3]
-  connect_bd_net -net axi_mcdma_3_s2mm_ch1_introut [get_bd_pins axi_mcdma_0/s2mm_ch1_introut] [get_bd_pins s2mm_ch1_introut_3]
-  connect_bd_net -net axi_resetn_3_1 [get_bd_pins axi_resetn_3] [get_bd_pins axi_mcdma_0/axi_resetn]
-  connect_bd_net -net axis_data_fifo_0_s_axis_tready [get_bd_pins axis_data_fifo_0/s_axis_tready] [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tready]
-  connect_bd_net -net axis_data_fifo_1_s_axis_tready [get_bd_pins axis_data_fifo_1/s_axis_tready] [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tready]
-  connect_bd_net -net axis_data_fifo_2_m_axis_tdata [get_bd_pins axis_data_fifo_2/m_axis_tdata] [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tdata]
-  connect_bd_net -net axis_data_fifo_2_m_axis_tkeep [get_bd_pins axis_data_fifo_2/m_axis_tkeep] [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tkeep]
-  connect_bd_net -net axis_data_fifo_2_m_axis_tlast [get_bd_pins axis_data_fifo_2/m_axis_tlast] [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tlast]
-  connect_bd_net -net axis_data_fifo_2_m_axis_tvalid [get_bd_pins axis_data_fifo_2/m_axis_tvalid] [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tvalid]
-  connect_bd_net -net axis_data_fifo_7_m_axis_tdata [get_bd_pins axis_data_fifo_1/m_axis_tdata] [get_bd_pins m_axis_tdata_3]
-  connect_bd_net -net axis_data_fifo_7_m_axis_tkeep [get_bd_pins axis_data_fifo_1/m_axis_tkeep] [get_bd_pins xlconcat_0/In0]
-  connect_bd_net -net axis_data_fifo_7_m_axis_tlast [get_bd_pins axis_data_fifo_1/m_axis_tlast] [get_bd_pins tx_tlast3]
-  connect_bd_net -net axis_data_fifo_7_m_axis_tvalid [get_bd_pins axis_data_fifo_1/m_axis_tvalid] [get_bd_pins tx_tvalid3]
-  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tdata [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tdata] [get_bd_pins axis_data_fifo_0/s_axis_tdata]
-  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tkeep [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tkeep] [get_bd_pins axis_data_fifo_0/s_axis_tkeep]
-  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tlast [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tlast] [get_bd_pins axis_data_fifo_0/s_axis_tlast]
-  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tvalid [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tvalid] [get_bd_pins axis_data_fifo_0/s_axis_tvalid]
-  connect_bd_net -net mrmac_10g_mux_0_rx_s_axis_tready [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tready] [get_bd_pins axis_data_fifo_2/m_axis_tready]
-  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tdata [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tdata] [get_bd_pins axis_data_fifo_1/s_axis_tdata]
-  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tkeep [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tkeep] [get_bd_pins axis_data_fifo_1/s_axis_tkeep]
-  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tlast [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tlast] [get_bd_pins axis_data_fifo_1/s_axis_tlast]
-  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tvalid [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tvalid] [get_bd_pins axis_data_fifo_1/s_axis_tvalid]
-  connect_bd_net -net s_axi_aclk_1 [get_bd_pins s_axi_aclk] [get_bd_pins axi_mcdma_0/s_axi_lite_aclk]
-  connect_bd_net -net s_axis_aresetn_1 [get_bd_pins core_reset] [get_bd_pins axis_data_fifo_1/s_axis_aresetn] [get_bd_pins axi_register_slice_0_readonly/aresetn] [get_bd_pins axi_register_slice_0_writeonly/aresetn] [get_bd_pins axis_data_fifo_2/s_axis_aresetn] [get_bd_pins axis_data_fifo_0/s_axis_aresetn] [get_bd_pins axis_data_fifo_3/s_axis_aresetn] [get_bd_pins mrmac_10g_mux_0/rx_s_aresetn] [get_bd_pins mrmac_10g_mux_0/tx_s_aresetn]
-  connect_bd_net -net s_axis_tdata_1 [get_bd_pins s_axis_tdata] [get_bd_pins axis_data_fifo_2/s_axis_tdata]
-  connect_bd_net -net s_axis_tkeep_3_1 [get_bd_pins s_axis_tkeep_3] [get_bd_pins xlslice_0/Din]
-  connect_bd_net -net s_axis_tlast_1 [get_bd_pins s_axis_tlast] [get_bd_pins axis_data_fifo_2/s_axis_tlast]
-  connect_bd_net -net s_axis_tvalid_1 [get_bd_pins s_axis_tvalid] [get_bd_pins axis_data_fifo_2/s_axis_tvalid]
-  connect_bd_net -net tx_axis_tready_3_1 [get_bd_pins tx_axis_tready_3] [get_bd_pins axis_data_fifo_1/m_axis_tready]
-  connect_bd_net -net xlconcat_1_dout [get_bd_pins xlconcat_0/dout] [get_bd_pins tx_tkeep3]
-  connect_bd_net -net xlconstant_0_dout [get_bd_pins xlconstant_0/dout] [get_bd_pins xlconcat_0/In1]
-  connect_bd_net -net xlslice_0_Dout [get_bd_pins xlslice_0/Dout] [get_bd_pins axis_data_fifo_2/s_axis_tkeep]
-  connect_bd_net -net xlslice_4_Dout [get_bd_pins xlslice_4/Dout] [get_bd_pins mrmac_10g_mux_0/sel_10g_mode]
+  connect_bd_net -net Din_1  [get_bd_pins Din] \
+  [get_bd_pins xlslice_4/Din]
+  connect_bd_net -net Net  [get_bd_pins m_axis_aclk_0] \
+  [get_bd_pins axi_mcdma_0/s_axi_aclk] \
+  [get_bd_pins axi_register_slice_0_readonly/aclk] \
+  [get_bd_pins axi_register_slice_0_writeonly/aclk] \
+  [get_bd_pins axis_data_fifo_0/s_axis_aclk] \
+  [get_bd_pins axis_data_fifo_1/s_axis_aclk] \
+  [get_bd_pins axis_data_fifo_2/s_axis_aclk] \
+  [get_bd_pins axis_data_fifo_3/s_axis_aclk] \
+  [get_bd_pins mrmac_10g_mux_0/tx_s_aclk] \
+  [get_bd_pins mrmac_10g_mux_0/rx_s_aclk]
+  connect_bd_net -net axi_mcdma_3_mm2s_ch1_introut  [get_bd_pins axi_mcdma_0/mm2s_ch1_introut] \
+  [get_bd_pins mm2s_ch1_introut_3]
+  connect_bd_net -net axi_mcdma_3_s2mm_ch1_introut  [get_bd_pins axi_mcdma_0/s2mm_ch1_introut] \
+  [get_bd_pins s2mm_ch1_introut_3]
+  connect_bd_net -net axi_resetn_3_1  [get_bd_pins axi_resetn_3] \
+  [get_bd_pins axi_mcdma_0/axi_resetn]
+  connect_bd_net -net axis_data_fifo_0_s_axis_tready  [get_bd_pins axis_data_fifo_0/s_axis_tready] \
+  [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tready]
+  connect_bd_net -net axis_data_fifo_1_s_axis_tready  [get_bd_pins axis_data_fifo_1/s_axis_tready] \
+  [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tready]
+  connect_bd_net -net axis_data_fifo_2_m_axis_tdata  [get_bd_pins axis_data_fifo_2/m_axis_tdata] \
+  [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tdata]
+  connect_bd_net -net axis_data_fifo_2_m_axis_tkeep  [get_bd_pins axis_data_fifo_2/m_axis_tkeep] \
+  [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tkeep]
+  connect_bd_net -net axis_data_fifo_2_m_axis_tlast  [get_bd_pins axis_data_fifo_2/m_axis_tlast] \
+  [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tlast]
+  connect_bd_net -net axis_data_fifo_2_m_axis_tvalid  [get_bd_pins axis_data_fifo_2/m_axis_tvalid] \
+  [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tvalid]
+  connect_bd_net -net axis_data_fifo_7_m_axis_tdata  [get_bd_pins axis_data_fifo_1/m_axis_tdata] \
+  [get_bd_pins m_axis_tdata_3]
+  connect_bd_net -net axis_data_fifo_7_m_axis_tkeep  [get_bd_pins axis_data_fifo_1/m_axis_tkeep] \
+  [get_bd_pins xlconcat_0/In0]
+  connect_bd_net -net axis_data_fifo_7_m_axis_tlast  [get_bd_pins axis_data_fifo_1/m_axis_tlast] \
+  [get_bd_pins tx_tlast3]
+  connect_bd_net -net axis_data_fifo_7_m_axis_tvalid  [get_bd_pins axis_data_fifo_1/m_axis_tvalid] \
+  [get_bd_pins tx_tvalid3]
+  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tdata  [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tdata] \
+  [get_bd_pins axis_data_fifo_0/s_axis_tdata]
+  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tkeep  [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tkeep] \
+  [get_bd_pins axis_data_fifo_0/s_axis_tkeep]
+  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tlast  [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tlast] \
+  [get_bd_pins axis_data_fifo_0/s_axis_tlast]
+  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tvalid  [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tvalid] \
+  [get_bd_pins axis_data_fifo_0/s_axis_tvalid]
+  connect_bd_net -net mrmac_10g_mux_0_rx_s_axis_tready  [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tready] \
+  [get_bd_pins axis_data_fifo_2/m_axis_tready]
+  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tdata  [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tdata] \
+  [get_bd_pins axis_data_fifo_1/s_axis_tdata]
+  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tkeep  [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tkeep] \
+  [get_bd_pins axis_data_fifo_1/s_axis_tkeep]
+  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tlast  [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tlast] \
+  [get_bd_pins axis_data_fifo_1/s_axis_tlast]
+  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tvalid  [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tvalid] \
+  [get_bd_pins axis_data_fifo_1/s_axis_tvalid]
+  connect_bd_net -net s_axi_aclk_1  [get_bd_pins s_axi_aclk] \
+  [get_bd_pins axi_mcdma_0/s_axi_lite_aclk]
+  connect_bd_net -net s_axis_aresetn_1  [get_bd_pins core_reset] \
+  [get_bd_pins axi_register_slice_0_readonly/aresetn] \
+  [get_bd_pins axi_register_slice_0_writeonly/aresetn] \
+  [get_bd_pins axis_data_fifo_0/s_axis_aresetn] \
+  [get_bd_pins axis_data_fifo_1/s_axis_aresetn] \
+  [get_bd_pins axis_data_fifo_2/s_axis_aresetn] \
+  [get_bd_pins axis_data_fifo_3/s_axis_aresetn] \
+  [get_bd_pins mrmac_10g_mux_0/tx_s_aresetn] \
+  [get_bd_pins mrmac_10g_mux_0/rx_s_aresetn]
+  connect_bd_net -net s_axis_tdata_1  [get_bd_pins s_axis_tdata] \
+  [get_bd_pins axis_data_fifo_2/s_axis_tdata]
+  connect_bd_net -net s_axis_tkeep_3_1  [get_bd_pins s_axis_tkeep_3] \
+  [get_bd_pins xlslice_0/Din]
+  connect_bd_net -net s_axis_tlast_1  [get_bd_pins s_axis_tlast] \
+  [get_bd_pins axis_data_fifo_2/s_axis_tlast]
+  connect_bd_net -net s_axis_tvalid_1  [get_bd_pins s_axis_tvalid] \
+  [get_bd_pins axis_data_fifo_2/s_axis_tvalid]
+  connect_bd_net -net tx_axis_tready_3_1  [get_bd_pins tx_axis_tready_3] \
+  [get_bd_pins axis_data_fifo_1/m_axis_tready]
+  connect_bd_net -net xlconcat_1_dout  [get_bd_pins xlconcat_0/dout] \
+  [get_bd_pins tx_tkeep3]
+  connect_bd_net -net xlconstant_0_dout  [get_bd_pins xlconstant_0/dout] \
+  [get_bd_pins xlconcat_0/In1]
+  connect_bd_net -net xlslice_0_Dout  [get_bd_pins xlslice_0/Dout] \
+  [get_bd_pins axis_data_fifo_2/s_axis_tkeep]
+  connect_bd_net -net xlslice_4_Dout  [get_bd_pins xlslice_4/Dout] \
+  [get_bd_pins mrmac_10g_mux_0/sel_10g_mode]
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -2087,114 +2256,295 @@ HSCLK1_RPLLGTREFCLK0 refclk_PROT2_R0_PROT3_R0_322.265625_MHz_unique1} \
   connect_bd_intf_net -intf_net smartconnect_0_M04_AXI [get_bd_intf_pins axi_gpio_gt_rate_reset_ctl_3/S_AXI] [get_bd_intf_pins smartconnect_0/M04_AXI]
 
   # Create port connections
-  connect_bd_net -net RX_MST_DP_RESET_1 [get_bd_pins RX_MST_DP_RESET] [get_bd_pins xlslice_rx_mst_dp_rst_1/Din] [get_bd_pins xlslice_rx_mst_dp_rst_2/Din] [get_bd_pins xlslice_rx_mst_dp_rst_3/Din] [get_bd_pins xlslice_rx_mst_dp_rst_0/Din]
-  connect_bd_net -net TX_MST_DP_RESET_1 [get_bd_pins TX_MST_DP_RESET] [get_bd_pins xlslice_tx_mst_dp_rst_1/Din] [get_bd_pins xlslice_tx_mst_dp_rst_2/Din] [get_bd_pins xlslice_tx_mst_dp_rst_3/Din] [get_bd_pins xlslice_tx_mst_dp_rst_0/Din]
-  connect_bd_net -net aresetn_1 [get_bd_pins aresetn] [get_bd_pins smartconnect_0/aresetn]
-  connect_bd_net -net axi_gpio_1_gpio_io_o [get_bd_pins gt_rate_ctl_ch1_tx_rx/Dout] [get_bd_pins gt_quad_base/ch1_txrate] [get_bd_pins gt_quad_base/ch1_rxrate]
-  connect_bd_net -net axi_gpio_gt_rate_reset_ctl_0_gpio2_io_o [get_bd_pins axi_gpio_gt_rate_reset_ctl_0/gpio2_io_o] [get_bd_pins xlslice_gt_reset_all_0/Din] [get_bd_pins xlslice_gt_reset_rx_datapath_0/Din] [get_bd_pins xlslice_gt_reset_tx_datapath_0/Din]
-  connect_bd_net -net axi_gpio_gt_rate_reset_ctl_0_gpio_io_o [get_bd_pins axi_gpio_gt_rate_reset_ctl_0/gpio_io_o] [get_bd_pins gt_rate_ctl_ch0_tx_rx/Din]
-  connect_bd_net -net axi_gpio_gt_rate_reset_ctl_1_gpio2_io_o [get_bd_pins axi_gpio_gt_rate_reset_ctl_1/gpio2_io_o] [get_bd_pins xlslice_gt_reset_all_1/Din] [get_bd_pins xlslice_gt_reset_rx_datapath_1/Din] [get_bd_pins xlslice_gt_reset_tx_datapath_1/Din]
-  connect_bd_net -net axi_gpio_gt_rate_reset_ctl_1_gpio_io_o [get_bd_pins axi_gpio_gt_rate_reset_ctl_1/gpio_io_o] [get_bd_pins gt_rate_ctl_ch1_tx_rx/Din]
-  connect_bd_net -net axi_gpio_gt_rate_reset_ctl_2_gpio2_io_o [get_bd_pins axi_gpio_gt_rate_reset_ctl_2/gpio2_io_o] [get_bd_pins xlslice_gt_reset_all_2/Din] [get_bd_pins xlslice_gt_reset_rx_datapath_2/Din] [get_bd_pins xlslice_gt_reset_tx_datapath_2/Din]
-  connect_bd_net -net axi_gpio_gt_rate_reset_ctl_2_gpio_io_o [get_bd_pins axi_gpio_gt_rate_reset_ctl_2/gpio_io_o] [get_bd_pins gt_rate_ctl_ch2_tx_rx/Din]
-  connect_bd_net -net axi_gpio_gt_rate_reset_ctl_3_gpio2_io_o [get_bd_pins axi_gpio_gt_rate_reset_ctl_3/gpio2_io_o] [get_bd_pins xlslice_gt_reset_all_3/Din] [get_bd_pins xlslice_gt_reset_rx_datapath_3/Din] [get_bd_pins xlslice_gt_reset_tx_datapath_3/Din]
-  connect_bd_net -net axi_gpio_gt_rate_reset_ctl_3_gpio_io_o [get_bd_pins axi_gpio_gt_rate_reset_ctl_3/gpio_io_o] [get_bd_pins gt_rate_ctl_ch3_tx_rx/Din]
-  connect_bd_net -net bufg_gt_div_val_dout [get_bd_pins bufg_gt_div_val/dout] [get_bd_pins gt_bufg_gt_rxoutclk_div2_ch0/gt_bufgtdiv] [get_bd_pins gt_bufg_gt_rxoutclk_div2_ch1/gt_bufgtdiv] [get_bd_pins gt_bufg_gt_rxoutclk_div2_ch2/gt_bufgtdiv] [get_bd_pins gt_bufg_gt_rxoutclk_div2_ch3/gt_bufgtdiv] [get_bd_pins gt_bufg_gt_txoutclk_div2_ch0/gt_bufgtdiv] [get_bd_pins gt_bufg_gt_txoutclk_div2_ch2/gt_bufgtdiv]
-  connect_bd_net -net bufg_gt_rxoutclk_rx_usr_clk [get_bd_pins bufg_gt_rxoutclk/rx_usr_clk] [get_bd_pins rx_usr_clk1]
-  connect_bd_net -net bufg_gt_txoutclk_tx_usr_clk [get_bd_pins bufg_gt_txoutclk/tx_usr_clk] [get_bd_pins tx_usr_clk]
-  connect_bd_net -net conct_rx_mst_reset_done_out1_dout [get_bd_pins conct_tx_mst_reset_done_out/dout] [get_bd_pins xlconcat_0/In1]
-  connect_bd_net -net conct_rx_mst_reset_done_out_dout [get_bd_pins conct_rx_mst_reset_done_out/dout] [get_bd_pins xlconcat_0/In0]
-  connect_bd_net -net conct_rx_usr_clk2_dout [get_bd_pins conct_rx_usr_clk2/dout] [get_bd_pins rx_usr_clk2]
-  connect_bd_net -net conct_tx_usr_clk2_dout [get_bd_pins conct_tx_usr_clk2/dout] [get_bd_pins tx_usr_clk2]
-  connect_bd_net -net gt_bufg_gt_rxoutclk_div2_ch0_usrclk [get_bd_pins gt_bufg_gt_rxoutclk_div2_ch0/usrclk] [get_bd_pins conct_rx_usr_clk2/In0] [get_bd_pins gt_quad_base/ch0_rxusrclk]
-  connect_bd_net -net gt_bufg_gt_rxoutclk_div2_ch1_usrclk [get_bd_pins gt_bufg_gt_rxoutclk_div2_ch1/usrclk] [get_bd_pins conct_rx_usr_clk2/In1] [get_bd_pins gt_quad_base/ch1_rxusrclk]
-  connect_bd_net -net gt_bufg_gt_rxoutclk_div2_ch2_usrclk [get_bd_pins gt_bufg_gt_rxoutclk_div2_ch2/usrclk] [get_bd_pins conct_rx_usr_clk2/In2] [get_bd_pins gt_quad_base/ch2_rxusrclk]
-  connect_bd_net -net gt_bufg_gt_rxoutclk_div2_ch3_usrclk [get_bd_pins gt_bufg_gt_rxoutclk_div2_ch3/usrclk] [get_bd_pins conct_rx_usr_clk2/In3] [get_bd_pins gt_quad_base/ch3_rxusrclk]
-  connect_bd_net -net gt_bufg_gt_txoutclk_div2_ch0_usrclk [get_bd_pins gt_bufg_gt_txoutclk_div2_ch0/usrclk] [get_bd_pins conct_tx_usr_clk2/In0] [get_bd_pins conct_tx_usr_clk2/In1] [get_bd_pins gt_quad_base/ch0_txusrclk] [get_bd_pins gt_quad_base/ch1_txusrclk]
-  connect_bd_net -net gt_bufg_gt_txoutclk_div2_ch2_usrclk [get_bd_pins gt_bufg_gt_txoutclk_div2_ch2/usrclk] [get_bd_pins conct_tx_usr_clk2/In2] [get_bd_pins conct_tx_usr_clk2/In3] [get_bd_pins gt_quad_base/ch2_txusrclk] [get_bd_pins gt_quad_base/ch3_txusrclk]
-  connect_bd_net -net gt_quad_base_ch0_rxmstresetdone [get_bd_pins gt_quad_base/ch0_rxmstresetdone] [get_bd_pins ch0_rxmstresetdone] [get_bd_pins conct_rx_mst_reset_done_out/In0]
-  connect_bd_net -net gt_quad_base_ch0_rxoutclk [get_bd_pins gt_quad_base/ch0_rxoutclk] [get_bd_pins bufg_gt_rxoutclk/outclk] [get_bd_pins gt_bufg_gt_rxoutclk_div2_ch0/outclk]
-  connect_bd_net -net gt_quad_base_ch0_rxpmaresetdone [get_bd_pins gt_quad_base/ch0_rxpmaresetdone] [get_bd_pins ch0_rxpmaresetdone]
-  connect_bd_net -net gt_quad_base_ch0_txmstresetdone [get_bd_pins gt_quad_base/ch0_txmstresetdone] [get_bd_pins ch0_txmstresetdone] [get_bd_pins conct_tx_mst_reset_done_out/In0]
-  connect_bd_net -net gt_quad_base_ch0_txoutclk [get_bd_pins gt_quad_base/ch0_txoutclk] [get_bd_pins bufg_gt_txoutclk/outclk] [get_bd_pins gt_bufg_gt_txoutclk_div2_ch0/outclk]
-  connect_bd_net -net gt_quad_base_ch0_txpmaresetdone [get_bd_pins gt_quad_base/ch0_txpmaresetdone] [get_bd_pins ch0_txpmaresetdone]
-  connect_bd_net -net gt_quad_base_ch1_rxmstresetdone [get_bd_pins gt_quad_base/ch1_rxmstresetdone] [get_bd_pins ch1_rxmstresetdone] [get_bd_pins conct_rx_mst_reset_done_out/In1]
-  connect_bd_net -net gt_quad_base_ch1_rxoutclk [get_bd_pins gt_quad_base/ch1_rxoutclk] [get_bd_pins bufg_gt_rxoutclk/outclk1] [get_bd_pins gt_bufg_gt_rxoutclk_div2_ch1/outclk]
-  connect_bd_net -net gt_quad_base_ch1_rxpmaresetdone [get_bd_pins gt_quad_base/ch1_rxpmaresetdone] [get_bd_pins ch1_rxpmaresetdone]
-  connect_bd_net -net gt_quad_base_ch1_txmstresetdone [get_bd_pins gt_quad_base/ch1_txmstresetdone] [get_bd_pins ch1_txmstresetdone] [get_bd_pins conct_tx_mst_reset_done_out/In1]
-  connect_bd_net -net gt_quad_base_ch1_txpmaresetdone [get_bd_pins gt_quad_base/ch1_txpmaresetdone] [get_bd_pins ch1_txpmaresetdone]
-  connect_bd_net -net gt_quad_base_ch2_rxmstresetdone [get_bd_pins gt_quad_base/ch2_rxmstresetdone] [get_bd_pins ch2_rxmstresetdone] [get_bd_pins conct_rx_mst_reset_done_out/In2]
-  connect_bd_net -net gt_quad_base_ch2_rxoutclk [get_bd_pins gt_quad_base/ch2_rxoutclk] [get_bd_pins bufg_gt_rxoutclk/outclk2] [get_bd_pins gt_bufg_gt_rxoutclk_div2_ch2/outclk]
-  connect_bd_net -net gt_quad_base_ch2_rxpmaresetdone [get_bd_pins gt_quad_base/ch2_rxpmaresetdone] [get_bd_pins ch2_rxpmaresetdone]
-  connect_bd_net -net gt_quad_base_ch2_txmstresetdone [get_bd_pins gt_quad_base/ch2_txmstresetdone] [get_bd_pins ch2_txmstresetdone] [get_bd_pins conct_tx_mst_reset_done_out/In2]
-  connect_bd_net -net gt_quad_base_ch2_txoutclk [get_bd_pins gt_quad_base/ch2_txoutclk] [get_bd_pins bufg_gt_txoutclk/outclk2] [get_bd_pins gt_bufg_gt_txoutclk_div2_ch2/outclk]
-  connect_bd_net -net gt_quad_base_ch2_txpmaresetdone [get_bd_pins gt_quad_base/ch2_txpmaresetdone] [get_bd_pins ch2_txpmaresetdone]
-  connect_bd_net -net gt_quad_base_ch3_rxmstresetdone [get_bd_pins gt_quad_base/ch3_rxmstresetdone] [get_bd_pins ch3_rxmstresetdone] [get_bd_pins conct_rx_mst_reset_done_out/In3]
-  connect_bd_net -net gt_quad_base_ch3_rxoutclk [get_bd_pins gt_quad_base/ch3_rxoutclk] [get_bd_pins bufg_gt_rxoutclk/outclk3] [get_bd_pins gt_bufg_gt_rxoutclk_div2_ch3/outclk]
-  connect_bd_net -net gt_quad_base_ch3_rxpmaresetdone [get_bd_pins gt_quad_base/ch3_rxpmaresetdone] [get_bd_pins ch3_rxpmaresetdone]
-  connect_bd_net -net gt_quad_base_ch3_txmstresetdone [get_bd_pins gt_quad_base/ch3_txmstresetdone] [get_bd_pins ch3_txmstresetdone] [get_bd_pins conct_tx_mst_reset_done_out/In3]
-  connect_bd_net -net gt_quad_base_ch3_txpmaresetdone [get_bd_pins gt_quad_base/ch3_txpmaresetdone] [get_bd_pins ch3_txpmaresetdone]
-  connect_bd_net -net gt_quad_base_gtpowergood [get_bd_pins gt_quad_base/gtpowergood] [get_bd_pins gtpowergood]
-  connect_bd_net -net gt_quad_base_txn [get_bd_pins gt_quad_base/txn] [get_bd_pins gt_txn_out_0]
-  connect_bd_net -net gt_quad_base_txp [get_bd_pins gt_quad_base/txp] [get_bd_pins gt_txp_out_0]
-  connect_bd_net -net gt_ref_clk_n_1 [get_bd_pins gt_ref_clk_n] [get_bd_pins util_ds_buf_0/IBUF_DS_N]
-  connect_bd_net -net gt_ref_clk_p_1 [get_bd_pins gt_ref_clk_p] [get_bd_pins util_ds_buf_0/IBUF_DS_P]
-  connect_bd_net -net gt_rxn_in_0_1 [get_bd_pins gt_rxn_in_0] [get_bd_pins gt_quad_base/rxn]
-  connect_bd_net -net gt_rxp_in_0_1 [get_bd_pins gt_rxp_in_0] [get_bd_pins gt_quad_base/rxp]
-  connect_bd_net -net mrmac_obuf_ds_gte5_0_OBUFDS_GTE5_O [get_bd_pins mrmac_obuf_ds_gte5_0/OBUFDS_GTE5_O] [get_bd_pins RX_REC_CLK_out_p_0]
-  connect_bd_net -net mrmac_obuf_ds_gte5_0_OBUFDS_GTE5_OB [get_bd_pins mrmac_obuf_ds_gte5_0/OBUFDS_GTE5_OB] [get_bd_pins RX_REC_CLK_out_n_0]
-  connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins s_axi_aresetn] [get_bd_pins axi_gpio_gt_rate_reset_ctl_0/s_axi_aresetn] [get_bd_pins axi_gpio_gt_rate_reset_ctl_1/s_axi_aresetn] [get_bd_pins axi_gpio_gt_rate_reset_ctl_2/s_axi_aresetn] [get_bd_pins axi_gpio_gt_rate_reset_ctl_3/s_axi_aresetn] [get_bd_pins axi_gpio_gt_reset_mask/s_axi_aresetn] [get_bd_pins gt_axi_apb_bridge_0/s_axi_aresetn] [get_bd_pins gt_quad_base/apb3presetn]
-  connect_bd_net -net rec_clk_out_out_ds_bufggt [get_bd_pins gt_quad_base/hsclk0_rxrecclkout0] [get_bd_pins mrmac_obuf_ds_gte5_0/OBUFDS_GTE5_I]
-  connect_bd_net -net rx_mst_reset_in_1 [get_bd_pins rx_mst_reset_in] [get_bd_pins xlslice_rx_mst_reset_1/Din] [get_bd_pins xlslice_rx_mst_reset_2/Din] [get_bd_pins xlslice_rx_mst_reset_3/Din] [get_bd_pins xlslice_rx_mst_reset_0/Din]
-  connect_bd_net -net rx_userrdy_in_1 [get_bd_pins rx_userrdy_in] [get_bd_pins xlslice_rx_userrdy_1/Din] [get_bd_pins xlslice_rx_userrdy_2/Din] [get_bd_pins xlslice_rx_userrdy_3/Din] [get_bd_pins xlslice_rx_userrdy_0/Din]
-  connect_bd_net -net tx_mst_reset_in_1 [get_bd_pins tx_mst_reset_in] [get_bd_pins xlslice_tx_mst_reset_1/Din] [get_bd_pins xlslice_tx_mst_reset_2/Din] [get_bd_pins xlslice_tx_mst_reset_3/Din] [get_bd_pins xlslice_tx_mst_reset_0/Din]
-  connect_bd_net -net tx_userrdy_in_1 [get_bd_pins tx_userrdy_in] [get_bd_pins xlslice_tx_userrdy_1/Din] [get_bd_pins xlslice_tx_userrdy_2/Din] [get_bd_pins xlslice_tx_userrdy_3/Din] [get_bd_pins xlslice_tx_userrdy_0/Din]
-  connect_bd_net -net util_ds_buf_1_IBUF_OUT [get_bd_pins util_ds_buf_0/IBUF_OUT] [get_bd_pins gt_quad_base/GT_REFCLK0] [get_bd_pins gt_quad_base/GT_REFCLK1]
-  connect_bd_net -net versal_cips_0_pl_clk0 [get_bd_pins s_axi_aclk] [get_bd_pins axi_gpio_gt_rate_reset_ctl_0/s_axi_aclk] [get_bd_pins axi_gpio_gt_rate_reset_ctl_1/s_axi_aclk] [get_bd_pins axi_gpio_gt_rate_reset_ctl_2/s_axi_aclk] [get_bd_pins axi_gpio_gt_rate_reset_ctl_3/s_axi_aclk] [get_bd_pins axi_gpio_gt_reset_mask/s_axi_aclk] [get_bd_pins smartconnect_0/aclk] [get_bd_pins gt_axi_apb_bridge_0/s_axi_aclk] [get_bd_pins gt_quad_base/apb3clk]
-  connect_bd_net -net xlconcat_0_dout [get_bd_pins xlconcat_0/dout] [get_bd_pins axi_gpio_gt_reset_mask/gpio2_io_i]
-  connect_bd_net -net xlconcat_gt_rest_all_dout [get_bd_pins xlconcat_gt_rest_all/dout] [get_bd_pins gt_reset_all]
-  connect_bd_net -net xlconcat_gt_rest_rx_datapath_dout [get_bd_pins xlconcat_gt_rest_rx_datapath/dout] [get_bd_pins gt_reset_rx_datapath]
-  connect_bd_net -net xlconcat_gt_rest_tx_datapath_dout [get_bd_pins xlconcat_gt_rest_tx_datapath/dout] [get_bd_pins gt_reset_tx_datapath]
-  connect_bd_net -net xlconstant_0_dout [get_bd_pins xlconstant_0/dout] [get_bd_pins mrmac_obuf_ds_gte5_0/OBUFDS_GTE5_CEB]
-  connect_bd_net -net xlslice_0_Dout [get_bd_pins gt_rate_ctl_ch0_tx_rx/Dout] [get_bd_pins gt_quad_base/ch0_txrate] [get_bd_pins gt_quad_base/ch0_rxrate]
-  connect_bd_net -net xlslice_2_Dout [get_bd_pins gt_rate_ctl_ch2_tx_rx/Dout] [get_bd_pins gt_quad_base/ch2_txrate] [get_bd_pins gt_quad_base/ch2_rxrate]
-  connect_bd_net -net xlslice_3_Dout [get_bd_pins gt_rate_ctl_ch3_tx_rx/Dout] [get_bd_pins gt_quad_base/ch3_txrate] [get_bd_pins gt_quad_base/ch3_rxrate]
-  connect_bd_net -net xlslice_gt_reset_all_0_Dout [get_bd_pins xlslice_gt_reset_all_0/Dout] [get_bd_pins xlconcat_gt_rest_all/In0]
-  connect_bd_net -net xlslice_gt_reset_all_1_Dout [get_bd_pins xlslice_gt_reset_all_1/Dout] [get_bd_pins xlconcat_gt_rest_all/In1]
-  connect_bd_net -net xlslice_gt_reset_all_2_Dout [get_bd_pins xlslice_gt_reset_all_2/Dout] [get_bd_pins xlconcat_gt_rest_all/In2]
-  connect_bd_net -net xlslice_gt_reset_all_3_Dout [get_bd_pins xlslice_gt_reset_all_3/Dout] [get_bd_pins xlconcat_gt_rest_all/In3]
-  connect_bd_net -net xlslice_gt_reset_rx_datapath_0_Dout [get_bd_pins xlslice_gt_reset_rx_datapath_0/Dout] [get_bd_pins xlconcat_gt_rest_rx_datapath/In0]
-  connect_bd_net -net xlslice_gt_reset_rx_datapath_1_Dout [get_bd_pins xlslice_gt_reset_rx_datapath_1/Dout] [get_bd_pins xlconcat_gt_rest_rx_datapath/In1]
-  connect_bd_net -net xlslice_gt_reset_rx_datapath_2_Dout [get_bd_pins xlslice_gt_reset_rx_datapath_2/Dout] [get_bd_pins xlconcat_gt_rest_rx_datapath/In2]
-  connect_bd_net -net xlslice_gt_reset_rx_datapath_3_Dout [get_bd_pins xlslice_gt_reset_rx_datapath_3/Dout] [get_bd_pins xlconcat_gt_rest_rx_datapath/In3]
-  connect_bd_net -net xlslice_gt_reset_tx_datapath_0_Dout [get_bd_pins xlslice_gt_reset_tx_datapath_0/Dout] [get_bd_pins xlconcat_gt_rest_tx_datapath/In0]
-  connect_bd_net -net xlslice_gt_reset_tx_datapath_1_Dout [get_bd_pins xlslice_gt_reset_tx_datapath_1/Dout] [get_bd_pins xlconcat_gt_rest_tx_datapath/In1]
-  connect_bd_net -net xlslice_gt_reset_tx_datapath_2_Dout [get_bd_pins xlslice_gt_reset_tx_datapath_2/Dout] [get_bd_pins xlconcat_gt_rest_tx_datapath/In2]
-  connect_bd_net -net xlslice_gt_reset_tx_datapath_3_Dout [get_bd_pins xlslice_gt_reset_tx_datapath_3/Dout] [get_bd_pins xlconcat_gt_rest_tx_datapath/In3]
-  connect_bd_net -net xlslice_rx_mst_dp_rst_0_Dout [get_bd_pins xlslice_rx_mst_dp_rst_0/Dout] [get_bd_pins gt_quad_base/ch0_rxmstdatapathreset]
-  connect_bd_net -net xlslice_rx_mst_dp_rst_1_Dout [get_bd_pins xlslice_rx_mst_dp_rst_1/Dout] [get_bd_pins gt_quad_base/ch1_rxmstdatapathreset]
-  connect_bd_net -net xlslice_rx_mst_dp_rst_2_Dout [get_bd_pins xlslice_rx_mst_dp_rst_2/Dout] [get_bd_pins gt_quad_base/ch2_rxmstdatapathreset]
-  connect_bd_net -net xlslice_rx_mst_dp_rst_3_Dout [get_bd_pins xlslice_rx_mst_dp_rst_3/Dout] [get_bd_pins gt_quad_base/ch3_rxmstdatapathreset]
-  connect_bd_net -net xlslice_rx_mst_reset_0_Dout [get_bd_pins xlslice_rx_mst_reset_0/Dout] [get_bd_pins gt_quad_base/ch0_rxmstreset]
-  connect_bd_net -net xlslice_rx_mst_reset_1_Dout [get_bd_pins xlslice_rx_mst_reset_1/Dout] [get_bd_pins gt_quad_base/ch1_rxmstreset]
-  connect_bd_net -net xlslice_rx_mst_reset_2_Dout [get_bd_pins xlslice_rx_mst_reset_2/Dout] [get_bd_pins gt_quad_base/ch2_rxmstreset]
-  connect_bd_net -net xlslice_rx_mst_reset_3_Dout [get_bd_pins xlslice_rx_mst_reset_3/Dout] [get_bd_pins gt_quad_base/ch3_rxmstreset]
-  connect_bd_net -net xlslice_rx_userrdy_0_Dout [get_bd_pins xlslice_rx_userrdy_0/Dout] [get_bd_pins gt_quad_base/ch0_rxuserrdy]
-  connect_bd_net -net xlslice_rx_userrdy_1_Dout [get_bd_pins xlslice_rx_userrdy_1/Dout] [get_bd_pins gt_quad_base/ch1_rxuserrdy]
-  connect_bd_net -net xlslice_rx_userrdy_2_Dout [get_bd_pins xlslice_rx_userrdy_2/Dout] [get_bd_pins gt_quad_base/ch2_rxuserrdy]
-  connect_bd_net -net xlslice_rx_userrdy_3_Dout [get_bd_pins xlslice_rx_userrdy_3/Dout] [get_bd_pins gt_quad_base/ch3_rxuserrdy]
-  connect_bd_net -net xlslice_tx_mst_dp_rst_0_Dout [get_bd_pins xlslice_tx_mst_dp_rst_0/Dout] [get_bd_pins gt_quad_base/ch0_txmstdatapathreset]
-  connect_bd_net -net xlslice_tx_mst_dp_rst_1_Dout [get_bd_pins xlslice_tx_mst_dp_rst_1/Dout] [get_bd_pins gt_quad_base/ch1_txmstdatapathreset]
-  connect_bd_net -net xlslice_tx_mst_dp_rst_2_Dout [get_bd_pins xlslice_tx_mst_dp_rst_2/Dout] [get_bd_pins gt_quad_base/ch2_txmstdatapathreset]
-  connect_bd_net -net xlslice_tx_mst_dp_rst_3_Dout [get_bd_pins xlslice_tx_mst_dp_rst_3/Dout] [get_bd_pins gt_quad_base/ch3_txmstdatapathreset]
-  connect_bd_net -net xlslice_tx_mst_reset_0_Dout [get_bd_pins xlslice_tx_mst_reset_0/Dout] [get_bd_pins gt_quad_base/ch0_txmstreset]
-  connect_bd_net -net xlslice_tx_mst_reset_1_Dout [get_bd_pins xlslice_tx_mst_reset_1/Dout] [get_bd_pins gt_quad_base/ch1_txmstreset]
-  connect_bd_net -net xlslice_tx_mst_reset_2_Dout [get_bd_pins xlslice_tx_mst_reset_2/Dout] [get_bd_pins gt_quad_base/ch2_txmstreset]
-  connect_bd_net -net xlslice_tx_mst_reset_3_Dout [get_bd_pins xlslice_tx_mst_reset_3/Dout] [get_bd_pins gt_quad_base/ch3_txmstreset]
-  connect_bd_net -net xlslice_tx_userrdy_0_Dout [get_bd_pins xlslice_tx_userrdy_0/Dout] [get_bd_pins gt_quad_base/ch0_txuserrdy]
-  connect_bd_net -net xlslice_tx_userrdy_1_Dout [get_bd_pins xlslice_tx_userrdy_1/Dout] [get_bd_pins gt_quad_base/ch1_txuserrdy]
-  connect_bd_net -net xlslice_tx_userrdy_2_Dout [get_bd_pins xlslice_tx_userrdy_2/Dout] [get_bd_pins gt_quad_base/ch2_txuserrdy]
-  connect_bd_net -net xlslice_tx_userrdy_3_Dout [get_bd_pins xlslice_tx_userrdy_3/Dout] [get_bd_pins gt_quad_base/ch3_txuserrdy]
+  connect_bd_net -net RX_MST_DP_RESET_1  [get_bd_pins RX_MST_DP_RESET] \
+  [get_bd_pins xlslice_rx_mst_dp_rst_0/Din] \
+  [get_bd_pins xlslice_rx_mst_dp_rst_1/Din] \
+  [get_bd_pins xlslice_rx_mst_dp_rst_2/Din] \
+  [get_bd_pins xlslice_rx_mst_dp_rst_3/Din]
+  connect_bd_net -net TX_MST_DP_RESET_1  [get_bd_pins TX_MST_DP_RESET] \
+  [get_bd_pins xlslice_tx_mst_dp_rst_0/Din] \
+  [get_bd_pins xlslice_tx_mst_dp_rst_1/Din] \
+  [get_bd_pins xlslice_tx_mst_dp_rst_2/Din] \
+  [get_bd_pins xlslice_tx_mst_dp_rst_3/Din]
+  connect_bd_net -net aresetn_1  [get_bd_pins aresetn] \
+  [get_bd_pins smartconnect_0/aresetn]
+  connect_bd_net -net axi_gpio_1_gpio_io_o  [get_bd_pins gt_rate_ctl_ch1_tx_rx/Dout] \
+  [get_bd_pins gt_quad_base/ch1_txrate] \
+  [get_bd_pins gt_quad_base/ch1_rxrate]
+  connect_bd_net -net axi_gpio_gt_rate_reset_ctl_0_gpio2_io_o  [get_bd_pins axi_gpio_gt_rate_reset_ctl_0/gpio2_io_o] \
+  [get_bd_pins xlslice_gt_reset_all_0/Din] \
+  [get_bd_pins xlslice_gt_reset_rx_datapath_0/Din] \
+  [get_bd_pins xlslice_gt_reset_tx_datapath_0/Din]
+  connect_bd_net -net axi_gpio_gt_rate_reset_ctl_0_gpio_io_o  [get_bd_pins axi_gpio_gt_rate_reset_ctl_0/gpio_io_o] \
+  [get_bd_pins gt_rate_ctl_ch0_tx_rx/Din]
+  connect_bd_net -net axi_gpio_gt_rate_reset_ctl_1_gpio2_io_o  [get_bd_pins axi_gpio_gt_rate_reset_ctl_1/gpio2_io_o] \
+  [get_bd_pins xlslice_gt_reset_all_1/Din] \
+  [get_bd_pins xlslice_gt_reset_rx_datapath_1/Din] \
+  [get_bd_pins xlslice_gt_reset_tx_datapath_1/Din]
+  connect_bd_net -net axi_gpio_gt_rate_reset_ctl_1_gpio_io_o  [get_bd_pins axi_gpio_gt_rate_reset_ctl_1/gpio_io_o] \
+  [get_bd_pins gt_rate_ctl_ch1_tx_rx/Din]
+  connect_bd_net -net axi_gpio_gt_rate_reset_ctl_2_gpio2_io_o  [get_bd_pins axi_gpio_gt_rate_reset_ctl_2/gpio2_io_o] \
+  [get_bd_pins xlslice_gt_reset_all_2/Din] \
+  [get_bd_pins xlslice_gt_reset_rx_datapath_2/Din] \
+  [get_bd_pins xlslice_gt_reset_tx_datapath_2/Din]
+  connect_bd_net -net axi_gpio_gt_rate_reset_ctl_2_gpio_io_o  [get_bd_pins axi_gpio_gt_rate_reset_ctl_2/gpio_io_o] \
+  [get_bd_pins gt_rate_ctl_ch2_tx_rx/Din]
+  connect_bd_net -net axi_gpio_gt_rate_reset_ctl_3_gpio2_io_o  [get_bd_pins axi_gpio_gt_rate_reset_ctl_3/gpio2_io_o] \
+  [get_bd_pins xlslice_gt_reset_all_3/Din] \
+  [get_bd_pins xlslice_gt_reset_rx_datapath_3/Din] \
+  [get_bd_pins xlslice_gt_reset_tx_datapath_3/Din]
+  connect_bd_net -net axi_gpio_gt_rate_reset_ctl_3_gpio_io_o  [get_bd_pins axi_gpio_gt_rate_reset_ctl_3/gpio_io_o] \
+  [get_bd_pins gt_rate_ctl_ch3_tx_rx/Din]
+  connect_bd_net -net bufg_gt_div_val_dout  [get_bd_pins bufg_gt_div_val/dout] \
+  [get_bd_pins gt_bufg_gt_rxoutclk_div2_ch0/gt_bufgtdiv] \
+  [get_bd_pins gt_bufg_gt_rxoutclk_div2_ch1/gt_bufgtdiv] \
+  [get_bd_pins gt_bufg_gt_rxoutclk_div2_ch2/gt_bufgtdiv] \
+  [get_bd_pins gt_bufg_gt_rxoutclk_div2_ch3/gt_bufgtdiv] \
+  [get_bd_pins gt_bufg_gt_txoutclk_div2_ch0/gt_bufgtdiv] \
+  [get_bd_pins gt_bufg_gt_txoutclk_div2_ch2/gt_bufgtdiv]
+  connect_bd_net -net bufg_gt_rxoutclk_rx_usr_clk  [get_bd_pins bufg_gt_rxoutclk/rx_usr_clk] \
+  [get_bd_pins rx_usr_clk1]
+  connect_bd_net -net bufg_gt_txoutclk_tx_usr_clk  [get_bd_pins bufg_gt_txoutclk/tx_usr_clk] \
+  [get_bd_pins tx_usr_clk]
+  connect_bd_net -net conct_rx_mst_reset_done_out1_dout  [get_bd_pins conct_tx_mst_reset_done_out/dout] \
+  [get_bd_pins xlconcat_0/In1]
+  connect_bd_net -net conct_rx_mst_reset_done_out_dout  [get_bd_pins conct_rx_mst_reset_done_out/dout] \
+  [get_bd_pins xlconcat_0/In0]
+  connect_bd_net -net conct_rx_usr_clk2_dout  [get_bd_pins conct_rx_usr_clk2/dout] \
+  [get_bd_pins rx_usr_clk2]
+  connect_bd_net -net conct_tx_usr_clk2_dout  [get_bd_pins conct_tx_usr_clk2/dout] \
+  [get_bd_pins tx_usr_clk2]
+  connect_bd_net -net gt_bufg_gt_rxoutclk_div2_ch0_usrclk  [get_bd_pins gt_bufg_gt_rxoutclk_div2_ch0/usrclk] \
+  [get_bd_pins conct_rx_usr_clk2/In0] \
+  [get_bd_pins gt_quad_base/ch0_rxusrclk]
+  connect_bd_net -net gt_bufg_gt_rxoutclk_div2_ch1_usrclk  [get_bd_pins gt_bufg_gt_rxoutclk_div2_ch1/usrclk] \
+  [get_bd_pins conct_rx_usr_clk2/In1] \
+  [get_bd_pins gt_quad_base/ch1_rxusrclk]
+  connect_bd_net -net gt_bufg_gt_rxoutclk_div2_ch2_usrclk  [get_bd_pins gt_bufg_gt_rxoutclk_div2_ch2/usrclk] \
+  [get_bd_pins conct_rx_usr_clk2/In2] \
+  [get_bd_pins gt_quad_base/ch2_rxusrclk]
+  connect_bd_net -net gt_bufg_gt_rxoutclk_div2_ch3_usrclk  [get_bd_pins gt_bufg_gt_rxoutclk_div2_ch3/usrclk] \
+  [get_bd_pins conct_rx_usr_clk2/In3] \
+  [get_bd_pins gt_quad_base/ch3_rxusrclk]
+  connect_bd_net -net gt_bufg_gt_txoutclk_div2_ch0_usrclk  [get_bd_pins gt_bufg_gt_txoutclk_div2_ch0/usrclk] \
+  [get_bd_pins conct_tx_usr_clk2/In0] \
+  [get_bd_pins conct_tx_usr_clk2/In1] \
+  [get_bd_pins gt_quad_base/ch0_txusrclk] \
+  [get_bd_pins gt_quad_base/ch1_txusrclk]
+  connect_bd_net -net gt_bufg_gt_txoutclk_div2_ch2_usrclk  [get_bd_pins gt_bufg_gt_txoutclk_div2_ch2/usrclk] \
+  [get_bd_pins conct_tx_usr_clk2/In2] \
+  [get_bd_pins conct_tx_usr_clk2/In3] \
+  [get_bd_pins gt_quad_base/ch2_txusrclk] \
+  [get_bd_pins gt_quad_base/ch3_txusrclk]
+  connect_bd_net -net gt_quad_base_ch0_rxmstresetdone  [get_bd_pins gt_quad_base/ch0_rxmstresetdone] \
+  [get_bd_pins ch0_rxmstresetdone] \
+  [get_bd_pins conct_rx_mst_reset_done_out/In0]
+  connect_bd_net -net gt_quad_base_ch0_rxoutclk  [get_bd_pins gt_quad_base/ch0_rxoutclk] \
+  [get_bd_pins bufg_gt_rxoutclk/outclk] \
+  [get_bd_pins gt_bufg_gt_rxoutclk_div2_ch0/outclk]
+  connect_bd_net -net gt_quad_base_ch0_rxpmaresetdone  [get_bd_pins gt_quad_base/ch0_rxpmaresetdone] \
+  [get_bd_pins ch0_rxpmaresetdone]
+  connect_bd_net -net gt_quad_base_ch0_txmstresetdone  [get_bd_pins gt_quad_base/ch0_txmstresetdone] \
+  [get_bd_pins ch0_txmstresetdone] \
+  [get_bd_pins conct_tx_mst_reset_done_out/In0]
+  connect_bd_net -net gt_quad_base_ch0_txoutclk  [get_bd_pins gt_quad_base/ch0_txoutclk] \
+  [get_bd_pins bufg_gt_txoutclk/outclk] \
+  [get_bd_pins gt_bufg_gt_txoutclk_div2_ch0/outclk]
+  connect_bd_net -net gt_quad_base_ch0_txpmaresetdone  [get_bd_pins gt_quad_base/ch0_txpmaresetdone] \
+  [get_bd_pins ch0_txpmaresetdone]
+  connect_bd_net -net gt_quad_base_ch1_rxmstresetdone  [get_bd_pins gt_quad_base/ch1_rxmstresetdone] \
+  [get_bd_pins ch1_rxmstresetdone] \
+  [get_bd_pins conct_rx_mst_reset_done_out/In1]
+  connect_bd_net -net gt_quad_base_ch1_rxoutclk  [get_bd_pins gt_quad_base/ch1_rxoutclk] \
+  [get_bd_pins bufg_gt_rxoutclk/outclk1] \
+  [get_bd_pins gt_bufg_gt_rxoutclk_div2_ch1/outclk]
+  connect_bd_net -net gt_quad_base_ch1_rxpmaresetdone  [get_bd_pins gt_quad_base/ch1_rxpmaresetdone] \
+  [get_bd_pins ch1_rxpmaresetdone]
+  connect_bd_net -net gt_quad_base_ch1_txmstresetdone  [get_bd_pins gt_quad_base/ch1_txmstresetdone] \
+  [get_bd_pins ch1_txmstresetdone] \
+  [get_bd_pins conct_tx_mst_reset_done_out/In1]
+  connect_bd_net -net gt_quad_base_ch1_txpmaresetdone  [get_bd_pins gt_quad_base/ch1_txpmaresetdone] \
+  [get_bd_pins ch1_txpmaresetdone]
+  connect_bd_net -net gt_quad_base_ch2_rxmstresetdone  [get_bd_pins gt_quad_base/ch2_rxmstresetdone] \
+  [get_bd_pins ch2_rxmstresetdone] \
+  [get_bd_pins conct_rx_mst_reset_done_out/In2]
+  connect_bd_net -net gt_quad_base_ch2_rxoutclk  [get_bd_pins gt_quad_base/ch2_rxoutclk] \
+  [get_bd_pins bufg_gt_rxoutclk/outclk2] \
+  [get_bd_pins gt_bufg_gt_rxoutclk_div2_ch2/outclk]
+  connect_bd_net -net gt_quad_base_ch2_rxpmaresetdone  [get_bd_pins gt_quad_base/ch2_rxpmaresetdone] \
+  [get_bd_pins ch2_rxpmaresetdone]
+  connect_bd_net -net gt_quad_base_ch2_txmstresetdone  [get_bd_pins gt_quad_base/ch2_txmstresetdone] \
+  [get_bd_pins ch2_txmstresetdone] \
+  [get_bd_pins conct_tx_mst_reset_done_out/In2]
+  connect_bd_net -net gt_quad_base_ch2_txoutclk  [get_bd_pins gt_quad_base/ch2_txoutclk] \
+  [get_bd_pins bufg_gt_txoutclk/outclk2] \
+  [get_bd_pins gt_bufg_gt_txoutclk_div2_ch2/outclk]
+  connect_bd_net -net gt_quad_base_ch2_txpmaresetdone  [get_bd_pins gt_quad_base/ch2_txpmaresetdone] \
+  [get_bd_pins ch2_txpmaresetdone]
+  connect_bd_net -net gt_quad_base_ch3_rxmstresetdone  [get_bd_pins gt_quad_base/ch3_rxmstresetdone] \
+  [get_bd_pins ch3_rxmstresetdone] \
+  [get_bd_pins conct_rx_mst_reset_done_out/In3]
+  connect_bd_net -net gt_quad_base_ch3_rxoutclk  [get_bd_pins gt_quad_base/ch3_rxoutclk] \
+  [get_bd_pins bufg_gt_rxoutclk/outclk3] \
+  [get_bd_pins gt_bufg_gt_rxoutclk_div2_ch3/outclk]
+  connect_bd_net -net gt_quad_base_ch3_rxpmaresetdone  [get_bd_pins gt_quad_base/ch3_rxpmaresetdone] \
+  [get_bd_pins ch3_rxpmaresetdone]
+  connect_bd_net -net gt_quad_base_ch3_txmstresetdone  [get_bd_pins gt_quad_base/ch3_txmstresetdone] \
+  [get_bd_pins ch3_txmstresetdone] \
+  [get_bd_pins conct_tx_mst_reset_done_out/In3]
+  connect_bd_net -net gt_quad_base_ch3_txpmaresetdone  [get_bd_pins gt_quad_base/ch3_txpmaresetdone] \
+  [get_bd_pins ch3_txpmaresetdone]
+  connect_bd_net -net gt_quad_base_gtpowergood  [get_bd_pins gt_quad_base/gtpowergood] \
+  [get_bd_pins gtpowergood]
+  connect_bd_net -net gt_quad_base_txn  [get_bd_pins gt_quad_base/txn] \
+  [get_bd_pins gt_txn_out_0]
+  connect_bd_net -net gt_quad_base_txp  [get_bd_pins gt_quad_base/txp] \
+  [get_bd_pins gt_txp_out_0]
+  connect_bd_net -net gt_ref_clk_n_1  [get_bd_pins gt_ref_clk_n] \
+  [get_bd_pins util_ds_buf_0/IBUF_DS_N]
+  connect_bd_net -net gt_ref_clk_p_1  [get_bd_pins gt_ref_clk_p] \
+  [get_bd_pins util_ds_buf_0/IBUF_DS_P]
+  connect_bd_net -net gt_rxn_in_0_1  [get_bd_pins gt_rxn_in_0] \
+  [get_bd_pins gt_quad_base/rxn]
+  connect_bd_net -net gt_rxp_in_0_1  [get_bd_pins gt_rxp_in_0] \
+  [get_bd_pins gt_quad_base/rxp]
+  connect_bd_net -net mrmac_obuf_ds_gte5_0_OBUFDS_GTE5_O  [get_bd_pins mrmac_obuf_ds_gte5_0/OBUFDS_GTE5_O] \
+  [get_bd_pins RX_REC_CLK_out_p_0]
+  connect_bd_net -net mrmac_obuf_ds_gte5_0_OBUFDS_GTE5_OB  [get_bd_pins mrmac_obuf_ds_gte5_0/OBUFDS_GTE5_OB] \
+  [get_bd_pins RX_REC_CLK_out_n_0]
+  connect_bd_net -net proc_sys_reset_0_peripheral_aresetn  [get_bd_pins s_axi_aresetn] \
+  [get_bd_pins axi_gpio_gt_rate_reset_ctl_0/s_axi_aresetn] \
+  [get_bd_pins axi_gpio_gt_rate_reset_ctl_1/s_axi_aresetn] \
+  [get_bd_pins axi_gpio_gt_rate_reset_ctl_2/s_axi_aresetn] \
+  [get_bd_pins axi_gpio_gt_rate_reset_ctl_3/s_axi_aresetn] \
+  [get_bd_pins axi_gpio_gt_reset_mask/s_axi_aresetn] \
+  [get_bd_pins gt_axi_apb_bridge_0/s_axi_aresetn] \
+  [get_bd_pins gt_quad_base/apb3presetn]
+  connect_bd_net -net rec_clk_out_out_ds_bufggt  [get_bd_pins gt_quad_base/hsclk0_rxrecclkout0] \
+  [get_bd_pins mrmac_obuf_ds_gte5_0/OBUFDS_GTE5_I]
+  connect_bd_net -net rx_mst_reset_in_1  [get_bd_pins rx_mst_reset_in] \
+  [get_bd_pins xlslice_rx_mst_reset_0/Din] \
+  [get_bd_pins xlslice_rx_mst_reset_1/Din] \
+  [get_bd_pins xlslice_rx_mst_reset_2/Din] \
+  [get_bd_pins xlslice_rx_mst_reset_3/Din]
+  connect_bd_net -net rx_userrdy_in_1  [get_bd_pins rx_userrdy_in] \
+  [get_bd_pins xlslice_rx_userrdy_0/Din] \
+  [get_bd_pins xlslice_rx_userrdy_1/Din] \
+  [get_bd_pins xlslice_rx_userrdy_2/Din] \
+  [get_bd_pins xlslice_rx_userrdy_3/Din]
+  connect_bd_net -net tx_mst_reset_in_1  [get_bd_pins tx_mst_reset_in] \
+  [get_bd_pins xlslice_tx_mst_reset_0/Din] \
+  [get_bd_pins xlslice_tx_mst_reset_1/Din] \
+  [get_bd_pins xlslice_tx_mst_reset_2/Din] \
+  [get_bd_pins xlslice_tx_mst_reset_3/Din]
+  connect_bd_net -net tx_userrdy_in_1  [get_bd_pins tx_userrdy_in] \
+  [get_bd_pins xlslice_tx_userrdy_0/Din] \
+  [get_bd_pins xlslice_tx_userrdy_1/Din] \
+  [get_bd_pins xlslice_tx_userrdy_2/Din] \
+  [get_bd_pins xlslice_tx_userrdy_3/Din]
+  connect_bd_net -net util_ds_buf_1_IBUF_OUT  [get_bd_pins util_ds_buf_0/IBUF_OUT] \
+  [get_bd_pins gt_quad_base/GT_REFCLK0] \
+  [get_bd_pins gt_quad_base/GT_REFCLK1]
+  connect_bd_net -net versal_cips_0_pl_clk0  [get_bd_pins s_axi_aclk] \
+  [get_bd_pins axi_gpio_gt_rate_reset_ctl_0/s_axi_aclk] \
+  [get_bd_pins axi_gpio_gt_rate_reset_ctl_1/s_axi_aclk] \
+  [get_bd_pins axi_gpio_gt_rate_reset_ctl_2/s_axi_aclk] \
+  [get_bd_pins axi_gpio_gt_rate_reset_ctl_3/s_axi_aclk] \
+  [get_bd_pins axi_gpio_gt_reset_mask/s_axi_aclk] \
+  [get_bd_pins gt_axi_apb_bridge_0/s_axi_aclk] \
+  [get_bd_pins gt_quad_base/apb3clk] \
+  [get_bd_pins smartconnect_0/aclk]
+  connect_bd_net -net xlconcat_0_dout  [get_bd_pins xlconcat_0/dout] \
+  [get_bd_pins axi_gpio_gt_reset_mask/gpio2_io_i]
+  connect_bd_net -net xlconcat_gt_rest_all_dout  [get_bd_pins xlconcat_gt_rest_all/dout] \
+  [get_bd_pins gt_reset_all]
+  connect_bd_net -net xlconcat_gt_rest_rx_datapath_dout  [get_bd_pins xlconcat_gt_rest_rx_datapath/dout] \
+  [get_bd_pins gt_reset_rx_datapath]
+  connect_bd_net -net xlconcat_gt_rest_tx_datapath_dout  [get_bd_pins xlconcat_gt_rest_tx_datapath/dout] \
+  [get_bd_pins gt_reset_tx_datapath]
+  connect_bd_net -net xlconstant_0_dout  [get_bd_pins xlconstant_0/dout] \
+  [get_bd_pins mrmac_obuf_ds_gte5_0/OBUFDS_GTE5_CEB]
+  connect_bd_net -net xlslice_0_Dout  [get_bd_pins gt_rate_ctl_ch0_tx_rx/Dout] \
+  [get_bd_pins gt_quad_base/ch0_txrate] \
+  [get_bd_pins gt_quad_base/ch0_rxrate]
+  connect_bd_net -net xlslice_2_Dout  [get_bd_pins gt_rate_ctl_ch2_tx_rx/Dout] \
+  [get_bd_pins gt_quad_base/ch2_txrate] \
+  [get_bd_pins gt_quad_base/ch2_rxrate]
+  connect_bd_net -net xlslice_3_Dout  [get_bd_pins gt_rate_ctl_ch3_tx_rx/Dout] \
+  [get_bd_pins gt_quad_base/ch3_txrate] \
+  [get_bd_pins gt_quad_base/ch3_rxrate]
+  connect_bd_net -net xlslice_gt_reset_all_0_Dout  [get_bd_pins xlslice_gt_reset_all_0/Dout] \
+  [get_bd_pins xlconcat_gt_rest_all/In0]
+  connect_bd_net -net xlslice_gt_reset_all_1_Dout  [get_bd_pins xlslice_gt_reset_all_1/Dout] \
+  [get_bd_pins xlconcat_gt_rest_all/In1]
+  connect_bd_net -net xlslice_gt_reset_all_2_Dout  [get_bd_pins xlslice_gt_reset_all_2/Dout] \
+  [get_bd_pins xlconcat_gt_rest_all/In2]
+  connect_bd_net -net xlslice_gt_reset_all_3_Dout  [get_bd_pins xlslice_gt_reset_all_3/Dout] \
+  [get_bd_pins xlconcat_gt_rest_all/In3]
+  connect_bd_net -net xlslice_gt_reset_rx_datapath_0_Dout  [get_bd_pins xlslice_gt_reset_rx_datapath_0/Dout] \
+  [get_bd_pins xlconcat_gt_rest_rx_datapath/In0]
+  connect_bd_net -net xlslice_gt_reset_rx_datapath_1_Dout  [get_bd_pins xlslice_gt_reset_rx_datapath_1/Dout] \
+  [get_bd_pins xlconcat_gt_rest_rx_datapath/In1]
+  connect_bd_net -net xlslice_gt_reset_rx_datapath_2_Dout  [get_bd_pins xlslice_gt_reset_rx_datapath_2/Dout] \
+  [get_bd_pins xlconcat_gt_rest_rx_datapath/In2]
+  connect_bd_net -net xlslice_gt_reset_rx_datapath_3_Dout  [get_bd_pins xlslice_gt_reset_rx_datapath_3/Dout] \
+  [get_bd_pins xlconcat_gt_rest_rx_datapath/In3]
+  connect_bd_net -net xlslice_gt_reset_tx_datapath_0_Dout  [get_bd_pins xlslice_gt_reset_tx_datapath_0/Dout] \
+  [get_bd_pins xlconcat_gt_rest_tx_datapath/In0]
+  connect_bd_net -net xlslice_gt_reset_tx_datapath_1_Dout  [get_bd_pins xlslice_gt_reset_tx_datapath_1/Dout] \
+  [get_bd_pins xlconcat_gt_rest_tx_datapath/In1]
+  connect_bd_net -net xlslice_gt_reset_tx_datapath_2_Dout  [get_bd_pins xlslice_gt_reset_tx_datapath_2/Dout] \
+  [get_bd_pins xlconcat_gt_rest_tx_datapath/In2]
+  connect_bd_net -net xlslice_gt_reset_tx_datapath_3_Dout  [get_bd_pins xlslice_gt_reset_tx_datapath_3/Dout] \
+  [get_bd_pins xlconcat_gt_rest_tx_datapath/In3]
+  connect_bd_net -net xlslice_rx_mst_dp_rst_0_Dout  [get_bd_pins xlslice_rx_mst_dp_rst_0/Dout] \
+  [get_bd_pins gt_quad_base/ch0_rxmstdatapathreset]
+  connect_bd_net -net xlslice_rx_mst_dp_rst_1_Dout  [get_bd_pins xlslice_rx_mst_dp_rst_1/Dout] \
+  [get_bd_pins gt_quad_base/ch1_rxmstdatapathreset]
+  connect_bd_net -net xlslice_rx_mst_dp_rst_2_Dout  [get_bd_pins xlslice_rx_mst_dp_rst_2/Dout] \
+  [get_bd_pins gt_quad_base/ch2_rxmstdatapathreset]
+  connect_bd_net -net xlslice_rx_mst_dp_rst_3_Dout  [get_bd_pins xlslice_rx_mst_dp_rst_3/Dout] \
+  [get_bd_pins gt_quad_base/ch3_rxmstdatapathreset]
+  connect_bd_net -net xlslice_rx_mst_reset_0_Dout  [get_bd_pins xlslice_rx_mst_reset_0/Dout] \
+  [get_bd_pins gt_quad_base/ch0_rxmstreset]
+  connect_bd_net -net xlslice_rx_mst_reset_1_Dout  [get_bd_pins xlslice_rx_mst_reset_1/Dout] \
+  [get_bd_pins gt_quad_base/ch1_rxmstreset]
+  connect_bd_net -net xlslice_rx_mst_reset_2_Dout  [get_bd_pins xlslice_rx_mst_reset_2/Dout] \
+  [get_bd_pins gt_quad_base/ch2_rxmstreset]
+  connect_bd_net -net xlslice_rx_mst_reset_3_Dout  [get_bd_pins xlslice_rx_mst_reset_3/Dout] \
+  [get_bd_pins gt_quad_base/ch3_rxmstreset]
+  connect_bd_net -net xlslice_rx_userrdy_0_Dout  [get_bd_pins xlslice_rx_userrdy_0/Dout] \
+  [get_bd_pins gt_quad_base/ch0_rxuserrdy]
+  connect_bd_net -net xlslice_rx_userrdy_1_Dout  [get_bd_pins xlslice_rx_userrdy_1/Dout] \
+  [get_bd_pins gt_quad_base/ch1_rxuserrdy]
+  connect_bd_net -net xlslice_rx_userrdy_2_Dout  [get_bd_pins xlslice_rx_userrdy_2/Dout] \
+  [get_bd_pins gt_quad_base/ch2_rxuserrdy]
+  connect_bd_net -net xlslice_rx_userrdy_3_Dout  [get_bd_pins xlslice_rx_userrdy_3/Dout] \
+  [get_bd_pins gt_quad_base/ch3_rxuserrdy]
+  connect_bd_net -net xlslice_tx_mst_dp_rst_0_Dout  [get_bd_pins xlslice_tx_mst_dp_rst_0/Dout] \
+  [get_bd_pins gt_quad_base/ch0_txmstdatapathreset]
+  connect_bd_net -net xlslice_tx_mst_dp_rst_1_Dout  [get_bd_pins xlslice_tx_mst_dp_rst_1/Dout] \
+  [get_bd_pins gt_quad_base/ch1_txmstdatapathreset]
+  connect_bd_net -net xlslice_tx_mst_dp_rst_2_Dout  [get_bd_pins xlslice_tx_mst_dp_rst_2/Dout] \
+  [get_bd_pins gt_quad_base/ch2_txmstdatapathreset]
+  connect_bd_net -net xlslice_tx_mst_dp_rst_3_Dout  [get_bd_pins xlslice_tx_mst_dp_rst_3/Dout] \
+  [get_bd_pins gt_quad_base/ch3_txmstdatapathreset]
+  connect_bd_net -net xlslice_tx_mst_reset_0_Dout  [get_bd_pins xlslice_tx_mst_reset_0/Dout] \
+  [get_bd_pins gt_quad_base/ch0_txmstreset]
+  connect_bd_net -net xlslice_tx_mst_reset_1_Dout  [get_bd_pins xlslice_tx_mst_reset_1/Dout] \
+  [get_bd_pins gt_quad_base/ch1_txmstreset]
+  connect_bd_net -net xlslice_tx_mst_reset_2_Dout  [get_bd_pins xlslice_tx_mst_reset_2/Dout] \
+  [get_bd_pins gt_quad_base/ch2_txmstreset]
+  connect_bd_net -net xlslice_tx_mst_reset_3_Dout  [get_bd_pins xlslice_tx_mst_reset_3/Dout] \
+  [get_bd_pins gt_quad_base/ch3_txmstreset]
+  connect_bd_net -net xlslice_tx_userrdy_0_Dout  [get_bd_pins xlslice_tx_userrdy_0/Dout] \
+  [get_bd_pins gt_quad_base/ch0_txuserrdy]
+  connect_bd_net -net xlslice_tx_userrdy_1_Dout  [get_bd_pins xlslice_tx_userrdy_1/Dout] \
+  [get_bd_pins gt_quad_base/ch1_txuserrdy]
+  connect_bd_net -net xlslice_tx_userrdy_2_Dout  [get_bd_pins xlslice_tx_userrdy_2/Dout] \
+  [get_bd_pins gt_quad_base/ch2_txuserrdy]
+  connect_bd_net -net xlslice_tx_userrdy_3_Dout  [get_bd_pins xlslice_tx_userrdy_3/Dout] \
+  [get_bd_pins gt_quad_base/ch3_txuserrdy]
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -2263,7 +2613,7 @@ proc create_hier_cell_MCDMA0 { parentCell nameHier } {
   create_bd_pin -dir I s_axis_tvalid
 
   # Create instance: axi_mcdma_0, and set properties
-  set axi_mcdma_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_mcdma:1.1 axi_mcdma_0 ]
+  set axi_mcdma_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_mcdma:1.2 axi_mcdma_0 ]
   set_property -dict [list \
     CONFIG.c_addr_width {32} \
     CONFIG.c_include_mm2s_dre {1} \
@@ -2295,6 +2645,7 @@ proc create_hier_cell_MCDMA0 { parentCell nameHier } {
   set_property -dict [list \
     CONFIG.DIN_FROM {7} \
     CONFIG.DIN_WIDTH {11} \
+    CONFIG.DOUT_WIDTH {8} \
   ] $xlslice_0
 
 
@@ -2387,41 +2738,91 @@ proc create_hier_cell_MCDMA0 { parentCell nameHier } {
   connect_bd_intf_net -intf_net axis_data_fifo_3_M_AXIS [get_bd_intf_pins axis_data_fifo_3/M_AXIS] [get_bd_intf_pins mrmac_10g_mux_0/tx_s_axis]
 
   # Create port connections
-  connect_bd_net -net Din_1 [get_bd_pins Din] [get_bd_pins xlslice_4/Din]
-  connect_bd_net -net Net [get_bd_pins m_axis_aclk_0] [get_bd_pins axis_data_fifo_1/s_axis_aclk] [get_bd_pins axi_mcdma_0/s_axi_aclk] [get_bd_pins axi_register_slice_0_readonly/aclk] [get_bd_pins axi_register_slice_0_writeonly/aclk] [get_bd_pins axis_data_fifo_2/s_axis_aclk] [get_bd_pins axis_data_fifo_0/s_axis_aclk] [get_bd_pins axis_data_fifo_3/s_axis_aclk] [get_bd_pins mrmac_10g_mux_0/rx_s_aclk] [get_bd_pins mrmac_10g_mux_0/tx_s_aclk]
-  connect_bd_net -net axi_mcdma_3_mm2s_ch1_introut [get_bd_pins axi_mcdma_0/mm2s_ch1_introut] [get_bd_pins mm2s_ch1_introut_3]
-  connect_bd_net -net axi_mcdma_3_s2mm_ch1_introut [get_bd_pins axi_mcdma_0/s2mm_ch1_introut] [get_bd_pins s2mm_ch1_introut_3]
-  connect_bd_net -net axi_resetn_3_1 [get_bd_pins axi_resetn_3] [get_bd_pins axi_mcdma_0/axi_resetn]
-  connect_bd_net -net axis_data_fifo_0_s_axis_tready [get_bd_pins axis_data_fifo_0/s_axis_tready] [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tready]
-  connect_bd_net -net axis_data_fifo_1_s_axis_tready [get_bd_pins axis_data_fifo_1/s_axis_tready] [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tready]
-  connect_bd_net -net axis_data_fifo_2_m_axis_tdata [get_bd_pins axis_data_fifo_2/m_axis_tdata] [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tdata]
-  connect_bd_net -net axis_data_fifo_2_m_axis_tkeep [get_bd_pins axis_data_fifo_2/m_axis_tkeep] [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tkeep]
-  connect_bd_net -net axis_data_fifo_2_m_axis_tlast [get_bd_pins axis_data_fifo_2/m_axis_tlast] [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tlast]
-  connect_bd_net -net axis_data_fifo_2_m_axis_tvalid [get_bd_pins axis_data_fifo_2/m_axis_tvalid] [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tvalid]
-  connect_bd_net -net axis_data_fifo_7_m_axis_tdata [get_bd_pins axis_data_fifo_1/m_axis_tdata] [get_bd_pins m_axis_tdata_3]
-  connect_bd_net -net axis_data_fifo_7_m_axis_tkeep [get_bd_pins axis_data_fifo_1/m_axis_tkeep] [get_bd_pins xlconcat_0/In0]
-  connect_bd_net -net axis_data_fifo_7_m_axis_tlast [get_bd_pins axis_data_fifo_1/m_axis_tlast] [get_bd_pins tx_tlast3]
-  connect_bd_net -net axis_data_fifo_7_m_axis_tvalid [get_bd_pins axis_data_fifo_1/m_axis_tvalid] [get_bd_pins tx_tvalid3]
-  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tdata [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tdata] [get_bd_pins axis_data_fifo_0/s_axis_tdata]
-  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tkeep [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tkeep] [get_bd_pins axis_data_fifo_0/s_axis_tkeep]
-  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tlast [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tlast] [get_bd_pins axis_data_fifo_0/s_axis_tlast]
-  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tvalid [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tvalid] [get_bd_pins axis_data_fifo_0/s_axis_tvalid]
-  connect_bd_net -net mrmac_10g_mux_0_rx_s_axis_tready [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tready] [get_bd_pins axis_data_fifo_2/m_axis_tready]
-  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tdata [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tdata] [get_bd_pins axis_data_fifo_1/s_axis_tdata]
-  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tkeep [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tkeep] [get_bd_pins axis_data_fifo_1/s_axis_tkeep]
-  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tlast [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tlast] [get_bd_pins axis_data_fifo_1/s_axis_tlast]
-  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tvalid [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tvalid] [get_bd_pins axis_data_fifo_1/s_axis_tvalid]
-  connect_bd_net -net s_axi_aclk_1 [get_bd_pins s_axi_aclk] [get_bd_pins axi_mcdma_0/s_axi_lite_aclk]
-  connect_bd_net -net s_axis_aresetn_1 [get_bd_pins core_reset] [get_bd_pins axis_data_fifo_1/s_axis_aresetn] [get_bd_pins axi_register_slice_0_readonly/aresetn] [get_bd_pins axi_register_slice_0_writeonly/aresetn] [get_bd_pins axis_data_fifo_2/s_axis_aresetn] [get_bd_pins axis_data_fifo_0/s_axis_aresetn] [get_bd_pins axis_data_fifo_3/s_axis_aresetn] [get_bd_pins mrmac_10g_mux_0/rx_s_aresetn] [get_bd_pins mrmac_10g_mux_0/tx_s_aresetn]
-  connect_bd_net -net s_axis_tdata_1 [get_bd_pins s_axis_tdata] [get_bd_pins axis_data_fifo_2/s_axis_tdata]
-  connect_bd_net -net s_axis_tkeep_3_1 [get_bd_pins s_axis_tkeep_3] [get_bd_pins xlslice_0/Din]
-  connect_bd_net -net s_axis_tlast_1 [get_bd_pins s_axis_tlast] [get_bd_pins axis_data_fifo_2/s_axis_tlast]
-  connect_bd_net -net s_axis_tvalid_1 [get_bd_pins s_axis_tvalid] [get_bd_pins axis_data_fifo_2/s_axis_tvalid]
-  connect_bd_net -net tx_axis_tready_3_1 [get_bd_pins tx_axis_tready_3] [get_bd_pins axis_data_fifo_1/m_axis_tready]
-  connect_bd_net -net xlconcat_1_dout [get_bd_pins xlconcat_0/dout] [get_bd_pins tx_tkeep3]
-  connect_bd_net -net xlconstant_0_dout [get_bd_pins xlconstant_0/dout] [get_bd_pins xlconcat_0/In1]
-  connect_bd_net -net xlslice_0_Dout [get_bd_pins xlslice_0/Dout] [get_bd_pins axis_data_fifo_2/s_axis_tkeep]
-  connect_bd_net -net xlslice_4_Dout [get_bd_pins xlslice_4/Dout] [get_bd_pins mrmac_10g_mux_0/sel_10g_mode]
+  connect_bd_net -net Din_1  [get_bd_pins Din] \
+  [get_bd_pins xlslice_4/Din]
+  connect_bd_net -net Net  [get_bd_pins m_axis_aclk_0] \
+  [get_bd_pins axi_mcdma_0/s_axi_aclk] \
+  [get_bd_pins axi_register_slice_0_readonly/aclk] \
+  [get_bd_pins axi_register_slice_0_writeonly/aclk] \
+  [get_bd_pins axis_data_fifo_0/s_axis_aclk] \
+  [get_bd_pins axis_data_fifo_1/s_axis_aclk] \
+  [get_bd_pins axis_data_fifo_2/s_axis_aclk] \
+  [get_bd_pins axis_data_fifo_3/s_axis_aclk] \
+  [get_bd_pins mrmac_10g_mux_0/tx_s_aclk] \
+  [get_bd_pins mrmac_10g_mux_0/rx_s_aclk]
+  connect_bd_net -net axi_mcdma_3_mm2s_ch1_introut  [get_bd_pins axi_mcdma_0/mm2s_ch1_introut] \
+  [get_bd_pins mm2s_ch1_introut_3]
+  connect_bd_net -net axi_mcdma_3_s2mm_ch1_introut  [get_bd_pins axi_mcdma_0/s2mm_ch1_introut] \
+  [get_bd_pins s2mm_ch1_introut_3]
+  connect_bd_net -net axi_resetn_3_1  [get_bd_pins axi_resetn_3] \
+  [get_bd_pins axi_mcdma_0/axi_resetn]
+  connect_bd_net -net axis_data_fifo_0_s_axis_tready  [get_bd_pins axis_data_fifo_0/s_axis_tready] \
+  [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tready]
+  connect_bd_net -net axis_data_fifo_1_s_axis_tready  [get_bd_pins axis_data_fifo_1/s_axis_tready] \
+  [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tready]
+  connect_bd_net -net axis_data_fifo_2_m_axis_tdata  [get_bd_pins axis_data_fifo_2/m_axis_tdata] \
+  [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tdata]
+  connect_bd_net -net axis_data_fifo_2_m_axis_tkeep  [get_bd_pins axis_data_fifo_2/m_axis_tkeep] \
+  [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tkeep]
+  connect_bd_net -net axis_data_fifo_2_m_axis_tlast  [get_bd_pins axis_data_fifo_2/m_axis_tlast] \
+  [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tlast]
+  connect_bd_net -net axis_data_fifo_2_m_axis_tvalid  [get_bd_pins axis_data_fifo_2/m_axis_tvalid] \
+  [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tvalid]
+  connect_bd_net -net axis_data_fifo_7_m_axis_tdata  [get_bd_pins axis_data_fifo_1/m_axis_tdata] \
+  [get_bd_pins m_axis_tdata_3]
+  connect_bd_net -net axis_data_fifo_7_m_axis_tkeep  [get_bd_pins axis_data_fifo_1/m_axis_tkeep] \
+  [get_bd_pins xlconcat_0/In0]
+  connect_bd_net -net axis_data_fifo_7_m_axis_tlast  [get_bd_pins axis_data_fifo_1/m_axis_tlast] \
+  [get_bd_pins tx_tlast3]
+  connect_bd_net -net axis_data_fifo_7_m_axis_tvalid  [get_bd_pins axis_data_fifo_1/m_axis_tvalid] \
+  [get_bd_pins tx_tvalid3]
+  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tdata  [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tdata] \
+  [get_bd_pins axis_data_fifo_0/s_axis_tdata]
+  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tkeep  [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tkeep] \
+  [get_bd_pins axis_data_fifo_0/s_axis_tkeep]
+  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tlast  [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tlast] \
+  [get_bd_pins axis_data_fifo_0/s_axis_tlast]
+  connect_bd_net -net mrmac_10g_mux_0_rx_m_axis_tvalid  [get_bd_pins mrmac_10g_mux_0/rx_m_axis_tvalid] \
+  [get_bd_pins axis_data_fifo_0/s_axis_tvalid]
+  connect_bd_net -net mrmac_10g_mux_0_rx_s_axis_tready  [get_bd_pins mrmac_10g_mux_0/rx_s_axis_tready] \
+  [get_bd_pins axis_data_fifo_2/m_axis_tready]
+  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tdata  [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tdata] \
+  [get_bd_pins axis_data_fifo_1/s_axis_tdata]
+  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tkeep  [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tkeep] \
+  [get_bd_pins axis_data_fifo_1/s_axis_tkeep]
+  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tlast  [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tlast] \
+  [get_bd_pins axis_data_fifo_1/s_axis_tlast]
+  connect_bd_net -net mrmac_10g_mux_0_tx_m_axis_tvalid  [get_bd_pins mrmac_10g_mux_0/tx_m_axis_tvalid] \
+  [get_bd_pins axis_data_fifo_1/s_axis_tvalid]
+  connect_bd_net -net s_axi_aclk_1  [get_bd_pins s_axi_aclk] \
+  [get_bd_pins axi_mcdma_0/s_axi_lite_aclk]
+  connect_bd_net -net s_axis_aresetn_1  [get_bd_pins core_reset] \
+  [get_bd_pins axi_register_slice_0_readonly/aresetn] \
+  [get_bd_pins axi_register_slice_0_writeonly/aresetn] \
+  [get_bd_pins axis_data_fifo_0/s_axis_aresetn] \
+  [get_bd_pins axis_data_fifo_1/s_axis_aresetn] \
+  [get_bd_pins axis_data_fifo_2/s_axis_aresetn] \
+  [get_bd_pins axis_data_fifo_3/s_axis_aresetn] \
+  [get_bd_pins mrmac_10g_mux_0/tx_s_aresetn] \
+  [get_bd_pins mrmac_10g_mux_0/rx_s_aresetn]
+  connect_bd_net -net s_axis_tdata_1  [get_bd_pins s_axis_tdata] \
+  [get_bd_pins axis_data_fifo_2/s_axis_tdata]
+  connect_bd_net -net s_axis_tkeep_3_1  [get_bd_pins s_axis_tkeep_3] \
+  [get_bd_pins xlslice_0/Din]
+  connect_bd_net -net s_axis_tlast_1  [get_bd_pins s_axis_tlast] \
+  [get_bd_pins axis_data_fifo_2/s_axis_tlast]
+  connect_bd_net -net s_axis_tvalid_1  [get_bd_pins s_axis_tvalid] \
+  [get_bd_pins axis_data_fifo_2/s_axis_tvalid]
+  connect_bd_net -net tx_axis_tready_3_1  [get_bd_pins tx_axis_tready_3] \
+  [get_bd_pins axis_data_fifo_1/m_axis_tready]
+  connect_bd_net -net xlconcat_1_dout  [get_bd_pins xlconcat_0/dout] \
+  [get_bd_pins tx_tkeep3]
+  connect_bd_net -net xlconstant_0_dout  [get_bd_pins xlconstant_0/dout] \
+  [get_bd_pins xlconcat_0/In1]
+  connect_bd_net -net xlslice_0_Dout  [get_bd_pins xlslice_0/Dout] \
+  [get_bd_pins axis_data_fifo_2/s_axis_tkeep]
+  connect_bd_net -net xlslice_4_Dout  [get_bd_pins xlslice_4/Dout] \
+  [get_bd_pins mrmac_10g_mux_0/sel_10g_mode]
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -2526,36 +2927,66 @@ proc create_hier_cell_usr_rdy_reset { parentCell nameHier } {
 
 
   # Create port connections
-  connect_bd_net -net In0_1 [get_bd_pins mst_rx_dp_reset_in_0] [get_bd_pins xlconcat_4/In0]
-  connect_bd_net -net In0_2 [get_bd_pins rxuserrdy_in_0] [get_bd_pins xlconcat_1/In0]
-  connect_bd_net -net In10_1 [get_bd_pins mst_tx_dp_reset_in_2] [get_bd_pins xlconcat_3/In2]
-  connect_bd_net -net In11_1 [get_bd_pins mst_tx_dp_reset_in_0] [get_bd_pins xlconcat_3/In0]
-  connect_bd_net -net In12_1 [get_bd_pins mst_tx_reset_in_3] [get_bd_pins xlconcat_2/In3]
-  connect_bd_net -net In13_1 [get_bd_pins mst_tx_reset_in_1] [get_bd_pins xlconcat_2/In1]
-  connect_bd_net -net In14_1 [get_bd_pins mst_tx_reset_in_2] [get_bd_pins xlconcat_2/In2]
-  connect_bd_net -net In15_1 [get_bd_pins mst_tx_reset_in_0] [get_bd_pins xlconcat_2/In0]
-  connect_bd_net -net In16_1 [get_bd_pins txuserrdy_in_3] [get_bd_pins xlconcat_5/In3]
-  connect_bd_net -net In17_1 [get_bd_pins txuserrdy_in_1] [get_bd_pins xlconcat_5/In1]
-  connect_bd_net -net In18_1 [get_bd_pins txuserrdy_in_2] [get_bd_pins xlconcat_5/In2]
-  connect_bd_net -net In19_1 [get_bd_pins txuserrdy_in_0] [get_bd_pins xlconcat_5/In0]
-  connect_bd_net -net In1_1 [get_bd_pins mst_rx_dp_reset_in_1] [get_bd_pins xlconcat_4/In1]
-  connect_bd_net -net In1_2 [get_bd_pins rxuserrdy_in_1] [get_bd_pins xlconcat_1/In1]
-  connect_bd_net -net In2_1 [get_bd_pins mst_rx_dp_reset_in_2] [get_bd_pins xlconcat_4/In2]
-  connect_bd_net -net In2_2 [get_bd_pins rxuserrdy_in_2] [get_bd_pins xlconcat_1/In2]
-  connect_bd_net -net In3_1 [get_bd_pins mst_rx_dp_reset_in_3] [get_bd_pins xlconcat_4/In3]
-  connect_bd_net -net In3_2 [get_bd_pins rxuserrdy_in_3] [get_bd_pins xlconcat_1/In3]
-  connect_bd_net -net In4_1 [get_bd_pins mst_rx_reset_in_3] [get_bd_pins xlconcat_0/In3]
-  connect_bd_net -net In5_1 [get_bd_pins mst_rx_reset_in_1] [get_bd_pins xlconcat_0/In1]
-  connect_bd_net -net In6_1 [get_bd_pins mst_rx_reset_in_2] [get_bd_pins xlconcat_0/In2]
-  connect_bd_net -net In7_1 [get_bd_pins mst_rx_reset_in_0] [get_bd_pins xlconcat_0/In0]
-  connect_bd_net -net In8_1 [get_bd_pins mst_tx_dp_reset_in_3] [get_bd_pins xlconcat_3/In3]
-  connect_bd_net -net In9_1 [get_bd_pins mst_tx_dp_reset_in_1] [get_bd_pins xlconcat_3/In1]
-  connect_bd_net -net xlconcat_0_dout [get_bd_pins xlconcat_0/dout] [get_bd_pins rx_mst_reset_out]
-  connect_bd_net -net xlconcat_1_dout [get_bd_pins xlconcat_1/dout] [get_bd_pins rx_userrdy_out_0]
-  connect_bd_net -net xlconcat_2_dout [get_bd_pins xlconcat_2/dout] [get_bd_pins tx_mst_reset_out]
-  connect_bd_net -net xlconcat_3_dout [get_bd_pins xlconcat_3/dout] [get_bd_pins tx_mst_dp_reset]
-  connect_bd_net -net xlconcat_4_dout [get_bd_pins xlconcat_4/dout] [get_bd_pins rx_mst_dp_reset]
-  connect_bd_net -net xlconcat_5_dout [get_bd_pins xlconcat_5/dout] [get_bd_pins tx_userrdy_out]
+  connect_bd_net -net In0_1  [get_bd_pins mst_rx_dp_reset_in_0] \
+  [get_bd_pins xlconcat_4/In0]
+  connect_bd_net -net In0_2  [get_bd_pins rxuserrdy_in_0] \
+  [get_bd_pins xlconcat_1/In0]
+  connect_bd_net -net In10_1  [get_bd_pins mst_tx_dp_reset_in_2] \
+  [get_bd_pins xlconcat_3/In2]
+  connect_bd_net -net In11_1  [get_bd_pins mst_tx_dp_reset_in_0] \
+  [get_bd_pins xlconcat_3/In0]
+  connect_bd_net -net In12_1  [get_bd_pins mst_tx_reset_in_3] \
+  [get_bd_pins xlconcat_2/In3]
+  connect_bd_net -net In13_1  [get_bd_pins mst_tx_reset_in_1] \
+  [get_bd_pins xlconcat_2/In1]
+  connect_bd_net -net In14_1  [get_bd_pins mst_tx_reset_in_2] \
+  [get_bd_pins xlconcat_2/In2]
+  connect_bd_net -net In15_1  [get_bd_pins mst_tx_reset_in_0] \
+  [get_bd_pins xlconcat_2/In0]
+  connect_bd_net -net In16_1  [get_bd_pins txuserrdy_in_3] \
+  [get_bd_pins xlconcat_5/In3]
+  connect_bd_net -net In17_1  [get_bd_pins txuserrdy_in_1] \
+  [get_bd_pins xlconcat_5/In1]
+  connect_bd_net -net In18_1  [get_bd_pins txuserrdy_in_2] \
+  [get_bd_pins xlconcat_5/In2]
+  connect_bd_net -net In19_1  [get_bd_pins txuserrdy_in_0] \
+  [get_bd_pins xlconcat_5/In0]
+  connect_bd_net -net In1_1  [get_bd_pins mst_rx_dp_reset_in_1] \
+  [get_bd_pins xlconcat_4/In1]
+  connect_bd_net -net In1_2  [get_bd_pins rxuserrdy_in_1] \
+  [get_bd_pins xlconcat_1/In1]
+  connect_bd_net -net In2_1  [get_bd_pins mst_rx_dp_reset_in_2] \
+  [get_bd_pins xlconcat_4/In2]
+  connect_bd_net -net In2_2  [get_bd_pins rxuserrdy_in_2] \
+  [get_bd_pins xlconcat_1/In2]
+  connect_bd_net -net In3_1  [get_bd_pins mst_rx_dp_reset_in_3] \
+  [get_bd_pins xlconcat_4/In3]
+  connect_bd_net -net In3_2  [get_bd_pins rxuserrdy_in_3] \
+  [get_bd_pins xlconcat_1/In3]
+  connect_bd_net -net In4_1  [get_bd_pins mst_rx_reset_in_3] \
+  [get_bd_pins xlconcat_0/In3]
+  connect_bd_net -net In5_1  [get_bd_pins mst_rx_reset_in_1] \
+  [get_bd_pins xlconcat_0/In1]
+  connect_bd_net -net In6_1  [get_bd_pins mst_rx_reset_in_2] \
+  [get_bd_pins xlconcat_0/In2]
+  connect_bd_net -net In7_1  [get_bd_pins mst_rx_reset_in_0] \
+  [get_bd_pins xlconcat_0/In0]
+  connect_bd_net -net In8_1  [get_bd_pins mst_tx_dp_reset_in_3] \
+  [get_bd_pins xlconcat_3/In3]
+  connect_bd_net -net In9_1  [get_bd_pins mst_tx_dp_reset_in_1] \
+  [get_bd_pins xlconcat_3/In1]
+  connect_bd_net -net xlconcat_0_dout  [get_bd_pins xlconcat_0/dout] \
+  [get_bd_pins rx_mst_reset_out]
+  connect_bd_net -net xlconcat_1_dout  [get_bd_pins xlconcat_1/dout] \
+  [get_bd_pins rx_userrdy_out_0]
+  connect_bd_net -net xlconcat_2_dout  [get_bd_pins xlconcat_2/dout] \
+  [get_bd_pins tx_mst_reset_out]
+  connect_bd_net -net xlconcat_3_dout  [get_bd_pins xlconcat_3/dout] \
+  [get_bd_pins tx_mst_dp_reset]
+  connect_bd_net -net xlconcat_4_dout  [get_bd_pins xlconcat_4/dout] \
+  [get_bd_pins rx_mst_dp_reset]
+  connect_bd_net -net xlconcat_5_dout  [get_bd_pins xlconcat_5/dout] \
+  [get_bd_pins tx_userrdy_out]
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -2655,18 +3086,35 @@ proc create_hier_cell_clk_rst_wrapper { parentCell nameHier } {
 
 
   # Create port connections
-  connect_bd_net -net Op1_1 [get_bd_pins Op1] [get_bd_pins util_vector_logic_0/Op1]
-  connect_bd_net -net Op2_1 [get_bd_pins Op2] [get_bd_pins util_vector_logic_1/Op1]
-  connect_bd_net -net clk_wizard_0_clk_out1 [get_bd_pins In1] [get_bd_pins xlconcat_6/In1] [get_bd_pins xlconcat_6/In2] [get_bd_pins xlconcat_6/In3] [get_bd_pins xlconcat_6/In0] [get_bd_pins proc_sys_reset_1/slowest_sync_clk]
-  connect_bd_net -net ext_reset_in_1 [get_bd_pins ext_reset_in] [get_bd_pins proc_sys_reset_0/ext_reset_in] [get_bd_pins proc_sys_reset_1/ext_reset_in]
-  connect_bd_net -net proc_sys_reset_0_bus_struct_reset [get_bd_pins proc_sys_reset_0/bus_struct_reset] [get_bd_pins bus_struct_reset]
-  connect_bd_net -net proc_sys_reset_0_interconnect_aresetn [get_bd_pins proc_sys_reset_0/interconnect_aresetn] [get_bd_pins interconnect_aresetn]
-  connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins proc_sys_reset_0/peripheral_aresetn] [get_bd_pins peripheral_aresetn]
-  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins proc_sys_reset_1/peripheral_aresetn] [get_bd_pins peripheral_aresetn2]
-  connect_bd_net -net slowest_sync_clk_1 [get_bd_pins slowest_sync_clk] [get_bd_pins proc_sys_reset_0/slowest_sync_clk]
-  connect_bd_net -net util_vector_logic_0_Res [get_bd_pins util_vector_logic_0/Res] [get_bd_pins rx_reset]
-  connect_bd_net -net util_vector_logic_1_Res [get_bd_pins util_vector_logic_1/Res] [get_bd_pins tx_reset]
-  connect_bd_net -net xlconcat_6_dout [get_bd_pins xlconcat_6/dout] [get_bd_pins tx_rx_axi_clk]
+  connect_bd_net -net Op1_1  [get_bd_pins Op1] \
+  [get_bd_pins util_vector_logic_0/Op1]
+  connect_bd_net -net Op2_1  [get_bd_pins Op2] \
+  [get_bd_pins util_vector_logic_1/Op1]
+  connect_bd_net -net clk_wizard_0_clk_out1  [get_bd_pins In1] \
+  [get_bd_pins proc_sys_reset_1/slowest_sync_clk] \
+  [get_bd_pins xlconcat_6/In0] \
+  [get_bd_pins xlconcat_6/In1] \
+  [get_bd_pins xlconcat_6/In2] \
+  [get_bd_pins xlconcat_6/In3]
+  connect_bd_net -net ext_reset_in_1  [get_bd_pins ext_reset_in] \
+  [get_bd_pins proc_sys_reset_0/ext_reset_in] \
+  [get_bd_pins proc_sys_reset_1/ext_reset_in]
+  connect_bd_net -net proc_sys_reset_0_bus_struct_reset  [get_bd_pins proc_sys_reset_0/bus_struct_reset] \
+  [get_bd_pins bus_struct_reset]
+  connect_bd_net -net proc_sys_reset_0_interconnect_aresetn  [get_bd_pins proc_sys_reset_0/interconnect_aresetn] \
+  [get_bd_pins interconnect_aresetn]
+  connect_bd_net -net proc_sys_reset_0_peripheral_aresetn  [get_bd_pins proc_sys_reset_0/peripheral_aresetn] \
+  [get_bd_pins peripheral_aresetn]
+  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn  [get_bd_pins proc_sys_reset_1/peripheral_aresetn] \
+  [get_bd_pins peripheral_aresetn2]
+  connect_bd_net -net slowest_sync_clk_1  [get_bd_pins slowest_sync_clk] \
+  [get_bd_pins proc_sys_reset_0/slowest_sync_clk]
+  connect_bd_net -net util_vector_logic_0_Res  [get_bd_pins util_vector_logic_0/Res] \
+  [get_bd_pins rx_reset]
+  connect_bd_net -net util_vector_logic_1_Res  [get_bd_pins util_vector_logic_1/Res] \
+  [get_bd_pins tx_reset]
+  connect_bd_net -net xlconcat_6_dout  [get_bd_pins xlconcat_6/dout] \
+  [get_bd_pins tx_rx_axi_clk]
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -2736,7 +3184,7 @@ proc create_root_design { parentCell } {
   set gt_ref_clk_n [ create_bd_port -dir I -type clk gt_ref_clk_n ]
 
   # Create instance: mrmac_0_core, and set properties
-  set mrmac_0_core [ create_bd_cell -type ip -vlnv xilinx.com:ip:mrmac:2.2 mrmac_0_core ]
+  set mrmac_0_core [ create_bd_cell -type ip -vlnv xilinx.com:ip:mrmac:3.0 mrmac_0_core ]
   set_property -dict [list \
     CONFIG.FAST_SIM_MODE {0} \
     CONFIG.FEC_SLICE0_CFG_C0 {FEC Disabled (Bypass)} \
@@ -2852,7 +3300,7 @@ proc create_root_design { parentCell } {
       PS_NUM_FABRIC_RESETS {1} \
       PS_PCIE_EP_RESET1_IO {None} \
       PS_PCIE_EP_RESET2_IO {None} \
-      PS_PCIE_RESET {{ENABLE 1}} \
+      PS_PCIE_RESET {ENABLE 1} \
       PS_PL_CONNECTIVITY_MODE {Custom} \
       PS_TTC0_PERIPHERAL_ENABLE {1} \
       PS_UART0_PERIPHERAL {{ENABLE 1} {IO {PMC_MIO 42 .. 43}}} \
@@ -2870,28 +3318,200 @@ proc create_root_design { parentCell } {
       SMON_ENABLE_TEMP_AVERAGING {0} \
       SMON_TEMP_AVERAGING_SAMPLES {0} \
     } \
+    CONFIG.PS_PMC_CONFIG_APPLIED {1} \
   ] $versal_cips_0
 
 
   # Create instance: axi_noc_0, and set properties
-  set axi_noc_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_noc:1.0 axi_noc_0 ]
+  set axi_noc_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_noc:1.1 axi_noc_0 ]
   set_property -dict [list \
+    CONFIG.BLI_DESTID_PINS {} \
     CONFIG.CH0_LPDDR4_0_BOARD_INTERFACE {ch0_lpddr4_c0} \
     CONFIG.CH0_LPDDR4_1_BOARD_INTERFACE {ch0_lpddr4_c1} \
     CONFIG.CH1_LPDDR4_0_BOARD_INTERFACE {ch1_lpddr4_c0} \
     CONFIG.CH1_LPDDR4_1_BOARD_INTERFACE {ch1_lpddr4_c1} \
+    CONFIG.CLK_NAMES {} \
+    CONFIG.HBM_CHNL0_CONFIG {HBM_REF_PERIOD_TEMP_COMP FALSE} \
+    CONFIG.HBM_SIDEBAND_PINS {} \
+    CONFIG.HBM_STACK0_CONFIG { } \
+    CONFIG.MC2_CONFIG_NUM {config26} \
+    CONFIG.MC3_CONFIG_NUM {config26} \
+    CONFIG.MC_ADDR_WIDTH {6} \
+    CONFIG.MC_BOARD_INTRF_EN {true} \
+    CONFIG.MC_BURST_LENGTH {16} \
+    CONFIG.MC_CASLATENCY {36} \
+    CONFIG.MC_CASWRITELATENCY {18} \
+    CONFIG.MC_CH0_LP4_CHA_ENABLE {true} \
+    CONFIG.MC_CH0_LP4_CHB_ENABLE {true} \
+    CONFIG.MC_CH1_LP4_CHA_ENABLE {true} \
+    CONFIG.MC_CH1_LP4_CHB_ENABLE {true} \
     CONFIG.MC_CHANNEL_INTERLEAVING {true} \
     CONFIG.MC_CHAN_REGION1 {NONE} \
+    CONFIG.MC_CH_INTERLEAVING_SIZE {64_Bytes} \
+    CONFIG.MC_CKE_WIDTH {0} \
+    CONFIG.MC_CK_WIDTH {0} \
     CONFIG.MC_DM_WIDTH {4} \
     CONFIG.MC_DQS_WIDTH {4} \
     CONFIG.MC_DQ_WIDTH {32} \
+    CONFIG.MC_ECC_SCRUB_SIZE {4096} \
+    CONFIG.MC_F1_CASLATENCY {36} \
+    CONFIG.MC_F1_CASWRITELATENCY {18} \
+    CONFIG.MC_F1_LPDDR4_MR13 {0x00C0} \
+    CONFIG.MC_F1_TCCD_L {0} \
+    CONFIG.MC_F1_TCCD_L_MIN {0} \
+    CONFIG.MC_F1_TFAW {30000} \
+    CONFIG.MC_F1_TFAWMIN {30000} \
+    CONFIG.MC_F1_TMOD {0} \
+    CONFIG.MC_F1_TMOD_MIN {0} \
+    CONFIG.MC_F1_TMRD {14000} \
+    CONFIG.MC_F1_TMRDMIN {14000} \
+    CONFIG.MC_F1_TMRW {10000} \
+    CONFIG.MC_F1_TMRWMIN {10000} \
+    CONFIG.MC_F1_TRAS {42000} \
+    CONFIG.MC_F1_TRASMIN {42000} \
+    CONFIG.MC_F1_TRCD {18000} \
+    CONFIG.MC_F1_TRCDMIN {18000} \
+    CONFIG.MC_F1_TRPAB {21000} \
+    CONFIG.MC_F1_TRPABMIN {21000} \
+    CONFIG.MC_F1_TRPPB {18000} \
+    CONFIG.MC_F1_TRPPBMIN {18000} \
+    CONFIG.MC_F1_TRRD {7500} \
+    CONFIG.MC_F1_TRRDMIN {7500} \
+    CONFIG.MC_F1_TRRD_L {0} \
+    CONFIG.MC_F1_TRRD_L_MIN {0} \
+    CONFIG.MC_F1_TRRD_S {0} \
+    CONFIG.MC_F1_TRRD_S_MIN {0} \
+    CONFIG.MC_F1_TWR {18000} \
+    CONFIG.MC_F1_TWRMIN {18000} \
+    CONFIG.MC_F1_TWTR {10000} \
+    CONFIG.MC_F1_TWTRMIN {10000} \
+    CONFIG.MC_F1_TWTR_L {0} \
+    CONFIG.MC_F1_TWTR_L_MIN {0} \
+    CONFIG.MC_F1_TWTR_S {0} \
+    CONFIG.MC_F1_TWTR_S_MIN {0} \
+    CONFIG.MC_F1_TZQLAT {30000} \
+    CONFIG.MC_F1_TZQLATMIN {30000} \
     CONFIG.MC_INTERLEAVE_SIZE {2048} \
+    CONFIG.MC_IP_TIMEPERIOD1 {512} \
+    CONFIG.MC_LP4_CA_A_WIDTH {6} \
+    CONFIG.MC_LP4_CA_B_WIDTH {6} \
+    CONFIG.MC_LP4_CKE_A_WIDTH {1} \
+    CONFIG.MC_LP4_CKE_B_WIDTH {1} \
+    CONFIG.MC_LP4_CKT_A_WIDTH {1} \
+    CONFIG.MC_LP4_CKT_B_WIDTH {1} \
+    CONFIG.MC_LP4_CS_A_WIDTH {1} \
+    CONFIG.MC_LP4_CS_B_WIDTH {1} \
+    CONFIG.MC_LP4_DMI_A_WIDTH {2} \
+    CONFIG.MC_LP4_DMI_B_WIDTH {2} \
+    CONFIG.MC_LP4_DQS_A_WIDTH {2} \
+    CONFIG.MC_LP4_DQS_B_WIDTH {2} \
+    CONFIG.MC_LP4_DQ_A_WIDTH {16} \
+    CONFIG.MC_LP4_DQ_B_WIDTH {16} \
+    CONFIG.MC_LP4_RESETN_WIDTH {1} \
+    CONFIG.MC_ODTLon {8} \
+    CONFIG.MC_ODT_WIDTH {0} \
+    CONFIG.MC_PER_RD_INTVL {0} \
+    CONFIG.MC_PRE_DEF_ADDR_MAP_SEL {ROW_BANK_COLUMN} \
     CONFIG.MC_SYSTEM_CLOCK {Differential} \
+    CONFIG.MC_TCCD {8} \
+    CONFIG.MC_TCCD_L {0} \
+    CONFIG.MC_TCCD_L_MIN {0} \
+    CONFIG.MC_TCKE {15} \
+    CONFIG.MC_TCKEMIN {15} \
+    CONFIG.MC_TDQS2DQ_MAX {800} \
+    CONFIG.MC_TDQS2DQ_MIN {200} \
+    CONFIG.MC_TDQSCK_MAX {3500} \
+    CONFIG.MC_TFAW {30000} \
+    CONFIG.MC_TFAWMIN {30000} \
+    CONFIG.MC_TMOD {0} \
+    CONFIG.MC_TMOD_MIN {0} \
+    CONFIG.MC_TMRD {14000} \
+    CONFIG.MC_TMRDMIN {14000} \
+    CONFIG.MC_TMRD_div4 {10} \
+    CONFIG.MC_TMRD_nCK {28} \
+    CONFIG.MC_TMRW {10000} \
+    CONFIG.MC_TMRWMIN {10000} \
+    CONFIG.MC_TMRW_div4 {10} \
+    CONFIG.MC_TMRW_nCK {20} \
+    CONFIG.MC_TODTon_MIN {3} \
+    CONFIG.MC_TOSCO {40000} \
+    CONFIG.MC_TOSCOMIN {40000} \
+    CONFIG.MC_TOSCO_nCK {79} \
+    CONFIG.MC_TPBR2PBR {90000} \
+    CONFIG.MC_TPBR2PBRMIN {90000} \
+    CONFIG.MC_TRAS {42000} \
+    CONFIG.MC_TRASMIN {42000} \
+    CONFIG.MC_TRAS_nCK {83} \
+    CONFIG.MC_TRC {63000} \
+    CONFIG.MC_TRCD {18000} \
+    CONFIG.MC_TRCDMIN {18000} \
+    CONFIG.MC_TRCD_nCK {36} \
+    CONFIG.MC_TRCMIN {0} \
+    CONFIG.MC_TREFI {3904000} \
+    CONFIG.MC_TREFIPB {488000} \
+    CONFIG.MC_TRFC {0} \
+    CONFIG.MC_TRFCAB {280000} \
+    CONFIG.MC_TRFCABMIN {280000} \
+    CONFIG.MC_TRFCMIN {0} \
+    CONFIG.MC_TRFCPB {140000} \
+    CONFIG.MC_TRFCPBMIN {140000} \
+    CONFIG.MC_TRP {0} \
+    CONFIG.MC_TRPAB {21000} \
+    CONFIG.MC_TRPABMIN {21000} \
+    CONFIG.MC_TRPAB_nCK {42} \
+    CONFIG.MC_TRPMIN {0} \
+    CONFIG.MC_TRPPB {18000} \
+    CONFIG.MC_TRPPBMIN {18000} \
+    CONFIG.MC_TRPPB_nCK {36} \
+    CONFIG.MC_TRPRE {1.8} \
+    CONFIG.MC_TRRD {7500} \
+    CONFIG.MC_TRRDMIN {7500} \
+    CONFIG.MC_TRRD_L {0} \
+    CONFIG.MC_TRRD_L_MIN {0} \
+    CONFIG.MC_TRRD_S {0} \
+    CONFIG.MC_TRRD_S_MIN {0} \
+    CONFIG.MC_TRRD_nCK {15} \
+    CONFIG.MC_TWPRE {1.8} \
+    CONFIG.MC_TWPST {0.4} \
+    CONFIG.MC_TWR {18000} \
+    CONFIG.MC_TWRMIN {18000} \
+    CONFIG.MC_TWR_nCK {36} \
+    CONFIG.MC_TWTR {10000} \
+    CONFIG.MC_TWTRMIN {10000} \
+    CONFIG.MC_TWTR_L {0} \
+    CONFIG.MC_TWTR_S {0} \
+    CONFIG.MC_TWTR_S_MIN {0} \
+    CONFIG.MC_TWTR_nCK {20} \
+    CONFIG.MC_TXP {15} \
+    CONFIG.MC_TXPMIN {15} \
+    CONFIG.MC_TXPR {0} \
+    CONFIG.MC_TZQCAL {1000000} \
+    CONFIG.MC_TZQCAL_div4 {489} \
+    CONFIG.MC_TZQCS_ITVL {0} \
+    CONFIG.MC_TZQLAT {30000} \
+    CONFIG.MC_TZQLATMIN {30000} \
+    CONFIG.MC_TZQLAT_div4 {15} \
+    CONFIG.MC_TZQLAT_nCK {59} \
+    CONFIG.MC_TZQ_START_ITVL {1000000000} \
+    CONFIG.MC_USER_DEFINED_ADDRESS_MAP {16RA-3BA-10CA} \
+    CONFIG.MC_XPLL_CLKOUT1_PERIOD {1024} \
+    CONFIG.MI_INFO_PINS {} \
+    CONFIG.MI_NAMES {} \
+    CONFIG.MI_SIDEBAND_PINS {} \
+    CONFIG.MI_USR_INTR_PINS {} \
+    CONFIG.NMI_NAMES {} \
+    CONFIG.NOC_RD_RATE {} \
+    CONFIG.NOC_WR_RATE {} \
+    CONFIG.NSI_NAMES {} \
     CONFIG.NUM_CLKS {9} \
     CONFIG.NUM_MC {2} \
     CONFIG.NUM_MCP {3} \
     CONFIG.NUM_MI {0} \
     CONFIG.NUM_SI {20} \
+    CONFIG.SI_DESTID_PINS {} \
+    CONFIG.SI_NAMES {} \
+    CONFIG.SI_SIDEBAND_PINS {} \
+    CONFIG.SI_USR_INTR_PINS {} \
     CONFIG.sys_clk0_BOARD_INTERFACE {lpddr4_sma_clk1} \
     CONFIG.sys_clk1_BOARD_INTERFACE {lpddr4_sma_clk2} \
   ] $axi_noc_0
@@ -3200,139 +3820,341 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net versal_cips_0_PMC_NOC_AXI_0 [get_bd_intf_pins versal_cips_0/PMC_NOC_AXI_0] [get_bd_intf_pins axi_noc_0/S00_AXI]
 
   # Create port connections
-  connect_bd_net -net GT_WRAPPER_ch0_rxmstresetdone [get_bd_pins mrmac_0_gt_wrapper/ch0_rxmstresetdone] [get_bd_pins mrmac_0_core/mst_rx_resetdone_in_0]
-  connect_bd_net -net GT_WRAPPER_ch0_rxpmaresetdone [get_bd_pins mrmac_0_gt_wrapper/ch0_rxpmaresetdone] [get_bd_pins mrmac_0_core/rx_pma_resetdone_in_0]
-  connect_bd_net -net GT_WRAPPER_ch0_txmstresetdone [get_bd_pins mrmac_0_gt_wrapper/ch0_txmstresetdone] [get_bd_pins mrmac_0_core/mst_tx_resetdone_in_0]
-  connect_bd_net -net GT_WRAPPER_ch0_txpmaresetdone [get_bd_pins mrmac_0_gt_wrapper/ch0_txpmaresetdone] [get_bd_pins mrmac_0_core/tx_pma_resetdone_in_0]
-  connect_bd_net -net GT_WRAPPER_ch1_rxmstresetdone [get_bd_pins mrmac_0_gt_wrapper/ch1_rxmstresetdone] [get_bd_pins mrmac_0_core/mst_rx_resetdone_in_1]
-  connect_bd_net -net GT_WRAPPER_ch1_rxpmaresetdone [get_bd_pins mrmac_0_gt_wrapper/ch1_rxpmaresetdone] [get_bd_pins mrmac_0_core/rx_pma_resetdone_in_1]
-  connect_bd_net -net GT_WRAPPER_ch1_txmstresetdone [get_bd_pins mrmac_0_gt_wrapper/ch1_txmstresetdone] [get_bd_pins mrmac_0_core/mst_tx_resetdone_in_1]
-  connect_bd_net -net GT_WRAPPER_ch1_txpmaresetdone [get_bd_pins mrmac_0_gt_wrapper/ch1_txpmaresetdone] [get_bd_pins mrmac_0_core/tx_pma_resetdone_in_1]
-  connect_bd_net -net GT_WRAPPER_ch2_rxmstresetdone [get_bd_pins mrmac_0_gt_wrapper/ch2_rxmstresetdone] [get_bd_pins mrmac_0_core/mst_rx_resetdone_in_2]
-  connect_bd_net -net GT_WRAPPER_ch2_rxpmaresetdone [get_bd_pins mrmac_0_gt_wrapper/ch2_rxpmaresetdone] [get_bd_pins mrmac_0_core/rx_pma_resetdone_in_2]
-  connect_bd_net -net GT_WRAPPER_ch2_txmstresetdone [get_bd_pins mrmac_0_gt_wrapper/ch2_txmstresetdone] [get_bd_pins mrmac_0_core/mst_tx_resetdone_in_2]
-  connect_bd_net -net GT_WRAPPER_ch2_txpmaresetdone [get_bd_pins mrmac_0_gt_wrapper/ch2_txpmaresetdone] [get_bd_pins mrmac_0_core/tx_pma_resetdone_in_2]
-  connect_bd_net -net GT_WRAPPER_ch3_rxmstresetdone [get_bd_pins mrmac_0_gt_wrapper/ch3_rxmstresetdone] [get_bd_pins mrmac_0_core/mst_rx_resetdone_in_3]
-  connect_bd_net -net GT_WRAPPER_ch3_rxpmaresetdone [get_bd_pins mrmac_0_gt_wrapper/ch3_rxpmaresetdone] [get_bd_pins mrmac_0_core/rx_pma_resetdone_in_3]
-  connect_bd_net -net GT_WRAPPER_ch3_txmstresetdone [get_bd_pins mrmac_0_gt_wrapper/ch3_txmstresetdone] [get_bd_pins mrmac_0_core/mst_tx_resetdone_in_3]
-  connect_bd_net -net GT_WRAPPER_ch3_txpmaresetdone [get_bd_pins mrmac_0_gt_wrapper/ch3_txpmaresetdone] [get_bd_pins mrmac_0_core/tx_pma_resetdone_in_3]
-  connect_bd_net -net MCDMA0_m_axis_tdata_3 [get_bd_pins MCDMA0/m_axis_tdata_3] [get_bd_pins mrmac_0_core/tx_axis_tdata0]
-  connect_bd_net -net MCDMA0_mm2s_ch1_introut_3 [get_bd_pins MCDMA0/mm2s_ch1_introut_3] [get_bd_pins versal_cips_0/pl_ps_irq0]
-  connect_bd_net -net MCDMA0_s2mm_ch1_introut_3 [get_bd_pins MCDMA0/s2mm_ch1_introut_3] [get_bd_pins versal_cips_0/pl_ps_irq1]
-  connect_bd_net -net MCDMA0_tx_tkeep3 [get_bd_pins MCDMA0/tx_tkeep3] [get_bd_pins mrmac_0_core/tx_axis_tkeep_user0]
-  connect_bd_net -net MCDMA0_tx_tlast3 [get_bd_pins MCDMA0/tx_tlast3] [get_bd_pins mrmac_0_core/tx_axis_tlast_0]
-  connect_bd_net -net MCDMA0_tx_tvalid3 [get_bd_pins MCDMA0/tx_tvalid3] [get_bd_pins mrmac_0_core/tx_axis_tvalid_0]
-  connect_bd_net -net MCDMA1_m_axis_tdata_3 [get_bd_pins MCDMA1/m_axis_tdata_3] [get_bd_pins mrmac_0_core/tx_axis_tdata2]
-  connect_bd_net -net MCDMA1_mm2s_ch1_introut_3 [get_bd_pins MCDMA1/mm2s_ch1_introut_3] [get_bd_pins versal_cips_0/pl_ps_irq2]
-  connect_bd_net -net MCDMA1_s2mm_ch1_introut_3 [get_bd_pins MCDMA1/s2mm_ch1_introut_3] [get_bd_pins versal_cips_0/pl_ps_irq3]
-  connect_bd_net -net MCDMA1_tx_tkeep3 [get_bd_pins MCDMA1/tx_tkeep3] [get_bd_pins mrmac_0_core/tx_axis_tkeep_user2]
-  connect_bd_net -net MCDMA1_tx_tlast3 [get_bd_pins MCDMA1/tx_tlast3] [get_bd_pins mrmac_0_core/tx_axis_tlast_1]
-  connect_bd_net -net MCDMA1_tx_tvalid3 [get_bd_pins MCDMA1/tx_tvalid3] [get_bd_pins mrmac_0_core/tx_axis_tvalid_1]
-  connect_bd_net -net MCDMA2_m_axis_tdata_3 [get_bd_pins MCDMA2/m_axis_tdata_3] [get_bd_pins mrmac_0_core/tx_axis_tdata4]
-  connect_bd_net -net MCDMA2_mm2s_ch1_introut_3 [get_bd_pins MCDMA2/mm2s_ch1_introut_3] [get_bd_pins versal_cips_0/pl_ps_irq4]
-  connect_bd_net -net MCDMA2_s2mm_ch1_introut_3 [get_bd_pins MCDMA2/s2mm_ch1_introut_3] [get_bd_pins versal_cips_0/pl_ps_irq5]
-  connect_bd_net -net MCDMA2_tx_tkeep3 [get_bd_pins MCDMA2/tx_tkeep3] [get_bd_pins mrmac_0_core/tx_axis_tkeep_user4]
-  connect_bd_net -net MCDMA2_tx_tlast3 [get_bd_pins MCDMA2/tx_tlast3] [get_bd_pins mrmac_0_core/tx_axis_tlast_2]
-  connect_bd_net -net MCDMA2_tx_tvalid3 [get_bd_pins MCDMA2/tx_tvalid3] [get_bd_pins mrmac_0_core/tx_axis_tvalid_2]
-  connect_bd_net -net MCDMA3_m_axis_tdata_3 [get_bd_pins MCDMA3/m_axis_tdata_3] [get_bd_pins mrmac_0_core/tx_axis_tdata6]
-  connect_bd_net -net MCDMA3_mm2s_ch1_introut_3 [get_bd_pins MCDMA3/mm2s_ch1_introut_3] [get_bd_pins versal_cips_0/pl_ps_irq6]
-  connect_bd_net -net MCDMA3_s2mm_ch1_introut_3 [get_bd_pins MCDMA3/s2mm_ch1_introut_3] [get_bd_pins versal_cips_0/pl_ps_irq7]
-  connect_bd_net -net MCDMA3_tx_tkeep3 [get_bd_pins MCDMA3/tx_tkeep3] [get_bd_pins mrmac_0_core/tx_axis_tkeep_user6]
-  connect_bd_net -net MCDMA3_tx_tlast3 [get_bd_pins MCDMA3/tx_tlast3] [get_bd_pins mrmac_0_core/tx_axis_tlast_3]
-  connect_bd_net -net MCDMA3_tx_tvalid3 [get_bd_pins MCDMA3/tx_tvalid3] [get_bd_pins mrmac_0_core/tx_axis_tvalid_3]
-  connect_bd_net -net Net [get_bd_pins clk_rst_wrapper/tx_reset] [get_bd_pins mrmac_0_core/tx_core_reset] [get_bd_pins mrmac_0_core/tx_serdes_reset]
-  connect_bd_net -net Net1 [get_bd_pins clk_rst_wrapper/rx_reset] [get_bd_pins mrmac_0_core/rx_core_reset] [get_bd_pins mrmac_0_core/rx_serdes_reset]
-  connect_bd_net -net Net2 [get_bd_pins xlconstant_0/dout] [get_bd_pins mrmac_0_core/tx_preamblein_0] [get_bd_pins mrmac_0_core/tx_preamblein_1] [get_bd_pins mrmac_0_core/tx_preamblein_3] [get_bd_pins mrmac_0_core/tx_preamblein_2]
-  connect_bd_net -net TX_MST_DP_RESET_1 [get_bd_pins usr_rdy_reset/tx_mst_dp_reset] [get_bd_pins mrmac_0_gt_wrapper/TX_MST_DP_RESET]
-  connect_bd_net -net axi_gpio_0_gpio_io_o [get_bd_pins axi_gpio_0/gpio_io_o] [get_bd_pins MCDMA0/Din] [get_bd_pins MCDMA3/Din] [get_bd_pins MCDMA2/Din] [get_bd_pins MCDMA1/Din]
-  connect_bd_net -net clk_rst_wrapper_bus_struct_reset [get_bd_pins clk_rst_wrapper/bus_struct_reset] [get_bd_pins mrmac_0_core/rx_flexif_reset]
-  connect_bd_net -net clk_rst_wrapper_dout [get_bd_pins clk_rst_wrapper/tx_rx_axi_clk] [get_bd_pins mrmac_0_core/tx_axi_clk] [get_bd_pins mrmac_0_core/rx_axi_clk]
-  connect_bd_net -net clk_rst_wrapper_interconnect_aresetn [get_bd_pins clk_rst_wrapper/interconnect_aresetn] [get_bd_pins smartconnect_0/aresetn] [get_bd_pins mrmac_0_gt_wrapper/aresetn]
-  connect_bd_net -net clk_wizard_0_clk_out2 [get_bd_pins clk_wizard_0/clk_out1] [get_bd_pins axi_noc_0/aclk8] [get_bd_pins MCDMA0/m_axis_aclk_0] [get_bd_pins clk_rst_wrapper/In1] [get_bd_pins MCDMA3/m_axis_aclk_0] [get_bd_pins MCDMA2/m_axis_aclk_0] [get_bd_pins MCDMA1/m_axis_aclk_0]
-  connect_bd_net -net core_reset_1 [get_bd_pins clk_rst_wrapper/peripheral_aresetn2] [get_bd_pins MCDMA0/core_reset] [get_bd_pins MCDMA3/core_reset] [get_bd_pins MCDMA2/core_reset] [get_bd_pins MCDMA1/core_reset]
-  connect_bd_net -net gt_quad_base_gtpowergood [get_bd_pins mrmac_0_gt_wrapper/gtpowergood] [get_bd_pins mrmac_0_core/gtpowergood_in]
-  connect_bd_net -net gt_quad_base_txn [get_bd_pins mrmac_0_gt_wrapper/gt_txn_out_0] [get_bd_ports gt_txn_out_0]
-  connect_bd_net -net gt_quad_base_txp [get_bd_pins mrmac_0_gt_wrapper/gt_txp_out_0] [get_bd_ports gt_txp_out_0]
-  connect_bd_net -net gt_ref_clk_n_1 [get_bd_ports gt_ref_clk_n] [get_bd_pins mrmac_0_gt_wrapper/gt_ref_clk_n]
-  connect_bd_net -net gt_ref_clk_p_1 [get_bd_ports gt_ref_clk_p] [get_bd_pins mrmac_0_gt_wrapper/gt_ref_clk_p]
-  connect_bd_net -net gt_rxn_in_0_1 [get_bd_ports gt_rxn_in_0] [get_bd_pins mrmac_0_gt_wrapper/gt_rxn_in_0]
-  connect_bd_net -net gt_rxp_in_0_1 [get_bd_ports gt_rxp_in_0] [get_bd_pins mrmac_0_gt_wrapper/gt_rxp_in_0]
-  connect_bd_net -net mrmac_0_core_gt_rx_reset_done_out [get_bd_pins mrmac_0_core/gt_rx_reset_done_out] [get_bd_pins clk_rst_wrapper/Op1]
-  connect_bd_net -net mrmac_0_core_gt_tx_reset_done_out [get_bd_pins mrmac_0_core/gt_tx_reset_done_out] [get_bd_pins clk_rst_wrapper/Op2]
-  connect_bd_net -net mrmac_0_core_mst_rx_dp_reset_out_0 [get_bd_pins mrmac_0_core/mst_rx_dp_reset_out_0] [get_bd_pins usr_rdy_reset/mst_rx_dp_reset_in_0]
-  connect_bd_net -net mrmac_0_core_mst_rx_dp_reset_out_1 [get_bd_pins mrmac_0_core/mst_rx_dp_reset_out_1] [get_bd_pins usr_rdy_reset/mst_rx_dp_reset_in_1]
-  connect_bd_net -net mrmac_0_core_mst_rx_dp_reset_out_2 [get_bd_pins mrmac_0_core/mst_rx_dp_reset_out_2] [get_bd_pins usr_rdy_reset/mst_rx_dp_reset_in_2]
-  connect_bd_net -net mrmac_0_core_mst_rx_dp_reset_out_3 [get_bd_pins mrmac_0_core/mst_rx_dp_reset_out_3] [get_bd_pins usr_rdy_reset/mst_rx_dp_reset_in_3]
-  connect_bd_net -net mrmac_0_core_mst_rx_reset_out_0 [get_bd_pins mrmac_0_core/mst_rx_reset_out_0] [get_bd_pins usr_rdy_reset/mst_rx_reset_in_0]
-  connect_bd_net -net mrmac_0_core_mst_rx_reset_out_2 [get_bd_pins mrmac_0_core/mst_rx_reset_out_2] [get_bd_pins usr_rdy_reset/mst_rx_reset_in_2]
-  connect_bd_net -net mrmac_0_core_mst_rx_reset_out_3 [get_bd_pins mrmac_0_core/mst_rx_reset_out_3] [get_bd_pins usr_rdy_reset/mst_rx_reset_in_3]
-  connect_bd_net -net mrmac_0_core_mst_tx_dp_reset_out_0 [get_bd_pins mrmac_0_core/mst_tx_dp_reset_out_0] [get_bd_pins usr_rdy_reset/mst_tx_dp_reset_in_0]
-  connect_bd_net -net mrmac_0_core_mst_tx_dp_reset_out_1 [get_bd_pins mrmac_0_core/mst_tx_dp_reset_out_1] [get_bd_pins usr_rdy_reset/mst_tx_dp_reset_in_1]
-  connect_bd_net -net mrmac_0_core_mst_tx_dp_reset_out_2 [get_bd_pins mrmac_0_core/mst_tx_dp_reset_out_2] [get_bd_pins usr_rdy_reset/mst_tx_dp_reset_in_2]
-  connect_bd_net -net mrmac_0_core_mst_tx_dp_reset_out_3 [get_bd_pins mrmac_0_core/mst_tx_dp_reset_out_3] [get_bd_pins usr_rdy_reset/mst_tx_dp_reset_in_3]
-  connect_bd_net -net mrmac_0_core_mst_tx_reset_out_0 [get_bd_pins mrmac_0_core/mst_tx_reset_out_0] [get_bd_pins usr_rdy_reset/mst_tx_reset_in_0]
-  connect_bd_net -net mrmac_0_core_mst_tx_reset_out_1 [get_bd_pins mrmac_0_core/mst_tx_reset_out_1] [get_bd_pins usr_rdy_reset/mst_tx_reset_in_1]
-  connect_bd_net -net mrmac_0_core_mst_tx_reset_out_2 [get_bd_pins mrmac_0_core/mst_tx_reset_out_2] [get_bd_pins usr_rdy_reset/mst_tx_reset_in_2]
-  connect_bd_net -net mrmac_0_core_mst_tx_reset_out_3 [get_bd_pins mrmac_0_core/mst_tx_reset_out_3] [get_bd_pins usr_rdy_reset/mst_tx_reset_in_3]
-  connect_bd_net -net mrmac_0_core_rx_axis_tdata0 [get_bd_pins mrmac_0_core/rx_axis_tdata0] [get_bd_pins MCDMA0/s_axis_tdata]
-  connect_bd_net -net mrmac_0_core_rx_axis_tdata2 [get_bd_pins mrmac_0_core/rx_axis_tdata2] [get_bd_pins MCDMA1/s_axis_tdata]
-  connect_bd_net -net mrmac_0_core_rx_axis_tdata6 [get_bd_pins mrmac_0_core/rx_axis_tdata6] [get_bd_pins MCDMA3/s_axis_tdata]
-  connect_bd_net -net mrmac_0_core_rx_axis_tkeep_user0 [get_bd_pins mrmac_0_core/rx_axis_tkeep_user0] [get_bd_pins MCDMA0/s_axis_tkeep_3]
-  connect_bd_net -net mrmac_0_core_rx_axis_tkeep_user4 [get_bd_pins mrmac_0_core/rx_axis_tkeep_user4] [get_bd_pins MCDMA2/s_axis_tkeep_3]
-  connect_bd_net -net mrmac_0_core_rx_axis_tlast_0 [get_bd_pins mrmac_0_core/rx_axis_tlast_0] [get_bd_pins MCDMA0/s_axis_tlast]
-  connect_bd_net -net mrmac_0_core_rx_axis_tlast_1 [get_bd_pins mrmac_0_core/rx_axis_tlast_1] [get_bd_pins MCDMA1/s_axis_tlast]
-  connect_bd_net -net mrmac_0_core_rx_axis_tlast_2 [get_bd_pins mrmac_0_core/rx_axis_tlast_2] [get_bd_pins MCDMA2/s_axis_tlast]
-  connect_bd_net -net mrmac_0_core_rx_axis_tlast_3 [get_bd_pins mrmac_0_core/rx_axis_tlast_3] [get_bd_pins MCDMA3/s_axis_tlast]
-  connect_bd_net -net mrmac_0_core_rx_axis_tvalid_0 [get_bd_pins mrmac_0_core/rx_axis_tvalid_0] [get_bd_pins MCDMA0/s_axis_tvalid]
-  connect_bd_net -net mrmac_0_core_rxuserrdy_out_0 [get_bd_pins mrmac_0_core/rxuserrdy_out_0] [get_bd_pins usr_rdy_reset/rxuserrdy_in_0]
-  connect_bd_net -net mrmac_0_core_rxuserrdy_out_1 [get_bd_pins mrmac_0_core/rxuserrdy_out_1] [get_bd_pins usr_rdy_reset/rxuserrdy_in_1]
-  connect_bd_net -net mrmac_0_core_rxuserrdy_out_2 [get_bd_pins mrmac_0_core/rxuserrdy_out_2] [get_bd_pins usr_rdy_reset/rxuserrdy_in_2]
-  connect_bd_net -net mrmac_0_core_rxuserrdy_out_3 [get_bd_pins mrmac_0_core/rxuserrdy_out_3] [get_bd_pins usr_rdy_reset/rxuserrdy_in_3]
-  connect_bd_net -net mrmac_0_core_tx_axis_tready_0 [get_bd_pins mrmac_0_core/tx_axis_tready_0] [get_bd_pins MCDMA0/tx_axis_tready_3]
-  connect_bd_net -net mrmac_0_core_tx_axis_tready_1 [get_bd_pins mrmac_0_core/tx_axis_tready_1] [get_bd_pins MCDMA1/tx_axis_tready_3]
-  connect_bd_net -net mrmac_0_core_tx_axis_tready_3 [get_bd_pins mrmac_0_core/tx_axis_tready_3] [get_bd_pins MCDMA3/tx_axis_tready_3]
-  connect_bd_net -net mrmac_0_core_txuserrdy_out_0 [get_bd_pins mrmac_0_core/txuserrdy_out_0] [get_bd_pins usr_rdy_reset/txuserrdy_in_0]
-  connect_bd_net -net mrmac_0_core_txuserrdy_out_1 [get_bd_pins mrmac_0_core/txuserrdy_out_1] [get_bd_pins usr_rdy_reset/txuserrdy_in_1]
-  connect_bd_net -net mrmac_0_core_txuserrdy_out_2 [get_bd_pins mrmac_0_core/txuserrdy_out_2] [get_bd_pins usr_rdy_reset/txuserrdy_in_2]
-  connect_bd_net -net mrmac_0_core_txuserrdy_out_3 [get_bd_pins mrmac_0_core/txuserrdy_out_3] [get_bd_pins usr_rdy_reset/txuserrdy_in_3]
-  connect_bd_net -net mrmac_0_gt_wrapper_RX_REC_CLK_out_n_0_0 [get_bd_pins mrmac_0_gt_wrapper/RX_REC_CLK_out_n_0] [get_bd_ports RX_REC_CLK_out_n_0_0]
-  connect_bd_net -net mrmac_0_gt_wrapper_RX_REC_CLK_out_p_0_0 [get_bd_pins mrmac_0_gt_wrapper/RX_REC_CLK_out_p_0] [get_bd_ports RX_REC_CLK_out_p_0_0]
-  connect_bd_net -net mrmac_0_gt_wrapper_dout_0 [get_bd_pins mrmac_0_gt_wrapper/rx_usr_clk2] [get_bd_pins mrmac_0_core/rx_alt_serdes_clk] [get_bd_pins mrmac_0_core/rx_flexif_clk]
-  connect_bd_net -net mrmac_0_gt_wrapper_gt_reset_all_0 [get_bd_pins mrmac_0_gt_wrapper/gt_reset_all] [get_bd_pins mrmac_0_core/gt_reset_all_in]
-  connect_bd_net -net mrmac_0_gt_wrapper_gt_reset_rx_datapath_0 [get_bd_pins mrmac_0_gt_wrapper/gt_reset_rx_datapath] [get_bd_pins mrmac_0_core/gt_reset_rx_datapath_in]
-  connect_bd_net -net mrmac_0_gt_wrapper_gt_reset_tx_datapath_0 [get_bd_pins mrmac_0_gt_wrapper/gt_reset_tx_datapath] [get_bd_pins mrmac_0_core/gt_reset_tx_datapath_in]
-  connect_bd_net -net mrmac_0_gt_wrapper_rx_core_clk_serdes_clk_new [get_bd_pins mrmac_0_gt_wrapper/rx_usr_clk1] [get_bd_pins mrmac_0_core/rx_core_clk] [get_bd_pins mrmac_0_core/rx_serdes_clk]
-  connect_bd_net -net mrmac_0_gt_wrapper_tx_core_clk_new [get_bd_pins mrmac_0_gt_wrapper/tx_usr_clk] [get_bd_pins mrmac_0_core/tx_core_clk]
-  connect_bd_net -net mrmac_0_gt_wrapper_tx_usr_clk_1 [get_bd_pins mrmac_0_gt_wrapper/tx_usr_clk2] [get_bd_pins mrmac_0_core/tx_flexif_clk] [get_bd_pins mrmac_0_core/tx_alt_serdes_clk]
-  connect_bd_net -net mst_rx_reset_out_1 [get_bd_pins mrmac_0_core/mst_rx_reset_out_1] [get_bd_pins usr_rdy_reset/mst_rx_reset_in_1]
-  connect_bd_net -net rx_axis_tvalid_3_2 [get_bd_pins mrmac_0_core/rx_axis_tvalid_1] [get_bd_pins MCDMA1/s_axis_tvalid]
-  connect_bd_net -net rx_axis_tvalid_3_3 [get_bd_pins mrmac_0_core/rx_axis_tvalid_2] [get_bd_pins MCDMA2/s_axis_tvalid]
-  connect_bd_net -net rx_axis_tvalid_3_4 [get_bd_pins mrmac_0_core/rx_axis_tvalid_3] [get_bd_pins MCDMA3/s_axis_tvalid]
-  connect_bd_net -net s_axi_aresetn_1 [get_bd_pins clk_rst_wrapper/peripheral_aresetn] [get_bd_pins mrmac_0_core/s_axi_aresetn] [get_bd_pins MCDMA0/axi_resetn_3] [get_bd_pins mrmac_0_gt_wrapper/s_axi_aresetn] [get_bd_pins axi_gpio_0/s_axi_aresetn] [get_bd_pins MCDMA3/axi_resetn_3] [get_bd_pins MCDMA2/axi_resetn_3] [get_bd_pins MCDMA1/axi_resetn_3]
-  connect_bd_net -net s_axis_tdata_3_2 [get_bd_pins mrmac_0_core/rx_axis_tdata4] [get_bd_pins MCDMA2/s_axis_tdata]
-  connect_bd_net -net s_axis_tkeep_3_1 [get_bd_pins mrmac_0_core/rx_axis_tkeep_user2] [get_bd_pins MCDMA1/s_axis_tkeep_3]
-  connect_bd_net -net s_axis_tkeep_3_2 [get_bd_pins mrmac_0_core/rx_axis_tkeep_user6] [get_bd_pins MCDMA3/s_axis_tkeep_3]
-  connect_bd_net -net tx_axis_tready_3_1 [get_bd_pins mrmac_0_core/tx_axis_tready_2] [get_bd_pins MCDMA2/tx_axis_tready_3]
-  connect_bd_net -net tx_mst_reset_in_1 [get_bd_pins usr_rdy_reset/tx_mst_reset_out] [get_bd_pins mrmac_0_gt_wrapper/tx_mst_reset_in]
-  connect_bd_net -net usr_rdy_reset_rx_mst_dp_reset [get_bd_pins usr_rdy_reset/rx_mst_dp_reset] [get_bd_pins mrmac_0_gt_wrapper/RX_MST_DP_RESET]
-  connect_bd_net -net usr_rdy_reset_rx_mst_reset_out [get_bd_pins usr_rdy_reset/rx_mst_reset_out] [get_bd_pins mrmac_0_gt_wrapper/rx_mst_reset_in]
-  connect_bd_net -net usr_rdy_reset_rx_userrdy_out_0 [get_bd_pins usr_rdy_reset/rx_userrdy_out_0] [get_bd_pins mrmac_0_gt_wrapper/rx_userrdy_in]
-  connect_bd_net -net usr_rdy_reset_tx_userrdy_out [get_bd_pins usr_rdy_reset/tx_userrdy_out] [get_bd_pins mrmac_0_gt_wrapper/tx_userrdy_in]
-  connect_bd_net -net versal_cips_0_fpd_axi_noc_axi0_clk [get_bd_pins versal_cips_0/fpd_axi_noc_axi0_clk] [get_bd_pins axi_noc_0/aclk5]
-  connect_bd_net -net versal_cips_0_fpd_axi_noc_axi1_clk [get_bd_pins versal_cips_0/fpd_axi_noc_axi1_clk] [get_bd_pins axi_noc_0/aclk6]
-  connect_bd_net -net versal_cips_0_fpd_cci_noc_axi0_clk [get_bd_pins versal_cips_0/fpd_cci_noc_axi0_clk] [get_bd_pins axi_noc_0/aclk1]
-  connect_bd_net -net versal_cips_0_fpd_cci_noc_axi1_clk [get_bd_pins versal_cips_0/fpd_cci_noc_axi1_clk] [get_bd_pins axi_noc_0/aclk2]
-  connect_bd_net -net versal_cips_0_fpd_cci_noc_axi2_clk [get_bd_pins versal_cips_0/fpd_cci_noc_axi2_clk] [get_bd_pins axi_noc_0/aclk3]
-  connect_bd_net -net versal_cips_0_fpd_cci_noc_axi3_clk [get_bd_pins versal_cips_0/fpd_cci_noc_axi3_clk] [get_bd_pins axi_noc_0/aclk4]
-  connect_bd_net -net versal_cips_0_lpd_axi_noc_clk [get_bd_pins versal_cips_0/lpd_axi_noc_clk] [get_bd_pins axi_noc_0/aclk7]
-  connect_bd_net -net versal_cips_0_pl0_ref_clk [get_bd_pins versal_cips_0/pl0_ref_clk] [get_bd_pins mrmac_0_core/s_axi_aclk] [get_bd_pins versal_cips_0/m_axi_fpd_aclk] [get_bd_pins smartconnect_0/aclk] [get_bd_pins clk_rst_wrapper/slowest_sync_clk] [get_bd_pins MCDMA0/s_axi_aclk] [get_bd_pins mrmac_0_gt_wrapper/s_axi_aclk] [get_bd_pins clk_wizard_0/clk_in1] [get_bd_pins axi_gpio_0/s_axi_aclk] [get_bd_pins MCDMA3/s_axi_aclk] [get_bd_pins MCDMA2/s_axi_aclk] [get_bd_pins MCDMA1/s_axi_aclk]
-  connect_bd_net -net versal_cips_0_pl0_resetn [get_bd_pins versal_cips_0/pl0_resetn] [get_bd_pins clk_rst_wrapper/ext_reset_in]
-  connect_bd_net -net versal_cips_0_pmc_axi_noc_axi0_clk [get_bd_pins versal_cips_0/pmc_axi_noc_axi0_clk] [get_bd_pins axi_noc_0/aclk0]
-  connect_bd_net -net xlconstant_1_dout [get_bd_pins xlconstant_1/dout] [get_bd_pins mrmac_0_core/pm_tick] [get_bd_pins mrmac_0_core/rx_ts_clk] [get_bd_pins mrmac_0_core/tx_ts_clk]
-  connect_bd_net -net xlconstant_2_dout [get_bd_pins xlconstant_2/dout] [get_bd_pins mrmac_0_core/ctl_tx_lane0_vlm_bip7_override_01] [get_bd_pins mrmac_0_core/ctl_tx_send_idle_in_0] [get_bd_pins mrmac_0_core/ctl_tx_send_lfi_in_0] [get_bd_pins mrmac_0_core/ctl_tx_send_rfi_in_0] [get_bd_pins mrmac_0_core/ctl_tx_send_idle_in_1] [get_bd_pins mrmac_0_core/ctl_tx_send_lfi_in_1] [get_bd_pins mrmac_0_core/ctl_tx_send_rfi_in_1] [get_bd_pins mrmac_0_core/ctl_tx_lane0_vlm_bip7_override_23] [get_bd_pins mrmac_0_core/ctl_tx_send_idle_in_2] [get_bd_pins mrmac_0_core/ctl_tx_send_lfi_in_2] [get_bd_pins mrmac_0_core/ctl_tx_send_rfi_in_2] [get_bd_pins mrmac_0_core/ctl_tx_send_idle_in_3] [get_bd_pins mrmac_0_core/ctl_tx_send_lfi_in_3] [get_bd_pins mrmac_0_core/ctl_tx_send_rfi_in_3]
-  connect_bd_net -net xlconstant_3_dout [get_bd_pins xlconstant_3/dout] [get_bd_pins mrmac_0_core/ctl_tx_lane0_vlm_bip7_override_value_01] [get_bd_pins mrmac_0_core/ctl_tx_lane0_vlm_bip7_override_value_23]
-  connect_bd_net -net xlconstant_4_dout [get_bd_pins xlconstant_4/dout] [get_bd_pins mrmac_0_core/tx_flex_almarker0] [get_bd_pins mrmac_0_core/tx_flex_almarker1] [get_bd_pins mrmac_0_core/tx_flex_almarker2] [get_bd_pins mrmac_0_core/tx_flex_almarker3] [get_bd_pins mrmac_0_core/tx_flex_almarker4] [get_bd_pins mrmac_0_core/tx_flex_almarker5] [get_bd_pins mrmac_0_core/tx_flex_almarker6] [get_bd_pins mrmac_0_core/tx_flex_almarker7] [get_bd_pins mrmac_0_core/tx_flex_ena_0] [get_bd_pins mrmac_0_core/tx_flex_ena_1] [get_bd_pins mrmac_0_core/tx_flex_ena_2] [get_bd_pins mrmac_0_core/tx_flex_ena_3] [get_bd_pins mrmac_0_core/rx_flex_cm_ena_0] [get_bd_pins mrmac_0_core/rx_flex_cm_ena_1] [get_bd_pins mrmac_0_core/rx_flex_cm_ena_2] [get_bd_pins mrmac_0_core/rx_flex_cm_ena_3]
-  connect_bd_net -net xlconstant_5_dout [get_bd_pins xlconstant_5/dout] [get_bd_pins mrmac_0_core/rx_flex_cm_data0] [get_bd_pins mrmac_0_core/tx_flex_data0]
+  connect_bd_net -net GT_WRAPPER_ch0_rxmstresetdone  [get_bd_pins mrmac_0_gt_wrapper/ch0_rxmstresetdone] \
+  [get_bd_pins mrmac_0_core/mst_rx_resetdone_in_0]
+  connect_bd_net -net GT_WRAPPER_ch0_rxpmaresetdone  [get_bd_pins mrmac_0_gt_wrapper/ch0_rxpmaresetdone] \
+  [get_bd_pins mrmac_0_core/rx_pma_resetdone_in_0]
+  connect_bd_net -net GT_WRAPPER_ch0_txmstresetdone  [get_bd_pins mrmac_0_gt_wrapper/ch0_txmstresetdone] \
+  [get_bd_pins mrmac_0_core/mst_tx_resetdone_in_0]
+  connect_bd_net -net GT_WRAPPER_ch0_txpmaresetdone  [get_bd_pins mrmac_0_gt_wrapper/ch0_txpmaresetdone] \
+  [get_bd_pins mrmac_0_core/tx_pma_resetdone_in_0]
+  connect_bd_net -net GT_WRAPPER_ch1_rxmstresetdone  [get_bd_pins mrmac_0_gt_wrapper/ch1_rxmstresetdone] \
+  [get_bd_pins mrmac_0_core/mst_rx_resetdone_in_1]
+  connect_bd_net -net GT_WRAPPER_ch1_rxpmaresetdone  [get_bd_pins mrmac_0_gt_wrapper/ch1_rxpmaresetdone] \
+  [get_bd_pins mrmac_0_core/rx_pma_resetdone_in_1]
+  connect_bd_net -net GT_WRAPPER_ch1_txmstresetdone  [get_bd_pins mrmac_0_gt_wrapper/ch1_txmstresetdone] \
+  [get_bd_pins mrmac_0_core/mst_tx_resetdone_in_1]
+  connect_bd_net -net GT_WRAPPER_ch1_txpmaresetdone  [get_bd_pins mrmac_0_gt_wrapper/ch1_txpmaresetdone] \
+  [get_bd_pins mrmac_0_core/tx_pma_resetdone_in_1]
+  connect_bd_net -net GT_WRAPPER_ch2_rxmstresetdone  [get_bd_pins mrmac_0_gt_wrapper/ch2_rxmstresetdone] \
+  [get_bd_pins mrmac_0_core/mst_rx_resetdone_in_2]
+  connect_bd_net -net GT_WRAPPER_ch2_rxpmaresetdone  [get_bd_pins mrmac_0_gt_wrapper/ch2_rxpmaresetdone] \
+  [get_bd_pins mrmac_0_core/rx_pma_resetdone_in_2]
+  connect_bd_net -net GT_WRAPPER_ch2_txmstresetdone  [get_bd_pins mrmac_0_gt_wrapper/ch2_txmstresetdone] \
+  [get_bd_pins mrmac_0_core/mst_tx_resetdone_in_2]
+  connect_bd_net -net GT_WRAPPER_ch2_txpmaresetdone  [get_bd_pins mrmac_0_gt_wrapper/ch2_txpmaresetdone] \
+  [get_bd_pins mrmac_0_core/tx_pma_resetdone_in_2]
+  connect_bd_net -net GT_WRAPPER_ch3_rxmstresetdone  [get_bd_pins mrmac_0_gt_wrapper/ch3_rxmstresetdone] \
+  [get_bd_pins mrmac_0_core/mst_rx_resetdone_in_3]
+  connect_bd_net -net GT_WRAPPER_ch3_rxpmaresetdone  [get_bd_pins mrmac_0_gt_wrapper/ch3_rxpmaresetdone] \
+  [get_bd_pins mrmac_0_core/rx_pma_resetdone_in_3]
+  connect_bd_net -net GT_WRAPPER_ch3_txmstresetdone  [get_bd_pins mrmac_0_gt_wrapper/ch3_txmstresetdone] \
+  [get_bd_pins mrmac_0_core/mst_tx_resetdone_in_3]
+  connect_bd_net -net GT_WRAPPER_ch3_txpmaresetdone  [get_bd_pins mrmac_0_gt_wrapper/ch3_txpmaresetdone] \
+  [get_bd_pins mrmac_0_core/tx_pma_resetdone_in_3]
+  connect_bd_net -net MCDMA0_m_axis_tdata_3  [get_bd_pins MCDMA0/m_axis_tdata_3] \
+  [get_bd_pins mrmac_0_core/tx_axis_tdata0]
+  connect_bd_net -net MCDMA0_mm2s_ch1_introut_3  [get_bd_pins MCDMA0/mm2s_ch1_introut_3] \
+  [get_bd_pins versal_cips_0/pl_ps_irq0]
+  connect_bd_net -net MCDMA0_s2mm_ch1_introut_3  [get_bd_pins MCDMA0/s2mm_ch1_introut_3] \
+  [get_bd_pins versal_cips_0/pl_ps_irq1]
+  connect_bd_net -net MCDMA0_tx_tkeep3  [get_bd_pins MCDMA0/tx_tkeep3] \
+  [get_bd_pins mrmac_0_core/tx_axis_tkeep_user0]
+  connect_bd_net -net MCDMA0_tx_tlast3  [get_bd_pins MCDMA0/tx_tlast3] \
+  [get_bd_pins mrmac_0_core/tx_axis_tlast_0]
+  connect_bd_net -net MCDMA0_tx_tvalid3  [get_bd_pins MCDMA0/tx_tvalid3] \
+  [get_bd_pins mrmac_0_core/tx_axis_tvalid_0]
+  connect_bd_net -net MCDMA1_m_axis_tdata_3  [get_bd_pins MCDMA1/m_axis_tdata_3] \
+  [get_bd_pins mrmac_0_core/tx_axis_tdata2]
+  connect_bd_net -net MCDMA1_mm2s_ch1_introut_3  [get_bd_pins MCDMA1/mm2s_ch1_introut_3] \
+  [get_bd_pins versal_cips_0/pl_ps_irq2]
+  connect_bd_net -net MCDMA1_s2mm_ch1_introut_3  [get_bd_pins MCDMA1/s2mm_ch1_introut_3] \
+  [get_bd_pins versal_cips_0/pl_ps_irq3]
+  connect_bd_net -net MCDMA1_tx_tkeep3  [get_bd_pins MCDMA1/tx_tkeep3] \
+  [get_bd_pins mrmac_0_core/tx_axis_tkeep_user2]
+  connect_bd_net -net MCDMA1_tx_tlast3  [get_bd_pins MCDMA1/tx_tlast3] \
+  [get_bd_pins mrmac_0_core/tx_axis_tlast_1]
+  connect_bd_net -net MCDMA1_tx_tvalid3  [get_bd_pins MCDMA1/tx_tvalid3] \
+  [get_bd_pins mrmac_0_core/tx_axis_tvalid_1]
+  connect_bd_net -net MCDMA2_m_axis_tdata_3  [get_bd_pins MCDMA2/m_axis_tdata_3] \
+  [get_bd_pins mrmac_0_core/tx_axis_tdata4]
+  connect_bd_net -net MCDMA2_mm2s_ch1_introut_3  [get_bd_pins MCDMA2/mm2s_ch1_introut_3] \
+  [get_bd_pins versal_cips_0/pl_ps_irq4]
+  connect_bd_net -net MCDMA2_s2mm_ch1_introut_3  [get_bd_pins MCDMA2/s2mm_ch1_introut_3] \
+  [get_bd_pins versal_cips_0/pl_ps_irq5]
+  connect_bd_net -net MCDMA2_tx_tkeep3  [get_bd_pins MCDMA2/tx_tkeep3] \
+  [get_bd_pins mrmac_0_core/tx_axis_tkeep_user4]
+  connect_bd_net -net MCDMA2_tx_tlast3  [get_bd_pins MCDMA2/tx_tlast3] \
+  [get_bd_pins mrmac_0_core/tx_axis_tlast_2]
+  connect_bd_net -net MCDMA2_tx_tvalid3  [get_bd_pins MCDMA2/tx_tvalid3] \
+  [get_bd_pins mrmac_0_core/tx_axis_tvalid_2]
+  connect_bd_net -net MCDMA3_m_axis_tdata_3  [get_bd_pins MCDMA3/m_axis_tdata_3] \
+  [get_bd_pins mrmac_0_core/tx_axis_tdata6]
+  connect_bd_net -net MCDMA3_mm2s_ch1_introut_3  [get_bd_pins MCDMA3/mm2s_ch1_introut_3] \
+  [get_bd_pins versal_cips_0/pl_ps_irq6]
+  connect_bd_net -net MCDMA3_s2mm_ch1_introut_3  [get_bd_pins MCDMA3/s2mm_ch1_introut_3] \
+  [get_bd_pins versal_cips_0/pl_ps_irq7]
+  connect_bd_net -net MCDMA3_tx_tkeep3  [get_bd_pins MCDMA3/tx_tkeep3] \
+  [get_bd_pins mrmac_0_core/tx_axis_tkeep_user6]
+  connect_bd_net -net MCDMA3_tx_tlast3  [get_bd_pins MCDMA3/tx_tlast3] \
+  [get_bd_pins mrmac_0_core/tx_axis_tlast_3]
+  connect_bd_net -net MCDMA3_tx_tvalid3  [get_bd_pins MCDMA3/tx_tvalid3] \
+  [get_bd_pins mrmac_0_core/tx_axis_tvalid_3]
+  connect_bd_net -net Net  [get_bd_pins clk_rst_wrapper/tx_reset] \
+  [get_bd_pins mrmac_0_core/tx_core_reset] \
+  [get_bd_pins mrmac_0_core/tx_serdes_reset]
+  connect_bd_net -net Net1  [get_bd_pins clk_rst_wrapper/rx_reset] \
+  [get_bd_pins mrmac_0_core/rx_core_reset] \
+  [get_bd_pins mrmac_0_core/rx_serdes_reset]
+  connect_bd_net -net Net2  [get_bd_pins xlconstant_0/dout] \
+  [get_bd_pins mrmac_0_core/tx_preamblein_0] \
+  [get_bd_pins mrmac_0_core/tx_preamblein_1] \
+  [get_bd_pins mrmac_0_core/tx_preamblein_2] \
+  [get_bd_pins mrmac_0_core/tx_preamblein_3]
+  connect_bd_net -net TX_MST_DP_RESET_1  [get_bd_pins usr_rdy_reset/tx_mst_dp_reset] \
+  [get_bd_pins mrmac_0_gt_wrapper/TX_MST_DP_RESET]
+  connect_bd_net -net axi_gpio_0_gpio_io_o  [get_bd_pins axi_gpio_0/gpio_io_o] \
+  [get_bd_pins MCDMA0/Din] \
+  [get_bd_pins MCDMA3/Din] \
+  [get_bd_pins MCDMA2/Din] \
+  [get_bd_pins MCDMA1/Din]
+  connect_bd_net -net clk_rst_wrapper_bus_struct_reset  [get_bd_pins clk_rst_wrapper/bus_struct_reset] \
+  [get_bd_pins mrmac_0_core/rx_flexif_reset]
+  connect_bd_net -net clk_rst_wrapper_dout  [get_bd_pins clk_rst_wrapper/tx_rx_axi_clk] \
+  [get_bd_pins mrmac_0_core/rx_axi_clk] \
+  [get_bd_pins mrmac_0_core/tx_axi_clk]
+  connect_bd_net -net clk_rst_wrapper_interconnect_aresetn  [get_bd_pins clk_rst_wrapper/interconnect_aresetn] \
+  [get_bd_pins mrmac_0_gt_wrapper/aresetn] \
+  [get_bd_pins smartconnect_0/aresetn]
+  connect_bd_net -net clk_wizard_0_clk_out2  [get_bd_pins clk_wizard_0/clk_out1] \
+  [get_bd_pins MCDMA0/m_axis_aclk_0] \
+  [get_bd_pins clk_rst_wrapper/In1] \
+  [get_bd_pins MCDMA3/m_axis_aclk_0] \
+  [get_bd_pins MCDMA2/m_axis_aclk_0] \
+  [get_bd_pins MCDMA1/m_axis_aclk_0] \
+  [get_bd_pins axi_noc_0/aclk8]
+  connect_bd_net -net core_reset_1  [get_bd_pins clk_rst_wrapper/peripheral_aresetn2] \
+  [get_bd_pins MCDMA0/core_reset] \
+  [get_bd_pins MCDMA3/core_reset] \
+  [get_bd_pins MCDMA2/core_reset] \
+  [get_bd_pins MCDMA1/core_reset]
+  connect_bd_net -net gt_quad_base_gtpowergood  [get_bd_pins mrmac_0_gt_wrapper/gtpowergood] \
+  [get_bd_pins mrmac_0_core/gtpowergood_in]
+  connect_bd_net -net gt_quad_base_txn  [get_bd_pins mrmac_0_gt_wrapper/gt_txn_out_0] \
+  [get_bd_ports gt_txn_out_0]
+  connect_bd_net -net gt_quad_base_txp  [get_bd_pins mrmac_0_gt_wrapper/gt_txp_out_0] \
+  [get_bd_ports gt_txp_out_0]
+  connect_bd_net -net gt_ref_clk_n_1  [get_bd_ports gt_ref_clk_n] \
+  [get_bd_pins mrmac_0_gt_wrapper/gt_ref_clk_n]
+  connect_bd_net -net gt_ref_clk_p_1  [get_bd_ports gt_ref_clk_p] \
+  [get_bd_pins mrmac_0_gt_wrapper/gt_ref_clk_p]
+  connect_bd_net -net gt_rxn_in_0_1  [get_bd_ports gt_rxn_in_0] \
+  [get_bd_pins mrmac_0_gt_wrapper/gt_rxn_in_0]
+  connect_bd_net -net gt_rxp_in_0_1  [get_bd_ports gt_rxp_in_0] \
+  [get_bd_pins mrmac_0_gt_wrapper/gt_rxp_in_0]
+  connect_bd_net -net mrmac_0_core_gt_rx_reset_done_out  [get_bd_pins mrmac_0_core/gt_rx_reset_done_out] \
+  [get_bd_pins clk_rst_wrapper/Op1]
+  connect_bd_net -net mrmac_0_core_gt_tx_reset_done_out  [get_bd_pins mrmac_0_core/gt_tx_reset_done_out] \
+  [get_bd_pins clk_rst_wrapper/Op2]
+  connect_bd_net -net mrmac_0_core_mst_rx_dp_reset_out_0  [get_bd_pins mrmac_0_core/mst_rx_dp_reset_out_0] \
+  [get_bd_pins usr_rdy_reset/mst_rx_dp_reset_in_0]
+  connect_bd_net -net mrmac_0_core_mst_rx_dp_reset_out_1  [get_bd_pins mrmac_0_core/mst_rx_dp_reset_out_1] \
+  [get_bd_pins usr_rdy_reset/mst_rx_dp_reset_in_1]
+  connect_bd_net -net mrmac_0_core_mst_rx_dp_reset_out_2  [get_bd_pins mrmac_0_core/mst_rx_dp_reset_out_2] \
+  [get_bd_pins usr_rdy_reset/mst_rx_dp_reset_in_2]
+  connect_bd_net -net mrmac_0_core_mst_rx_dp_reset_out_3  [get_bd_pins mrmac_0_core/mst_rx_dp_reset_out_3] \
+  [get_bd_pins usr_rdy_reset/mst_rx_dp_reset_in_3]
+  connect_bd_net -net mrmac_0_core_mst_rx_reset_out_0  [get_bd_pins mrmac_0_core/mst_rx_reset_out_0] \
+  [get_bd_pins usr_rdy_reset/mst_rx_reset_in_0]
+  connect_bd_net -net mrmac_0_core_mst_rx_reset_out_2  [get_bd_pins mrmac_0_core/mst_rx_reset_out_2] \
+  [get_bd_pins usr_rdy_reset/mst_rx_reset_in_2]
+  connect_bd_net -net mrmac_0_core_mst_rx_reset_out_3  [get_bd_pins mrmac_0_core/mst_rx_reset_out_3] \
+  [get_bd_pins usr_rdy_reset/mst_rx_reset_in_3]
+  connect_bd_net -net mrmac_0_core_mst_tx_dp_reset_out_0  [get_bd_pins mrmac_0_core/mst_tx_dp_reset_out_0] \
+  [get_bd_pins usr_rdy_reset/mst_tx_dp_reset_in_0]
+  connect_bd_net -net mrmac_0_core_mst_tx_dp_reset_out_1  [get_bd_pins mrmac_0_core/mst_tx_dp_reset_out_1] \
+  [get_bd_pins usr_rdy_reset/mst_tx_dp_reset_in_1]
+  connect_bd_net -net mrmac_0_core_mst_tx_dp_reset_out_2  [get_bd_pins mrmac_0_core/mst_tx_dp_reset_out_2] \
+  [get_bd_pins usr_rdy_reset/mst_tx_dp_reset_in_2]
+  connect_bd_net -net mrmac_0_core_mst_tx_dp_reset_out_3  [get_bd_pins mrmac_0_core/mst_tx_dp_reset_out_3] \
+  [get_bd_pins usr_rdy_reset/mst_tx_dp_reset_in_3]
+  connect_bd_net -net mrmac_0_core_mst_tx_reset_out_0  [get_bd_pins mrmac_0_core/mst_tx_reset_out_0] \
+  [get_bd_pins usr_rdy_reset/mst_tx_reset_in_0]
+  connect_bd_net -net mrmac_0_core_mst_tx_reset_out_1  [get_bd_pins mrmac_0_core/mst_tx_reset_out_1] \
+  [get_bd_pins usr_rdy_reset/mst_tx_reset_in_1]
+  connect_bd_net -net mrmac_0_core_mst_tx_reset_out_2  [get_bd_pins mrmac_0_core/mst_tx_reset_out_2] \
+  [get_bd_pins usr_rdy_reset/mst_tx_reset_in_2]
+  connect_bd_net -net mrmac_0_core_mst_tx_reset_out_3  [get_bd_pins mrmac_0_core/mst_tx_reset_out_3] \
+  [get_bd_pins usr_rdy_reset/mst_tx_reset_in_3]
+  connect_bd_net -net mrmac_0_core_rx_axis_tdata0  [get_bd_pins mrmac_0_core/rx_axis_tdata0] \
+  [get_bd_pins MCDMA0/s_axis_tdata]
+  connect_bd_net -net mrmac_0_core_rx_axis_tdata2  [get_bd_pins mrmac_0_core/rx_axis_tdata2] \
+  [get_bd_pins MCDMA1/s_axis_tdata]
+  connect_bd_net -net mrmac_0_core_rx_axis_tdata6  [get_bd_pins mrmac_0_core/rx_axis_tdata6] \
+  [get_bd_pins MCDMA3/s_axis_tdata]
+  connect_bd_net -net mrmac_0_core_rx_axis_tkeep_user0  [get_bd_pins mrmac_0_core/rx_axis_tkeep_user0] \
+  [get_bd_pins MCDMA0/s_axis_tkeep_3]
+  connect_bd_net -net mrmac_0_core_rx_axis_tkeep_user4  [get_bd_pins mrmac_0_core/rx_axis_tkeep_user4] \
+  [get_bd_pins MCDMA2/s_axis_tkeep_3]
+  connect_bd_net -net mrmac_0_core_rx_axis_tlast_0  [get_bd_pins mrmac_0_core/rx_axis_tlast_0] \
+  [get_bd_pins MCDMA0/s_axis_tlast]
+  connect_bd_net -net mrmac_0_core_rx_axis_tlast_1  [get_bd_pins mrmac_0_core/rx_axis_tlast_1] \
+  [get_bd_pins MCDMA1/s_axis_tlast]
+  connect_bd_net -net mrmac_0_core_rx_axis_tlast_2  [get_bd_pins mrmac_0_core/rx_axis_tlast_2] \
+  [get_bd_pins MCDMA2/s_axis_tlast]
+  connect_bd_net -net mrmac_0_core_rx_axis_tlast_3  [get_bd_pins mrmac_0_core/rx_axis_tlast_3] \
+  [get_bd_pins MCDMA3/s_axis_tlast]
+  connect_bd_net -net mrmac_0_core_rx_axis_tvalid_0  [get_bd_pins mrmac_0_core/rx_axis_tvalid_0] \
+  [get_bd_pins MCDMA0/s_axis_tvalid]
+  connect_bd_net -net mrmac_0_core_rxuserrdy_out_0  [get_bd_pins mrmac_0_core/rxuserrdy_out_0] \
+  [get_bd_pins usr_rdy_reset/rxuserrdy_in_0]
+  connect_bd_net -net mrmac_0_core_rxuserrdy_out_1  [get_bd_pins mrmac_0_core/rxuserrdy_out_1] \
+  [get_bd_pins usr_rdy_reset/rxuserrdy_in_1]
+  connect_bd_net -net mrmac_0_core_rxuserrdy_out_2  [get_bd_pins mrmac_0_core/rxuserrdy_out_2] \
+  [get_bd_pins usr_rdy_reset/rxuserrdy_in_2]
+  connect_bd_net -net mrmac_0_core_rxuserrdy_out_3  [get_bd_pins mrmac_0_core/rxuserrdy_out_3] \
+  [get_bd_pins usr_rdy_reset/rxuserrdy_in_3]
+  connect_bd_net -net mrmac_0_core_tx_axis_tready_0  [get_bd_pins mrmac_0_core/tx_axis_tready_0] \
+  [get_bd_pins MCDMA0/tx_axis_tready_3]
+  connect_bd_net -net mrmac_0_core_tx_axis_tready_1  [get_bd_pins mrmac_0_core/tx_axis_tready_1] \
+  [get_bd_pins MCDMA1/tx_axis_tready_3]
+  connect_bd_net -net mrmac_0_core_tx_axis_tready_3  [get_bd_pins mrmac_0_core/tx_axis_tready_3] \
+  [get_bd_pins MCDMA3/tx_axis_tready_3]
+  connect_bd_net -net mrmac_0_core_txuserrdy_out_0  [get_bd_pins mrmac_0_core/txuserrdy_out_0] \
+  [get_bd_pins usr_rdy_reset/txuserrdy_in_0]
+  connect_bd_net -net mrmac_0_core_txuserrdy_out_1  [get_bd_pins mrmac_0_core/txuserrdy_out_1] \
+  [get_bd_pins usr_rdy_reset/txuserrdy_in_1]
+  connect_bd_net -net mrmac_0_core_txuserrdy_out_2  [get_bd_pins mrmac_0_core/txuserrdy_out_2] \
+  [get_bd_pins usr_rdy_reset/txuserrdy_in_2]
+  connect_bd_net -net mrmac_0_core_txuserrdy_out_3  [get_bd_pins mrmac_0_core/txuserrdy_out_3] \
+  [get_bd_pins usr_rdy_reset/txuserrdy_in_3]
+  connect_bd_net -net mrmac_0_gt_wrapper_RX_REC_CLK_out_n_0_0  [get_bd_pins mrmac_0_gt_wrapper/RX_REC_CLK_out_n_0] \
+  [get_bd_ports RX_REC_CLK_out_n_0_0]
+  connect_bd_net -net mrmac_0_gt_wrapper_RX_REC_CLK_out_p_0_0  [get_bd_pins mrmac_0_gt_wrapper/RX_REC_CLK_out_p_0] \
+  [get_bd_ports RX_REC_CLK_out_p_0_0]
+  connect_bd_net -net mrmac_0_gt_wrapper_dout_0  [get_bd_pins mrmac_0_gt_wrapper/rx_usr_clk2] \
+  [get_bd_pins mrmac_0_core/rx_alt_serdes_clk] \
+  [get_bd_pins mrmac_0_core/rx_flexif_clk]
+  connect_bd_net -net mrmac_0_gt_wrapper_gt_reset_all_0  [get_bd_pins mrmac_0_gt_wrapper/gt_reset_all] \
+  [get_bd_pins mrmac_0_core/gt_reset_all_in]
+  connect_bd_net -net mrmac_0_gt_wrapper_gt_reset_rx_datapath_0  [get_bd_pins mrmac_0_gt_wrapper/gt_reset_rx_datapath] \
+  [get_bd_pins mrmac_0_core/gt_reset_rx_datapath_in]
+  connect_bd_net -net mrmac_0_gt_wrapper_gt_reset_tx_datapath_0  [get_bd_pins mrmac_0_gt_wrapper/gt_reset_tx_datapath] \
+  [get_bd_pins mrmac_0_core/gt_reset_tx_datapath_in]
+  connect_bd_net -net mrmac_0_gt_wrapper_rx_core_clk_serdes_clk_new  [get_bd_pins mrmac_0_gt_wrapper/rx_usr_clk1] \
+  [get_bd_pins mrmac_0_core/rx_core_clk] \
+  [get_bd_pins mrmac_0_core/rx_serdes_clk]
+  connect_bd_net -net mrmac_0_gt_wrapper_tx_core_clk_new  [get_bd_pins mrmac_0_gt_wrapper/tx_usr_clk] \
+  [get_bd_pins mrmac_0_core/tx_core_clk]
+  connect_bd_net -net mrmac_0_gt_wrapper_tx_usr_clk_1  [get_bd_pins mrmac_0_gt_wrapper/tx_usr_clk2] \
+  [get_bd_pins mrmac_0_core/tx_alt_serdes_clk] \
+  [get_bd_pins mrmac_0_core/tx_flexif_clk]
+  connect_bd_net -net mst_rx_reset_out_1  [get_bd_pins mrmac_0_core/mst_rx_reset_out_1] \
+  [get_bd_pins usr_rdy_reset/mst_rx_reset_in_1]
+  connect_bd_net -net rx_axis_tvalid_3_2  [get_bd_pins mrmac_0_core/rx_axis_tvalid_1] \
+  [get_bd_pins MCDMA1/s_axis_tvalid]
+  connect_bd_net -net rx_axis_tvalid_3_3  [get_bd_pins mrmac_0_core/rx_axis_tvalid_2] \
+  [get_bd_pins MCDMA2/s_axis_tvalid]
+  connect_bd_net -net rx_axis_tvalid_3_4  [get_bd_pins mrmac_0_core/rx_axis_tvalid_3] \
+  [get_bd_pins MCDMA3/s_axis_tvalid]
+  connect_bd_net -net s_axi_aresetn_1  [get_bd_pins clk_rst_wrapper/peripheral_aresetn] \
+  [get_bd_pins MCDMA0/axi_resetn_3] \
+  [get_bd_pins mrmac_0_gt_wrapper/s_axi_aresetn] \
+  [get_bd_pins MCDMA3/axi_resetn_3] \
+  [get_bd_pins MCDMA2/axi_resetn_3] \
+  [get_bd_pins MCDMA1/axi_resetn_3] \
+  [get_bd_pins axi_gpio_0/s_axi_aresetn] \
+  [get_bd_pins mrmac_0_core/s_axi_aresetn]
+  connect_bd_net -net s_axis_tdata_3_2  [get_bd_pins mrmac_0_core/rx_axis_tdata4] \
+  [get_bd_pins MCDMA2/s_axis_tdata]
+  connect_bd_net -net s_axis_tkeep_3_1  [get_bd_pins mrmac_0_core/rx_axis_tkeep_user2] \
+  [get_bd_pins MCDMA1/s_axis_tkeep_3]
+  connect_bd_net -net s_axis_tkeep_3_2  [get_bd_pins mrmac_0_core/rx_axis_tkeep_user6] \
+  [get_bd_pins MCDMA3/s_axis_tkeep_3]
+  connect_bd_net -net tx_axis_tready_3_1  [get_bd_pins mrmac_0_core/tx_axis_tready_2] \
+  [get_bd_pins MCDMA2/tx_axis_tready_3]
+  connect_bd_net -net tx_mst_reset_in_1  [get_bd_pins usr_rdy_reset/tx_mst_reset_out] \
+  [get_bd_pins mrmac_0_gt_wrapper/tx_mst_reset_in]
+  connect_bd_net -net usr_rdy_reset_rx_mst_dp_reset  [get_bd_pins usr_rdy_reset/rx_mst_dp_reset] \
+  [get_bd_pins mrmac_0_gt_wrapper/RX_MST_DP_RESET]
+  connect_bd_net -net usr_rdy_reset_rx_mst_reset_out  [get_bd_pins usr_rdy_reset/rx_mst_reset_out] \
+  [get_bd_pins mrmac_0_gt_wrapper/rx_mst_reset_in]
+  connect_bd_net -net usr_rdy_reset_rx_userrdy_out_0  [get_bd_pins usr_rdy_reset/rx_userrdy_out_0] \
+  [get_bd_pins mrmac_0_gt_wrapper/rx_userrdy_in]
+  connect_bd_net -net usr_rdy_reset_tx_userrdy_out  [get_bd_pins usr_rdy_reset/tx_userrdy_out] \
+  [get_bd_pins mrmac_0_gt_wrapper/tx_userrdy_in]
+  connect_bd_net -net versal_cips_0_fpd_axi_noc_axi0_clk  [get_bd_pins versal_cips_0/fpd_axi_noc_axi0_clk] \
+  [get_bd_pins axi_noc_0/aclk5]
+  connect_bd_net -net versal_cips_0_fpd_axi_noc_axi1_clk  [get_bd_pins versal_cips_0/fpd_axi_noc_axi1_clk] \
+  [get_bd_pins axi_noc_0/aclk6]
+  connect_bd_net -net versal_cips_0_fpd_cci_noc_axi0_clk  [get_bd_pins versal_cips_0/fpd_cci_noc_axi0_clk] \
+  [get_bd_pins axi_noc_0/aclk1]
+  connect_bd_net -net versal_cips_0_fpd_cci_noc_axi1_clk  [get_bd_pins versal_cips_0/fpd_cci_noc_axi1_clk] \
+  [get_bd_pins axi_noc_0/aclk2]
+  connect_bd_net -net versal_cips_0_fpd_cci_noc_axi2_clk  [get_bd_pins versal_cips_0/fpd_cci_noc_axi2_clk] \
+  [get_bd_pins axi_noc_0/aclk3]
+  connect_bd_net -net versal_cips_0_fpd_cci_noc_axi3_clk  [get_bd_pins versal_cips_0/fpd_cci_noc_axi3_clk] \
+  [get_bd_pins axi_noc_0/aclk4]
+  connect_bd_net -net versal_cips_0_lpd_axi_noc_clk  [get_bd_pins versal_cips_0/lpd_axi_noc_clk] \
+  [get_bd_pins axi_noc_0/aclk7]
+  connect_bd_net -net versal_cips_0_pl0_ref_clk  [get_bd_pins versal_cips_0/pl0_ref_clk] \
+  [get_bd_pins clk_rst_wrapper/slowest_sync_clk] \
+  [get_bd_pins MCDMA0/s_axi_aclk] \
+  [get_bd_pins mrmac_0_gt_wrapper/s_axi_aclk] \
+  [get_bd_pins MCDMA3/s_axi_aclk] \
+  [get_bd_pins MCDMA2/s_axi_aclk] \
+  [get_bd_pins MCDMA1/s_axi_aclk] \
+  [get_bd_pins axi_gpio_0/s_axi_aclk] \
+  [get_bd_pins clk_wizard_0/clk_in1] \
+  [get_bd_pins mrmac_0_core/s_axi_aclk] \
+  [get_bd_pins smartconnect_0/aclk] \
+  [get_bd_pins versal_cips_0/m_axi_fpd_aclk]
+  connect_bd_net -net versal_cips_0_pl0_resetn  [get_bd_pins versal_cips_0/pl0_resetn] \
+  [get_bd_pins clk_rst_wrapper/ext_reset_in]
+  connect_bd_net -net versal_cips_0_pmc_axi_noc_axi0_clk  [get_bd_pins versal_cips_0/pmc_axi_noc_axi0_clk] \
+  [get_bd_pins axi_noc_0/aclk0]
+  connect_bd_net -net xlconstant_1_dout  [get_bd_pins xlconstant_1/dout] \
+  [get_bd_pins mrmac_0_core/pm_tick] \
+  [get_bd_pins mrmac_0_core/rx_ts_clk] \
+  [get_bd_pins mrmac_0_core/tx_ts_clk]
+  connect_bd_net -net xlconstant_2_dout  [get_bd_pins xlconstant_2/dout] \
+  [get_bd_pins mrmac_0_core/ctl_tx_lane0_vlm_bip7_override_01] \
+  [get_bd_pins mrmac_0_core/ctl_tx_lane0_vlm_bip7_override_23] \
+  [get_bd_pins mrmac_0_core/ctl_tx_send_idle_in_0] \
+  [get_bd_pins mrmac_0_core/ctl_tx_send_idle_in_1] \
+  [get_bd_pins mrmac_0_core/ctl_tx_send_idle_in_2] \
+  [get_bd_pins mrmac_0_core/ctl_tx_send_idle_in_3] \
+  [get_bd_pins mrmac_0_core/ctl_tx_send_lfi_in_0] \
+  [get_bd_pins mrmac_0_core/ctl_tx_send_lfi_in_1] \
+  [get_bd_pins mrmac_0_core/ctl_tx_send_lfi_in_2] \
+  [get_bd_pins mrmac_0_core/ctl_tx_send_lfi_in_3] \
+  [get_bd_pins mrmac_0_core/ctl_tx_send_rfi_in_0] \
+  [get_bd_pins mrmac_0_core/ctl_tx_send_rfi_in_1] \
+  [get_bd_pins mrmac_0_core/ctl_tx_send_rfi_in_2] \
+  [get_bd_pins mrmac_0_core/ctl_tx_send_rfi_in_3]
+  connect_bd_net -net xlconstant_3_dout  [get_bd_pins xlconstant_3/dout] \
+  [get_bd_pins mrmac_0_core/ctl_tx_lane0_vlm_bip7_override_value_01] \
+  [get_bd_pins mrmac_0_core/ctl_tx_lane0_vlm_bip7_override_value_23]
+  connect_bd_net -net xlconstant_4_dout  [get_bd_pins xlconstant_4/dout] \
+  [get_bd_pins mrmac_0_core/rx_flex_cm_ena_0] \
+  [get_bd_pins mrmac_0_core/rx_flex_cm_ena_1] \
+  [get_bd_pins mrmac_0_core/rx_flex_cm_ena_2] \
+  [get_bd_pins mrmac_0_core/rx_flex_cm_ena_3] \
+  [get_bd_pins mrmac_0_core/tx_flex_almarker0] \
+  [get_bd_pins mrmac_0_core/tx_flex_almarker1] \
+  [get_bd_pins mrmac_0_core/tx_flex_almarker2] \
+  [get_bd_pins mrmac_0_core/tx_flex_almarker3] \
+  [get_bd_pins mrmac_0_core/tx_flex_almarker4] \
+  [get_bd_pins mrmac_0_core/tx_flex_almarker5] \
+  [get_bd_pins mrmac_0_core/tx_flex_almarker6] \
+  [get_bd_pins mrmac_0_core/tx_flex_almarker7] \
+  [get_bd_pins mrmac_0_core/tx_flex_ena_0] \
+  [get_bd_pins mrmac_0_core/tx_flex_ena_1] \
+  [get_bd_pins mrmac_0_core/tx_flex_ena_2] \
+  [get_bd_pins mrmac_0_core/tx_flex_ena_3]
+  connect_bd_net -net xlconstant_5_dout  [get_bd_pins xlconstant_5/dout] \
+  [get_bd_pins mrmac_0_core/rx_flex_cm_data0] \
+  [get_bd_pins mrmac_0_core/tx_flex_data0]
 
   # Create address segments
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_0/FPD_AXI_NOC_0] [get_bd_addr_segs axi_noc_0/S05_AXI/C0_DDR_LOW0x2] -force
@@ -3383,4 +4205,5 @@ proc create_root_design { parentCell } {
 ##################################################################
 
 create_root_design ""
+
 
