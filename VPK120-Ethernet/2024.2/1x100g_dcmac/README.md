@@ -6,6 +6,13 @@ This project is a template for creating your own example design repositories tar
 
 NOTE: the build instructions are universal if you use this template, so you don't have to edit that section.
 
+**Disclaimer:** 
+The segmented-to-unsegmented converter logic included in this project is provided as an encrypted RTL file. If you require the source code, you can request it using the link below:
+https://account.amd.com/en/member/ip-secure-site-4.html
+
+This design is intended as a reference implementation using DCMAC on the VPK120 evaluation board running PetaLinux. We recommend downloading the source code from the link above and 
+then deciding whether to use the provided converter or implement your own.
+
 ---
 
 ## **Required Hardware**
