@@ -30,7 +30,7 @@ create_project $project_name $proj_dir -part $part -force
 set_property board_part xilinx.com:vpk120:part0:1.2 [current_project]
 #create_project -name ${project_name} -force -dir ${proj_dir} -part ${device}
 
-set_property  ip_repo_paths  ../Hardware/ip_repo
+set_property  ip_repo_paths  ../Hardware/seg_to_unseg [current_project]
 update_ip_catalog
 after 2000
 
