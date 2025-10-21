@@ -1,0 +1,93 @@
+/include/ "system-conf.dtsi"
+/ {
+
+};
+
+&dcmac_and_gt_dcmac_0_core {
+	phy-mode = "100gbase-r";
+	xlnx,gt-mode-0 = "NRZ";
+	axistream-connected = <&dataflow_0_axi_mcdma_0>;
+	xlnx,num-queues = [00 01];
+	xlnx,channel-ids = "1";
+	interrupt-names = "mm2s_ch1_introut", "s2mm_ch1_introut";
+    interrupt-parent = <&gic>;
+	interrupts = < 0 92 4 0 93 4 >;
+	xlnx,gtlane = <0x00000000>;
+	xlnx,phcindex = <0x00000000>;
+	max-speed = <0x186A0>;
+	
+	/* GPIO_ACTIVE_HIGH */
+	gt_ctrl-gpios = <&axi_gpio_gt_ctl 0 0>, <&axi_gpio_gt_ctl 1 0>, <&axi_gpio_gt_ctl 2 0>, <&axi_gpio_gt_ctl 3 0>, <&axi_gpio_gt_ctl 4 0>, <&axi_gpio_gt_ctl 5 0>, <&axi_gpio_gt_ctl 6 0>, <&axi_gpio_gt_ctl 7 0>,
+	<&axi_gpio_gt_ctl 8 0>, <&axi_gpio_gt_ctl 9 0>, <&axi_gpio_gt_ctl 10 0>, <&axi_gpio_gt_ctl 11 0>, <&axi_gpio_gt_ctl 12 0>, <&axi_gpio_gt_ctl 13 0>, <&axi_gpio_gt_ctl 14 0>, <&axi_gpio_gt_ctl 15 0>,
+	<&axi_gpio_gt_ctl 16 0>, <&axi_gpio_gt_ctl 17 0>, <&axi_gpio_gt_ctl 18 0>, <&axi_gpio_gt_ctl 19 0>, <&axi_gpio_gt_ctl 20 0>, <&axi_gpio_gt_ctl 21 0>, <&axi_gpio_gt_ctl 22 0>, <&axi_gpio_gt_ctl 23 0>,
+	<&axi_gpio_gt_ctl 24 0>, <&axi_gpio_gt_ctl 25 0>, <&axi_gpio_gt_ctl 26 0>, <&axi_gpio_gt_ctl 27 0>, <&axi_gpio_gt_ctl 28 0>, <&axi_gpio_gt_ctl 29 0>, <&axi_gpio_gt_ctl 30 0>, <&axi_gpio_gt_ctl 31 0>;
+	
+	gt_rx_dpath-gpios = <&axi_gpio_rx_datapath 0 0>, <&axi_gpio_rx_datapath 1 0>, <&axi_gpio_rx_datapath 2 0>, <&axi_gpio_rx_datapath 3 0>, <&axi_gpio_rx_datapath 4 0>, <&axi_gpio_rx_datapath 5 0>, <&axi_gpio_rx_datapath 6 0>, <&axi_gpio_rx_datapath 7 0>,
+	<&axi_gpio_rx_datapath 8 0>, <&axi_gpio_rx_datapath 9 0>, <&axi_gpio_rx_datapath 10 0>, <&axi_gpio_rx_datapath 11 0>, <&axi_gpio_rx_datapath 12 0>, <&axi_gpio_rx_datapath 13 0>, <&axi_gpio_rx_datapath 14 0>, <&axi_gpio_rx_datapath 15 0>,
+	<&axi_gpio_rx_datapath 16 0>, <&axi_gpio_rx_datapath 17 0>, <&axi_gpio_rx_datapath 18 0>, <&axi_gpio_rx_datapath 19 0>, <&axi_gpio_rx_datapath 20 0>, <&axi_gpio_rx_datapath 21 0>, <&axi_gpio_rx_datapath 22 0>;
+	
+	gt_tx_dpath-gpios = <&axi_gpio_tx_datapath 0 0>, <&axi_gpio_tx_datapath 1 0>, <&axi_gpio_tx_datapath 2 0>, <&axi_gpio_tx_datapath 3 0>, <&axi_gpio_tx_datapath 4 0>, <&axi_gpio_tx_datapath 5 0>, <&axi_gpio_tx_datapath 6 0>, <&axi_gpio_tx_datapath 7 0>,
+	<&axi_gpio_tx_datapath 8 0>, <&axi_gpio_tx_datapath 9 0>, <&axi_gpio_tx_datapath 10 0>, <&axi_gpio_tx_datapath 11 0>, <&axi_gpio_tx_datapath 12 0>, <&axi_gpio_tx_datapath 13 0>, <&axi_gpio_tx_datapath 14 0>, <&axi_gpio_tx_datapath 15 0>,
+	<&axi_gpio_tx_datapath 16 0>, <&axi_gpio_tx_datapath 17 0>, <&axi_gpio_tx_datapath 18 0>, <&axi_gpio_tx_datapath 19 0>, <&axi_gpio_tx_datapath 20 0>, <&axi_gpio_tx_datapath 21 0>, <&axi_gpio_tx_datapath 22 0>;
+	
+	gt_tx_rst_done-gpios = <&axi_reset_done_dyn 0 0>, <&axi_reset_done_dyn 1 0>, <&axi_reset_done_dyn 2 0>, <&axi_reset_done_dyn 3 0>, <&axi_reset_done_dyn 4 0>, <&axi_reset_done_dyn 5 0>, <&axi_reset_done_dyn 6 0>, <&axi_reset_done_dyn 7 0>,
+	<&axi_reset_done_dyn 8 0>, <&axi_reset_done_dyn 9 0>, <&axi_reset_done_dyn 10 0>, <&axi_reset_done_dyn 11 0>, <&axi_reset_done_dyn 12 0>, <&axi_reset_done_dyn 13 0>, <&axi_reset_done_dyn 14 0>, <&axi_reset_done_dyn 15 0>,
+	<&axi_reset_done_dyn 16 0>, <&axi_reset_done_dyn 17 0>, <&axi_reset_done_dyn 18 0>, <&axi_reset_done_dyn 19 0>, <&axi_reset_done_dyn 20 0>, <&axi_reset_done_dyn 21 0>, <&axi_reset_done_dyn 22 0>, <&axi_reset_done_dyn 23 0>;
+	
+	gt_rx_rst_done-gpios = <&axi_reset_done_dyn 24 0>, <&axi_reset_done_dyn 25 0>, <&axi_reset_done_dyn 26 0>, <&axi_reset_done_dyn 27 0>, <&axi_reset_done_dyn 28 0>, <&axi_reset_done_dyn 29 0>, <&axi_reset_done_dyn 30 0>, <&axi_reset_done_dyn 31 0>,
+	<&axi_reset_done_dyn 32 0>, <&axi_reset_done_dyn 33 0>, <&axi_reset_done_dyn 34 0>, <&axi_reset_done_dyn 35 0>, <&axi_reset_done_dyn 36 0>, <&axi_reset_done_dyn 37 0>, <&axi_reset_done_dyn 38 0>, <&axi_reset_done_dyn 39 0>,
+	<&axi_reset_done_dyn 40 0>, <&axi_reset_done_dyn 41 0>, <&axi_reset_done_dyn 42 0>, <&axi_reset_done_dyn 43 0>, <&axi_reset_done_dyn 44 0>, <&axi_reset_done_dyn 45 0>, <&axi_reset_done_dyn 46 0>, <&axi_reset_done_dyn 47 0>;
+	
+	gt_rsts-gpios = <&axi_resets_dyn 0 0>, <&axi_resets_dyn 1 0>, <&axi_resets_dyn 2 0>, <&axi_resets_dyn 3 0>, <&axi_resets_dyn 4 0>, <&axi_resets_dyn 5 0>, <&axi_resets_dyn 6 0>, <&axi_resets_dyn 7 0>,
+	<&axi_resets_dyn 8 0>, <&axi_resets_dyn 9 0>, <&axi_resets_dyn 10 0>, <&axi_resets_dyn 11 0>, <&axi_resets_dyn 12 0>, <&axi_resets_dyn 13 0>;
+	
+	xlnx,gt-ch0-rx-user-data-width-c0 = <0x00000050>;
+	xlnx,gt-mode-1 = "PAM4";
+	xlnx,gt-ch0-rx-user-data-width-c1 = <0x00000050>;
+	reg = <0x00000000 0xa4000000 0x00000000 0x00010000>;
+	xlnx,name = "dcmac_100caui4_1588_core";
+	clock-names = "rx_axi_clk", "rx_core_clk", "rx_flexif_clk", "rx_macif_clk", "s_axi_aclk", "ts_clk", "tx_axi_clk", "tx_core_clk", "tx_flexif_clk", "tx_macif_clk";
+	xlnx,data-rate-cfg-0 = "100G";
+	status = "okay";
+	xlnx,edk-iptype = "PERIPHERAL";
+	compatible = "xlnx,dcmac-2.4";
+	xlnx,ip-name = "dcmac";
+	clocks = <&misc_clk_0>, <&misc_clk_1>, <&misc_clk_1>, <&misc_clk_1>, <&versal_clk 65>, <&misc_clk_1>, <&misc_clk_0>, <&misc_clk_1>, <&misc_clk_1>, <&misc_clk_1>;
+	xlnx,num-gt-channels = <0x00000004>;
+	fixed-link {
+		speed = <100000>;
+		full-duplex;
+	};
+
+};
+
+&dataflow_0_axi_mcdma_0 {
+	 compatible = "xlnx,eth-dma";
+	 xlnx,include-sg;
+	 xlnx,addrwidth = [20];
+};
+
+
+
+
+&i2c0 { /* PMC_MIO46/47 */
+
+        /* U33 TCA9548A switch */
+        tca9548@74 {
+                compatible = "nxp,pca9548";
+                #pinctrl-names = "default";
+                #address-cells = <0x1>;
+                #size-cells = <0x0>;
+                reg = <0x74>;
+                #i2c-mux-idle-disconnect;
+      };
+
+      /* U233 TCA6416A GPIO Exander */
+      gpio@20 {
+                compatible = "ti,tca6416, nxp,pca9505";
+                reg = <0x20>;
+                pinctrl-names = "default";
+                gpio-controller;
+    };
+};
+

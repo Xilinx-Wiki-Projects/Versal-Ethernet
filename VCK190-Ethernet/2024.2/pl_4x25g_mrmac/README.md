@@ -1,4 +1,4 @@
-# pl_4x25g_mrmac - Versal MRMAC 
+# 2024.2 pl_4x25g_mrmac - Versal MRMAC without PTP
 
 ## Design Summary
 
@@ -8,7 +8,7 @@ This project utilizes Versal Devices Integrated 100G Multirate Ethernet MAC Subs
 ## Required Hardware
 - VCK190
 - QSFP DAC
-- 10G/25G capable link partner
+- 25G capable link partner
 
 ## Build Instructions
 ### **Vivado:**
