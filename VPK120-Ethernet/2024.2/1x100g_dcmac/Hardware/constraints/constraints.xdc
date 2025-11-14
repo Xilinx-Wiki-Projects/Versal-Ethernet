@@ -5,8 +5,8 @@
 ##### GTM Bank 202
 ##### GTM Bank 203
 create_clock -period 6.400 -name gt_ref_clk0_clk_p -waveform {0.000 3.200} [get_ports {gt_ref_clk0_clk_p[0]}]
-set_property PACKAGE_PIN AB46 [get_ports {gt_ref_clk0_clk_n[0]}]
-set_property PACKAGE_PIN AW53 [get_ports {GT_Serial_grx_n[0]}]
+set_property PACKAGE_PIN AF45 [get_ports {gt_ref_clk0_clk_p[0]}]
+set_property PACKAGE_PIN BG52 [get_ports {GT_Serial_grx_p[0]}]
 
 
 #### Waivers ####
