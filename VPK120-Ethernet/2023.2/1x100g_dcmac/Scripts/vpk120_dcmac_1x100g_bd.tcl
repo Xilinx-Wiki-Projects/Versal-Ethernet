@@ -364,27 +364,22 @@ proc create_hier_cell_dataflow_0 { parentCell nameHier } {
   connect_bd_net -net aclk8_0_1 [get_bd_pins axis_rxtx_clk] [get_bd_pins axi_mcdma_0/s_axi_aclk] [get_bd_pins axi_register_slice_0/aclk] [get_bd_pins axis_512to256width_conv/aclk] [get_bd_pins axis_data_fifo_0/s_axis_aclk] [get_bd_pins axis_data_fifo_1/s_axis_aclk] [get_bd_pins axis_256to512width_conv/aclk]
   connect_bd_net -net aresetn_0_1 [get_bd_pins axis_tx_rstn_i] [get_bd_pins axi_register_slice_0/aresetn] [get_bd_pins axis_512to256width_conv/aresetn] [get_bd_pins axis_data_fifo_1/s_axis_aresetn]
   connect_bd_net -net axi_mcdma_0_m_axis_mm2s_tdata [get_bd_pins axi_mcdma_0/m_axis_mm2s_tdata] [get_bd_pins axis_512to256width_conv/s_axis_tdata]
-  connect_bd_net -net axi_mcdma_0_m_axis_mm2s_tdest [get_bd_pins axi_mcdma_0/m_axis_mm2s_tdest] [get_bd_pins axis_512to256width_conv/s_axis_tdest]
-  connect_bd_net -net axi_mcdma_0_m_axis_mm2s_tid [get_bd_pins axi_mcdma_0/m_axis_mm2s_tid] [get_bd_pins axis_512to256width_conv/s_axis_tid]
-  connect_bd_net -net axi_mcdma_0_m_axis_mm2s_tkeep [get_bd_pins axi_mcdma_0/m_axis_mm2s_tkeep] [get_bd_pins axis_512to256width_conv/s_axis_tkeep]
-  connect_bd_net -net axi_mcdma_0_m_axis_mm2s_tlast [get_bd_pins axi_mcdma_0/m_axis_mm2s_tlast] [get_bd_pins axis_512to256width_conv/s_axis_tlast]
+  connect_bd_net -net axi_mcdma_0_m_axis_mm2s_tdest [get_bd_pins axi_mcdma_0/m_axis_mm2s_tdest]
+  connect_bd_net -net axi_mcdma_0_m_axis_mm2s_tid [get_bd_pins axi_mcdma_0/m_axis_mm2s_tid]
+  connect_bd_net -net axi_mcdma_0_m_axis_mm2s_tkeep [get_bd_pins axi_mcdma_0/m_axis_mm2s_tkeep]
+  connect_bd_net -net axi_mcdma_0_m_axis_mm2s_tlast [get_bd_pins axi_mcdma_0/m_axis_mm2s_tlast]
   connect_bd_net -net axi_mcdma_0_m_axis_mm2s_tvalid [get_bd_pins axi_mcdma_0/m_axis_mm2s_tvalid] [get_bd_pins axis_512to256width_conv/s_axis_tvalid]
   connect_bd_net -net axi_mcdma_0_s_axis_s2mm_tready [get_bd_pins axi_mcdma_0/s_axis_s2mm_tready] [get_bd_pins axis_256to512width_conv/m_axis_tready]
   connect_bd_net -net axis_256to512width_conv_m_axis_tdata [get_bd_pins axis_256to512width_conv/m_axis_tdata] [get_bd_pins axi_mcdma_0/s_axis_s2mm_tdata]
   connect_bd_net -net axis_256to512width_conv_m_axis_tkeep [get_bd_pins axis_256to512width_conv/m_axis_tkeep] [get_bd_pins axi_mcdma_0/s_axis_s2mm_tkeep]
-  connect_bd_net -net axis_256to512width_conv_m_axis_tlast [get_bd_pins axis_256to512width_conv/m_axis_tlast] [get_bd_pins axi_mcdma_0/s_axis_s2mm_tlast]
   connect_bd_net -net axis_256to512width_conv_m_axis_tvalid [get_bd_pins axis_256to512width_conv/m_axis_tvalid] [get_bd_pins axi_mcdma_0/s_axis_s2mm_tvalid]
   connect_bd_net -net axis_256to512width_conv_s_axis_tready [get_bd_pins axis_256to512width_conv/s_axis_tready] [get_bd_pins axis_data_fifo_0/m_axis_tready]
   connect_bd_net -net axis_512to256width_conv_m_axis_tdata [get_bd_pins axis_512to256width_conv/m_axis_tdata] [get_bd_pins axis_data_fifo_1/s_axis_tdata] [get_bd_pins m_axis_tdata]
-  connect_bd_net -net axis_512to256width_conv_m_axis_tdest [get_bd_pins axis_512to256width_conv/m_axis_tdest] [get_bd_pins axis_data_fifo_1/s_axis_tdest]
-  connect_bd_net -net axis_512to256width_conv_m_axis_tid [get_bd_pins axis_512to256width_conv/m_axis_tid] [get_bd_pins axis_data_fifo_1/s_axis_tid]
-  connect_bd_net -net axis_512to256width_conv_m_axis_tkeep [get_bd_pins axis_512to256width_conv/m_axis_tkeep] [get_bd_pins axis_data_fifo_1/s_axis_tkeep]
-  connect_bd_net -net axis_512to256width_conv_m_axis_tlast [get_bd_pins axis_512to256width_conv/m_axis_tlast] [get_bd_pins axis_data_fifo_1/s_axis_tlast]
   connect_bd_net -net axis_512to256width_conv_m_axis_tvalid [get_bd_pins axis_512to256width_conv/m_axis_tvalid] [get_bd_pins axis_data_fifo_1/s_axis_tvalid]
   connect_bd_net -net axis_512to256width_conv_s_axis_tready [get_bd_pins axis_512to256width_conv/s_axis_tready] [get_bd_pins axi_mcdma_0/m_axis_mm2s_tready]
   connect_bd_net -net axis_data_fifo_0_m_axis_tdata [get_bd_pins axis_data_fifo_0/m_axis_tdata] [get_bd_pins m_axis_tdata1] [get_bd_pins axis_256to512width_conv/s_axis_tdata]
-  connect_bd_net -net axis_data_fifo_0_m_axis_tkeep [get_bd_pins axis_data_fifo_0/m_axis_tkeep] [get_bd_pins axis_256to512width_conv/s_axis_tkeep]
-  connect_bd_net -net axis_data_fifo_0_m_axis_tlast [get_bd_pins axis_data_fifo_0/m_axis_tlast] [get_bd_pins axis_256to512width_conv/s_axis_tlast]
+  connect_bd_net -net axis_data_fifo_0_m_axis_tkeep [get_bd_pins axis_data_fifo_0/m_axis_tkeep]
+  connect_bd_net -net axis_data_fifo_0_m_axis_tlast [get_bd_pins axis_data_fifo_0/m_axis_tlast]
   connect_bd_net -net axis_data_fifo_0_m_axis_tvalid [get_bd_pins axis_data_fifo_0/m_axis_tvalid] [get_bd_pins axis_256to512width_conv/s_axis_tvalid]
   connect_bd_net -net axis_data_fifo_0_prog_full [get_bd_pins axis_data_fifo_0/prog_full] [get_bd_pins prog_full_0]
   connect_bd_net -net axis_data_fifo_0_s_axis_tready [get_bd_pins axis_data_fifo_0/s_axis_tready] [get_bd_pins s_axis_tready]
@@ -744,6 +739,10 @@ MSTRCLK 1,0,0,0 IS_CURRENT_QUAD 1}}} \
   set_property -dict [ list \
    CONFIG.FREQ_HZ {391000600} \
  ] [get_bd_intf_pins /dcmac_and_gt/axis_seg_and_unseg_c_0/m_axis0_pkt_out]
+
+  set_property -dict [ list \
+   CONFIG.FREQ_HZ {391000600} \
+ ] [get_bd_intf_pins /dcmac_and_gt/axis_seg_and_unseg_c_0/s_axis0]
 
   # Create interface connections
   connect_bd_intf_net -intf_net Conn1 [get_bd_intf_pins util_ds_buf_0/CLK_IN_D1] [get_bd_intf_pins CLK_IN_D_0]
@@ -1570,6 +1569,7 @@ proc create_root_design { parentCell } {
   # Restore current instance
   current_bd_instance $oldCurInst
 
+  validate_bd_design
   save_bd_design
 }
 # End of create_root_design()
@@ -1581,6 +1581,4 @@ proc create_root_design { parentCell } {
 
 create_root_design ""
 
-
-common::send_gid_msg -ssname BD::TCL -id 2053 -severity "WARNING" "This Tcl script was generated from a block design that has not been validated. It is possible that design <$design_name> may result in errors during validation."
 
