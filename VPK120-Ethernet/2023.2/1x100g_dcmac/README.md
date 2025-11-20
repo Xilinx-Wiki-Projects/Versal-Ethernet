@@ -1,17 +1,16 @@
-# Example Design Template
+# 2023.2 VPK120 1x100G CAUI-4 DCMAC
 
+---
 ## **Design Summary**
+This directory contains VPK120 design files for DCMAC Ethernet design in 2023.2.
 
-This project is a template for creating your own example design repositories targeting VPK120 ACAP devices. 
-
-NOTE: the build instructions are universal if you use this template, so you don't have to edit that section.
+---
 
 **Disclaimer:** 
 The segmented-to-unsegmented converter logic included in this project is provided as an encrypted RTL file. If you require the source code, you can request it using the link below:
 https://account.amd.com/en/member/ip-secure-site-4.html
 
-This design is intended as a reference implementation using DCMAC on the VPK120 evaluation board running PetaLinux. We recommend downloading the source code from the link above and 
-then deciding whether to use the provided converter or implement your own.
+This design is intended as a reference implementation using DCMAC on the VPK120 evaluation board running PetaLinux. We recommend downloading the source code from the link above and then deciding whether to use the provided converter or implement your own.
 
 ---
 
@@ -36,10 +35,7 @@ The Vivado project will be built in the `Hardware` directory.
 ### **PetaLinux**:
 
 Enter the `Software/Petainux/` directory. From the command line run the following:
-1. Generate HW description using SDT flow
-`xsct sdt.tcl ../../Hardware/prebuilt/vpk120_4x25g_mrmac_wrapper.xsa sdt_outdir`
-2. Use the HW description
-`petalinux-config --get-hw-description sdt_outdir/ --silentconfig`
+`petalinux-config --get-hw-description ../../Hardware/prebuilt/ --silentconfig`
 
 followed by:
 
@@ -64,20 +60,34 @@ Once packaged, the `BOOT.bin`, `boot.scr` and `image.ub` files (in the `Petalinu
 ### IPERF TEST
 #### MTU 1500
 ```
+xilinx-vpk120-20232:/home/petalinux# iperf3 -s
+-----------------------------------------------------------
+Server listening on 5201 (test #1)
+-----------------------------------------------------------
+Accepted connection from 192.168.1.2, port 37692
+[  5] local 192.168.1.1 port 5201 connected to 192.168.1.2 port 37706
+[ ID] Interval           Transfer     Bitrate
+[  5]   0.00-1.00   sec   151 MBytes  1.26 Gbits/sec                  
+[  5]   1.00-2.00   sec   148 MBytes  1.24 Gbits/sec                  
+[  5]   2.00-3.00   sec   146 MBytes  1.23 Gbits/sec                  
+[  5]   3.00-4.00   sec   146 MBytes  1.23 Gbits/sec                  
+[  5]   4.00-5.00   sec   148 MBytes  1.24 Gbits/sec                  
+[  5]   5.00-6.00   sec   148 MBytes  1.24 Gbits/sec                  
+[  5]   6.00-7.00   sec   150 MBytes  1.26 Gbits/sec                  
+[  5]   7.00-8.00   sec   149 MBytes  1.25 Gbits/sec                  
+[  5]   8.00-9.00   sec   147 MBytes  1.23 Gbits/sec                  
+[  5]   9.00-10.00  sec   148 MBytes  1.24 Gbits/sec                  
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate
+[  5]   0.00-10.00  sec  1.45 GBytes  1.24 Gbits/sec                  receiver
+-----------------------------------------------------------
 
 ```
-### IPERF TEST
-#### MTU 9000
-```
-
-
-```
-
+---
 ## **Known Issues**
-In this section, list any known issues with the design, or any warning messages that might appear which can be safely ignored by the customer.
 
 ---
-### Copyright (C) 2025, Advanced Micro Devices, Inc.
+### Copyright &copy; 2025, Advanced Micro Devices, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
