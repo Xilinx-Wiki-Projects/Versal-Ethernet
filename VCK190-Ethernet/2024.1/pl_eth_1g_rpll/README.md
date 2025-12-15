@@ -56,7 +56,7 @@ The Vivado project will be built in the `pl_axi1G_vck190/axi_eth_subsys_hw` dire
 In this section, list any known issues with the design, or any warning messages that might appear which can be safely ignored by the customer.
 
 ---
-Copyright 2024 AMD-Xilinx Inc.
+Copyright 2025 AMD-Xilinx Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

@@ -1,16 +1,16 @@
 # pl_4x25g_mrmac - Versal MRMAC 
 
-## Design Summary
+## **Design Summary**
 
 This project utilizes Versal Devices Integrated 100G Multirate Ethernet MAC Subsystem. This design provides 4 ethernet interfaces routed to QSFP in a VPK180 board. This design is capable of doing dynamic runtime rate switching from 25G to 10G to 25G using *ethtool*. 
 
 
-## Required Hardware
+## **Required Hardware**
 - VPK180
 - QSFP DAC
 - 10G/25G capable link partner
 
-## Build Instructions
+## **Build Instructions**
 ### **Vivado:**
 
 Enter the `Scripts` directory. From the command line run the following:
@@ -350,7 +350,7 @@ Be sure to [search](https://forums.xilinx.com/t5/forums/searchpage/tab/message?a
 ---
 ---
 
-Copyright 2024 AMD-Xilinx Inc.
+Copyright 2025 AMD-Xilinx Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

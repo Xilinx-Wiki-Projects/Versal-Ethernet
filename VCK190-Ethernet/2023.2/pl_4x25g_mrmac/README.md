@@ -1,16 +1,16 @@
 # pl_4x25g_mrmac - Versal MRMAC 
 
-## Design Summary
+## **Design Summary**
 
 This project utilizes Versal Devices Integrated 100G Multirate Ethernet MAC Subsystem. This design provides 4 ethernet interfaces routed to QSFP a VCK190 board. 
 
 
-## Required Hardware
+## **Required Hardware**
 - VCK190
 - QSFP DAC
 - 10G/25G capable link partner
 
-## Build Instructions
+## **Build Instructions**
 ### **Vivado:**
 
 Enter the `Scripts` directory. From the command line run the following:
@@ -150,5 +150,5 @@ Connecting to host 192.168.3.1, port 5201
 iperf Done.
 ```
 
-### Known Issues
+## **Known Issues**
  

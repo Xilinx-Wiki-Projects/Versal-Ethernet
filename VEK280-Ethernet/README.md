@@ -1,27 +1,28 @@
 # VEK280 PS and PL based Ethernet
 This repository contains VEK280 design files for PS and PL based Ethernet.
 
-Currently, there are 1 available design:
+Currently, there is 1 available design:
 
 **2024.1**
 - **pl_eth_sgmii_rpll** - PL AXI 1G/2.5G Ethernet Subsystem over SGMII SFP plugged onto the VEK280 SFP cage.
-A or SGMII IP in 1000BASEX mode on the VCK190 Production Board using SFP0. 
 ---
 ## **What to Expect**
-Each design directory contains the following general structure:
+Each design directory contains the following general structure (note: directory names may vary between Hardware/Scripts/Software or hardware/scripts/software depending on the design):
 
 ```
 <design>
-├── Hardware
-│   └── constraints
-│       └── <design>.xdc
+├── Hardware (or hardware)
+│   ├── constraints
+│   │   └── <design>.xdc
+│   └── <IP cores, RTL modules, or other hardware files as needed>
 ├── README.md
-├── Scripts
-│   ├── <design>_bd.tcl
-│   └── <design>_top.tcl
-└── Software
+├── Scripts (or scripts)
+│   ├── <design>_bd.tcl
+│   └── <design>_top.tcl
+└── Software (or software)
     ├── Vitis
-    └── PetaLinux
+    ├── PetaLinux
+    └── <or other software build files>
 
 ````
 Each design's `README.md` will provide:
@@ -43,8 +44,8 @@ If you find you are having difficulty bringing up one of the designs, or need so
 Be sure to [search](https://forums.xilinx.com/t5/forums/searchpage/tab/message?advanced=false&allow_punctuation=false&inactive=false) the forums first before posting, as someone may already have the solution!
 
 ---
-### Copyright 2020 Xilinx Inc.
-### Copyright (C) 2022, Advanced Micro Devices, Inc.
+### Copyright 2025 AMD-Xilinx Inc.
+### Copyright (C) 2025, Advanced Micro Devices, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

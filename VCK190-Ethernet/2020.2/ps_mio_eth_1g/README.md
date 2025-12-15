@@ -107,7 +107,7 @@ rtt min/avg/max/mdev = 0.297/0.400/0.586/0.131 ms
 In this section, list any known issues with the design, or any warning messages that might appear which can be safely ignored by the customer.
 
 ---
-Copyright 2020 Xilinx Inc.
+Copyright 2025 AMD-Xilinx Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

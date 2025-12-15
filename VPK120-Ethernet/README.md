@@ -2,10 +2,14 @@
 
 This repository contains VPK120 design files for PL based Ethernet.
 
-Currently, there is 1 available design version:
+Currently, there are 2 available design versions:
 
 **2023.2**
-- **4x25G MRMAC** - PL 4x25 MRMAC narrow mode on the VPK120 board.
+- **4x25G MRMAC** - PL 4x25G MRMAC narrow mode on the VPK120 board.
+- **1x100G DCMAC** - PL 1x100G DCMAC CAUI-4 design.
+
+**2024.2**
+- **1x100G DCMAC** - PL 1x100G DCMAC CAUI-4 design.
  
 ---
 ## **What to Expect**
@@ -14,15 +18,17 @@ Each design directory contains the following general structure:
 ```
 <design>
 ├── Hardware
-│   └── constraints
-│       └── <design>.xdc
+│   ├── constraints
+│   │   └── <design>.xdc
+│   └── <IP cores, RTL modules, or other hardware files as needed>
 ├── README.md
 ├── Scripts
-│   ├── <design>_bd.tcl
-│   └── <design>_top.tcl
+│   ├── <design>_bd.tcl
+│   └── <design>_top.tcl
 └── Software
     ├── Vitis
-    └── PetaLinux
+    ├── PetaLinux
+    └── <or other software build files>
 
 ````
 Each design's `README.md` will provide:
@@ -44,8 +50,8 @@ If you find you are having difficulty bringing up one of the designs, or need so
 Be sure to [search](https://forums.xilinx.com/t5/forums/searchpage/tab/message?advanced=false&allow_punctuation=false&inactive=false) the forums first before posting, as someone may already have the solution!
 
 ---
-### Copyright 2024 AMD-Xilinx Inc.
-### Copyright (C) 2024, Advanced Micro Devices, Inc.
+### Copyright 2025 AMD-Xilinx Inc.
+### Copyright (C) 2025, Advanced Micro Devices, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

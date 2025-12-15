@@ -152,7 +152,7 @@ In this section, list any known issues with the design, or any warning messages 
 2. https://support.xilinx.com/s/article/76668?language=en_US
 
 ---
-Copyright 2020 Xilinx Inc.
+Copyright 2025 AMD-Xilinx Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

@@ -78,7 +78,7 @@ PetaLinux:/home/petalinux# [  369.303529] xilinx_axienet a4000000.ethernet eth1:
 ```
 
 ---
-Copyright 2024 AMD-Xilinx Inc.
+Copyright 2025 AMD-Xilinx Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

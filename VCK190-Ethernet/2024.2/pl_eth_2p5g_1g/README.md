@@ -117,7 +117,7 @@ round-trip min/avg/max = 0.041/0.051/0.128 ms
 In this section, list any known issues with the design, or any warning messages that might appear which can be safely ignored by the customer.
 
 ---
-Copyright 2024 AMD-Xilinx Inc.
+Copyright 2025 AMD-Xilinx Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
