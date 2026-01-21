@@ -1,0 +1,9 @@
+/include/ "system-conf.dtsi"
+/ {
+};
+
+&eth_2p5g_axi_ethernet_t {
+        phy-mode = "2500base-x";
+};
+
+

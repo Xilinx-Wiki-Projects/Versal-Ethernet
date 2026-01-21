@@ -1,18 +1,18 @@
 # XXV_VERSAL_2023.2
 
-## Design Summary
+## **Design Summary**
 
 This project utilizes AXI 10G/25G Ethernet Subsystem configured for 10GBASE-R. This has been routed to the SFP cage on SFP0 for use on a VCK190 board. System is configured to use the VCK190 Si570 at 156.25MHz.
 
 - `eth0` is configured as GEM0 routed via RGMII to the on-board PHY.
 - `eth1` is configured as 10G/25G Ethernet Subsystem routed to SFP0.
 
-## Required Hardware
+## **Required Hardware**
 - VCK190
 - SFP supporting 10GBASE-R
 - 10G capable link partner
 
-## Build Instructions
+## **Build Instructions**
 ### **Vivado:**
 
 Enter the `Scripts` directory. From the command line run the following:
@@ -64,7 +64,7 @@ TODO
 TODO
 ```
 
-### Known Issues
+## **Known Issues**
 In case petalinux booting fails in SD boot mode with the below log, press the push button switch (SW2) on the VCK190 board.
 
 ```
@@ -74,3 +74,20 @@ In case petalinux booting fails in SD boot mode with the below log, press the pu
 [9549.706]Received EAM error. ErrorNodeId: 0x28100000, Register Mask: 0x400. The corresponding Error ID: 0xA
 [9559.017]Received EAM error. ErrorNodeId: 0x28100000, Register Mask: 0x800. The corresponding Error ID: 0xB   
 ```
+
+---
+
+### Copyright 2025 AMD-Xilinx Inc.
+### Copyright (C) 2025, Advanced Micro Devices, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.

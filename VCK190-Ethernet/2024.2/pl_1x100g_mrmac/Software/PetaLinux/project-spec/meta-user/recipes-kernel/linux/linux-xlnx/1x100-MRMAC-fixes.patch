@@ -1,0 +1,177 @@
+From 040deaff8968ff985b59106ec348a25c6604f55e Mon Sep 17 00:00:00 2001
+From: Ajaya Dahal <ajayad@amd.com>
+Date: Wed, 5 Mar 2025 12:11:18 -0800
+Subject: [PATCH] 1x100G-MRMAC-Fixes
+
+---
+ drivers/net/ethernet/xilinx/xilinx_axienet.h  | 12 ++++
+ .../net/ethernet/xilinx/xilinx_axienet_main.c | 62 +++++++++++++------
+ 2 files changed, 56 insertions(+), 18 deletions(-)
+
+diff --git a/drivers/net/ethernet/xilinx/xilinx_axienet.h b/drivers/net/ethernet/xilinx/xilinx_axienet.h
+index 834b05beaafe..cd09a576cbe0 100644
+--- a/drivers/net/ethernet/xilinx/xilinx_axienet.h
++++ b/drivers/net/ethernet/xilinx/xilinx_axienet.h
+@@ -616,11 +616,16 @@
+ #define MRMAC_CTL_AXIS_CFG_SHIFT	9
+ #define MRMAC_CTL_AXIS_CFG_10G_IND	1
+ #define MRMAC_CTL_AXIS_CFG_25G_IND	1
++#define MRMAC_CTL_AXIS_CFG_100G_IND_128	5
++#define MRMAC_CTL_AXIS_CFG_100G_IND_128_seg	7
+ 
+ #define MRMAC_CTL_SERDES_WIDTH_MASK	GENMASK(6, 4)
+ #define MRMAC_CTL_SERDES_WIDTH_SHIFT	4
+ #define MRMAC_CTL_SERDES_WIDTH_10G	4
+ #define MRMAC_CTL_SERDES_WIDTH_25G	6
++#define MRMAC_CTL_SERDES_WIDTH_100G_NRW		2
++#define MRMAC_CTL_SERDES_WIDTH_100G_WIDE	6
++
+ 
+ #define MRMAC_CTL_RATE_CFG_MASK		(MRMAC_CTL_DATA_RATE_MASK |	\
+ 					 MRMAC_CTL_AXIS_CFG_MASK |	\
+@@ -643,6 +648,7 @@
+ #define MRMAC_GT_RST_TX_MASK		BIT(2)
+ #define MRMAC_GT_10G_MASK		0x00000001
+ #define MRMAC_GT_25G_MASK		0x00000002
++#define MRMAC_GT_100G_MASK		0x00000002
+ 
+ #define MRMAC_GT_LANE_OFFSET		BIT(16)
+ #define MRMAC_MAX_GT_LANES		4
+@@ -1199,6 +1205,12 @@ static inline u32 axienet_get_mrmac_rx_status(struct axienet_local *lp)
+ 	return axienet_ior(lp, MRMAC_RX_STS_OFFSET);
+ }
+ 
++static inline u32 axienet_get_mrmac_rx_ctrl_code(struct axienet_local *lp)
++{
++	axienet_iow(lp, MRMAC_STATRX_VALID_CTRL_OFFSET, MRMAC_STS_ALL_MASK);
++	return axienet_ior(lp, MRMAC_STATRX_VALID_CTRL_OFFSET);
++}
++
+ #ifdef CONFIG_XILINX_AXI_EMAC_HWTSTAMP
+ /**
+  * axienet_txts_ior - Memory mapped AXI FIFO MM S register read
+diff --git a/drivers/net/ethernet/xilinx/xilinx_axienet_main.c b/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
+index 85b5731f9d56..b9aa4943f4de 100644
+--- a/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
++++ b/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
+@@ -487,7 +487,18 @@ static inline void axienet_mrmac_reset(struct axienet_local *lp)
+ 	mdelay(DELAY_1MS);
+ 
+ 	reg = axienet_ior(lp, MRMAC_MODE_OFFSET);
+-	if (lp->max_speed == SPEED_25000) {
++	if (lp->max_speed == SPEED_100000) {
++		reg &= ~MRMAC_CTL_RATE_CFG_MASK;
++		reg |= MRMAC_CTL_DATA_RATE_100G;
++		reg |= (MRMAC_CTL_AXIS_CFG_100G_IND_128 << MRMAC_CTL_AXIS_CFG_SHIFT);
++		reg |= (MRMAC_CTL_SERDES_WIDTH_100G_WIDE <<
++			MRMAC_CTL_SERDES_WIDTH_SHIFT);
++
++		printk("axienet_mrmac_reset: inside MRMAC SPEED_100000, reg @ %X\n", &reg);
++		printk("axienet_mrmac_reset: inside MRMAC SPEED_100000, reg %X\n", reg); 
++	}
++
++	else if (lp->max_speed == SPEED_25000) {
+ 		reg &= ~MRMAC_CTL_RATE_CFG_MASK;
+ 		reg |= MRMAC_CTL_DATA_RATE_25G;
+ 		reg |= (MRMAC_CTL_AXIS_CFG_25G_IND << MRMAC_CTL_AXIS_CFG_SHIFT);
+@@ -736,15 +747,16 @@ static inline int axienet_mrmac_gt_reset(struct net_device *ndev)
+ 			iowrite32(MRMAC_GT_RST_ALL_MASK, (lp->gt_ctrl +
+ 				  (MRMAC_GT_LANE_OFFSET * i) +
+ 				  MRMAC_GT_CTRL_OFFSET));
+-			mdelay(DELAY_1MS);
++			mdelay(DELAY_1MS*100);
+ 			iowrite32(0, (lp->gt_ctrl + (MRMAC_GT_LANE_OFFSET * i) +
+ 				      MRMAC_GT_CTRL_OFFSET));
++			break;
+ 		}
+ 
+ 		/* Wait for PLL lock with timeout */
+ 		err = readl_poll_timeout(lp->gt_pll + MRMAC_GT_PLL_STS_OFFSET,
+ 					 val, (val & MRMAC_GT_PLL_DONE_MASK),
+-					 10, DELAY_OF_ONE_MILLISEC);
++					 10, DELAY_OF_ONE_MILLISEC*100);
+ 		if (err) {
+ 			netdev_err(ndev, "MRMAC PLL lock not complete! Cross-check the MAC ref clock configuration\n");
+ 			return -ENODEV;
+@@ -752,7 +764,12 @@ static inline int axienet_mrmac_gt_reset(struct net_device *ndev)
+ 		mrmac_pll_rst = 1;
+ 	}
+ 
+-	if (lp->max_speed == SPEED_25000)
++	if (lp->max_speed == SPEED_100000)
++		iowrite32(MRMAC_GT_100G_MASK, (lp->gt_ctrl +
++			  MRMAC_GT_LANE_OFFSET * lp->gt_lane +
++			  MRMAC_GT_RATE_OFFSET));
++	
++	else if (lp->max_speed == SPEED_25000)
+ 		iowrite32(MRMAC_GT_25G_MASK, (lp->gt_ctrl +
+ 			  MRMAC_GT_LANE_OFFSET * lp->gt_lane +
+ 			  MRMAC_GT_RATE_OFFSET));
+@@ -764,10 +781,10 @@ static inline int axienet_mrmac_gt_reset(struct net_device *ndev)
+ 	iowrite32(MRMAC_GT_RST_RX_MASK | MRMAC_GT_RST_TX_MASK,
+ 		  (lp->gt_ctrl + MRMAC_GT_LANE_OFFSET * lp->gt_lane +
+ 		  MRMAC_GT_CTRL_OFFSET));
+-	mdelay(DELAY_1MS);
++	mdelay(DELAY_1MS*100);
+ 	iowrite32(0, (lp->gt_ctrl + MRMAC_GT_LANE_OFFSET * lp->gt_lane +
+ 		  MRMAC_GT_CTRL_OFFSET));
+-	mdelay(DELAY_1MS);
++	mdelay(DELAY_1MS*100);
+ 
+ 	return 0;
+ }
+@@ -2221,30 +2238,39 @@ static int axienet_open(struct net_device *ndev)
+ 		axienet_iow(lp, MRMAC_TX_STS_OFFSET, MRMAC_STS_ALL_MASK);
+ 		axienet_iow(lp, MRMAC_RX_STS_OFFSET, MRMAC_STS_ALL_MASK);
+ 		err = readx_poll_timeout(axienet_get_mrmac_blocklock, lp, val,
+-					 (val & MRMAC_RX_BLKLCK_MASK), 10, DELAY_OF_ONE_MILLISEC);
++					 (val & MRMAC_RX_BLKLCK_MASK), 10, DELAY_OF_ONE_MILLISEC*100);
+ 		if (err)
+ 			netdev_err(ndev, "MRMAC block lock not complete! Cross-check the MAC ref clock configuration\n");
+ 
+ 		err = readx_poll_timeout(axienet_get_mrmac_rx_status, lp, val,
+-					 (val & MRMAC_RX_STATUS_MASK), 10, DELAY_OF_ONE_MILLISEC);
++					 (val & MRMAC_RX_STATUS_MASK), 10, DELAY_OF_ONE_MILLISEC*100);
+ 		if (err) {
+ 			netdev_err(ndev, "MRMAC Link is down!\n");
+ 			ret = -ENODEV;
+ 			goto err_eth_irq;
+ 		}
+ 
+-		axienet_iow(lp, MRMAC_STATRX_VALID_CTRL_OFFSET, MRMAC_STS_ALL_MASK);
+-		val = axienet_ior(lp, MRMAC_STATRX_VALID_CTRL_OFFSET);
+-
+-		if (!(val & MRMAC_RX_VALID_MASK)) {
+-			netdev_err(ndev, "MRMAC Link is down! No recent RX Valid Control Code\n");
+-			ret = -ENODEV;
+-			goto err_eth_irq;
++		//axienet_iow(lp, MRMAC_STATRX_VALID_CTRL_OFFSET, MRMAC_STS_ALL_MASK);
++		//val = axienet_ior(lp, MRMAC_STATRX_VALID_CTRL_OFFSET);
++		err = readx_poll_timeout(axienet_get_mrmac_rx_ctrl_code, lp, val,
++									 (val & MRMAC_RX_VALID_MASK), 10, DELAY_OF_ONE_MILLISEC * 3000);
++		
++		if (err) {
++			// FIXME show warning, ignore this error for 100GB MRMAC
++			if (lp->max_speed == SPEED_100000) {
++				netdev_warn(ndev,
++					"No recent RX Valid Control Code\n");
++			} else {
++				netdev_err(ndev,
++					"MRMAC Link is down! "
++					"No recent RX Valid Control Code\n");
++				ret = -ENODEV;
++				goto err_eth_irq;
++			}
++			netdev_info(ndev, "MRMAC setup at %d\n", lp->max_speed);
++			axienet_iow(lp, MRMAC_TICK_OFFSET, MRMAC_TICK_TRIGGER);
+ 		}
+-		netdev_info(ndev, "MRMAC setup at %d\n", lp->max_speed);
+-		axienet_iow(lp, MRMAC_TICK_OFFSET, MRMAC_TICK_TRIGGER);
+ 	}
+-
+ 	/* Enable interrupts for Axi Ethernet core (if defined) */
+ 	if (!lp->eth_hasnobuf && lp->axienet_config->mactype == XAXIENET_1_2p5G) {
+ 		ret = request_irq(lp->eth_irq, axienet_eth_irq, IRQF_SHARED,
+-- 
+2.25.1
+

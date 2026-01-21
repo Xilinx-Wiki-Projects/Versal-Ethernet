@@ -1,0 +1,5 @@
+PETALINUX_VER=2024.2
+VALIDATE_HW_CHKSUM=1
+HARDWARE_PATH=/public/cases/ajayad/Ethernet_Design_Hub/Versal-Ethernet/VPK120-Ethernet/2024.2/Software/Petalinux/sdt_outdir/system-top.dts
+HDF_EXT=sdt
+YOCTO_SDK=acd7a0f018c9dcc73b41b34a82c0553ac0e000c958631fb36f26d497824ff35d

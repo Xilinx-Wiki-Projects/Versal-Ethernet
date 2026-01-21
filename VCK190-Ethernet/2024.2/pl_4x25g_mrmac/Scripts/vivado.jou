@@ -1,0 +1,17 @@
+#-----------------------------------------------------------
+# Vivado v2023.2 (64-bit)
+# SW Build 4029153 on Fri Oct 13 20:13:54 MDT 2023
+# IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+# SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+# Start of session at: Thu Aug 21 13:02:11 2025
+# Process ID: 676800
+# Current directory: /group/techsup/ajayad/cases/current/Old/00711477/Versal-Ethernet/VCK190-Ethernet/2023.2/pl_4x25g_mrmac/Scripts
+# Command line: vivado -source vck190_mrmac_top.tcl
+# Log file: /group/techsup/ajayad/cases/current/Old/00711477/Versal-Ethernet/VCK190-Ethernet/2023.2/pl_4x25g_mrmac/Scripts/vivado.log
+# Journal file: /group/techsup/ajayad/cases/current/Old/00711477/Versal-Ethernet/VCK190-Ethernet/2023.2/pl_4x25g_mrmac/Scripts/vivado.jou
+# Running On: xsjapps57, OS: Linux, CPU Frequency: 1561.958 MHz, CPU Physical cores: 20, Host memory: 540964 MB
+#-----------------------------------------------------------
+start_gui
+source vck190_mrmac_top.tcl
+update_compile_order -fileset sources_1
+open_bd_design {/group/techsup/ajayad/cases/current/Old/00711477/Versal-Ethernet/VCK190-Ethernet/2023.2/pl_4x25g_mrmac/Hardware/vck190_mrmac_4x25g_hw/vck190_mrmac_4x25g.srcs/sources_1/bd/vck190_mrmac_4x25g/vck190_mrmac_4x25g.bd}

@@ -1,0 +1,36 @@
+From 49025e69585e05dfb25b9a490cf75c3aca90f035 Mon Sep 17 00:00:00 2001
+From: Ajaya Dahal <ajayad@amd.com>
+Date: Wed, 5 Mar 2025 12:54:17 -0800
+Subject: [PATCH] IDT clock fix
+
+---
+ drivers/ptp/ptp_clockmatrix.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/ptp/ptp_clockmatrix.c b/drivers/ptp/ptp_clockmatrix.c
+index cd7b3110f8e4..752f6a79d302 100644
+--- a/drivers/ptp/ptp_clockmatrix.c
++++ b/drivers/ptp/ptp_clockmatrix.c
+@@ -2458,15 +2458,16 @@ static int idtcm_probe(struct platform_device *pdev)
+ 	err = idtcm_load_firmware(idtcm, &pdev->dev);
+ 
+ 	if (err) {
+-		if (err == -ENOENT) {
++		dev_warn(idtcm->dev, "loading firmware failed with %d", err);
++		if( err == -ENOENT) {
+ 			mutex_unlock(idtcm->lock);
++			dev_warn(idtcm->dev,"deferring the probe\n");
+ 			return -EPROBE_DEFER;
+ 		}
+-		dev_warn(idtcm->dev, "loading firmware failed with %d", err);
+ 	}
+-
+ 	wait_for_chip_ready(idtcm);
+ 
++
+ 	if (idtcm->tod_mask) {
+ 		for (i = 0; i < MAX_TOD; i++) {
+ 			if (idtcm->tod_mask & (1 << i))
+-- 
+2.25.1
+

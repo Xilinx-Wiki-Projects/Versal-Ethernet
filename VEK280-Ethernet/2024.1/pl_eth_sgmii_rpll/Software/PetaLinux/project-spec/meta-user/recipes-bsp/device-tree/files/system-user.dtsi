@@ -1,0 +1,25 @@
+/include/ "system-conf.dtsi"
+/ {
+};
+
+&i2c0 { /* PMC_MIO46/47 */
+
+        /* U33 TCA9548A switch */
+        tca9548@74 {
+                compatible = "nxp,pca9548";
+                #pinctrl-names = "default";
+                #address-cells = <0x1>;
+                #size-cells = <0x0>;
+                reg = <0x74>;
+                #i2c-mux-idle-disconnect;
+      };
+
+      /* U233 TCA6416A GPIO Exander */
+      gpio@20 {
+                compatible = "ti,tca6416, nxp,pca9505";
+                reg = <0x20>;
+                pinctrl-names = "default";
+                gpio-controller;
+    };
+    
+};
